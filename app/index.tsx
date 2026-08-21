@@ -28,7 +28,7 @@ export default function SignUpScreen() {
             className="h-14 flex-row items-center justify-center rounded-xl bg-[#FF7A45] shadow-sm"
           >
             <MaterialCommunityIcons
-              name="account-group-outline"
+              name="human-male-board"
               size={22}
               color="#FFFFFF"
             />
