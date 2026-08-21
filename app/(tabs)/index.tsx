@@ -1,12 +1,6 @@
 import { useState } from "react";
-import {
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const tutors = [
   {
@@ -42,7 +36,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-orange-100">
       <View style={styles.header}>
         <Text style={styles.greeting}>Find your tutor</Text>
         <Text style={styles.subheading}>
