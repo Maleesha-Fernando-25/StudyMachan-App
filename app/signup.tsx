@@ -20,8 +20,6 @@ export default function SignUpLandingScreen() {
 
       <View style={styles.content}>
         {/* Logo Image */}
-        {/* If this file is at app/(auth)/signup.tsx, use:
-            require('../../assets/images/studymachan-logo.png') */}
         <Image
           source={require("../assets/images/studymachan-logo.png")}
           style={styles.logo}
@@ -37,7 +35,7 @@ export default function SignUpLandingScreen() {
           <TouchableOpacity
             style={styles.primaryButton}
             activeOpacity={0.8}
-            onPress={() => router.push("/onboarding-tutor")}
+            onPress={() => router.push("/login")}
           >
             <MaterialCommunityIcons
               name="account-group-outline"
@@ -51,7 +49,7 @@ export default function SignUpLandingScreen() {
           <TouchableOpacity
             style={styles.primaryButton}
             activeOpacity={0.8}
-            onPress={() => router.push("/onboarding-student")}
+            onPress={() => router.push("/login")}
           >
             <FontAwesome5
               name="user-graduate"
