@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, Image, StatusBar, Text, View } from "react-native";
 import Animated, {
   Easing,
@@ -31,12 +31,12 @@ export default function SplashScreen() {
   const [typedText, setTypedText] = useState("");
   const typingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const finishSplash = () => {
+  const finishSplash = useCallback(() => {
     // Navigate directly to sign up after splash
     router.replace("/signup");
-  };
+  }, [router]);
 
-  const startTyping = () => {
+  const startTyping = useCallback(() => {
     let index = 0;
 
     typingTimerRef.current = setInterval(() => {
@@ -55,7 +55,7 @@ export default function SplashScreen() {
         });
       }
     }, TYPE_SPEED_MS);
-  };
+  }, [finishSplash, screenOpacity]);
 
   useEffect(() => {
     // 1. White screen changes to orange as the central circle expands.
@@ -103,7 +103,15 @@ export default function SplashScreen() {
         clearInterval(typingTimerRef.current);
       }
     };
-  }, []);
+  }, [
+    circleScale,
+    finishSplash,
+    logoOpacity,
+    logoScale,
+    logoTranslateX,
+    screenOpacity,
+    startTyping,
+  ]);
 
   const wrapperStyle = useAnimatedStyle(() => ({
     opacity: screenOpacity.value,
