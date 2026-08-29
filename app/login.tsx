@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   StatusBar,
@@ -9,10 +9,30 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { loginUser } from "../firebase/authService";
 
 export default function LoginScreen() {
   const router = useRouter();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleLogin = async () => {
+  setMessage("Signing in...");
+
+  try {
+    const result = await loginUser(email, password);
+
+    if (result.profile.role === "student") {
+      router.replace("/student-home");
+    } else if (result.profile.role === "tutor") {
+      router.replace("/tutor-home");
+    }
+  } catch (error: any) {
+    setMessage(`Error: ${error.message}`);
+  }
+};
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
@@ -27,17 +47,29 @@ export default function LoginScreen() {
           placeholderTextColor="#888888"
           keyboardType="email-address"
           autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
         />
         <TextInput
           style={styles.input}
           placeholder="Password"
           placeholderTextColor="#888888"
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
 
-        <TouchableOpacity style={styles.primaryButton} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          activeOpacity={0.8}
+          onPress={handleLogin}
+        >
           <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
+
+        <Text style={{ marginTop: 15, textAlign: "center" }}>
+          {message}
+        </Text>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Don&apos;t have an account? </Text>
