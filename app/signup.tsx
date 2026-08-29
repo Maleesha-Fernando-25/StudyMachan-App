@@ -45,7 +45,7 @@ export default function SignUpLandingScreen() {
               color="#FFFFFF"
               style={styles.buttonIcon}
             />
-            <Text style={styles.buttonText}>I'm a Tutor</Text>
+            <Text style={styles.buttonText}>I&apos;m a Tutor</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -59,7 +59,7 @@ export default function SignUpLandingScreen() {
               color="#FFFFFF"
               style={styles.buttonIcon}
             />
-            <Text style={styles.buttonText}>I'm a Student</Text>
+            <Text style={styles.buttonText}>I&apos;m a Student</Text>
           </TouchableOpacity>
         </View>
 
