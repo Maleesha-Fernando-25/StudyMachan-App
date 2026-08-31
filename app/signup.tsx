@@ -19,7 +19,7 @@ export default function SignUpLandingScreen() {
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       <View style={styles.content}>
-        {/* Logo Image */}
+        {/* Logo */}
         <Image
           source={require("../assets/images/studymachan-logo.png")}
           style={styles.logo}
@@ -30,12 +30,16 @@ export default function SignUpLandingScreen() {
         <Text style={styles.title}>StudyMachan</Text>
         <Text style={styles.tagline}>Find a guide. Grow with pride.</Text>
 
-        {/* Action Buttons */}
+        {/* Buttons */}
         <View style={styles.buttonContainer}>
+          {/* I'm a Tutor */}
           <TouchableOpacity
             style={styles.primaryButton}
             activeOpacity={0.8}
-            onPress={() => router.push("/login")}
+            onPress={() => {
+              console.log("Navigating to /login from Tutor button");
+              router.push("/login");
+            }}
           >
             <MaterialCommunityIcons
               name="account-group-outline"
@@ -43,13 +47,17 @@ export default function SignUpLandingScreen() {
               color="#FFFFFF"
               style={styles.buttonIcon}
             />
-            <Text style={styles.buttonText}>I&apos;m a Tutor</Text>
+            <Text style={styles.buttonText}>I'm a Tutor</Text>
           </TouchableOpacity>
 
+          {/* I'm a Student */}
           <TouchableOpacity
             style={styles.primaryButton}
             activeOpacity={0.8}
-            onPress={() => router.push("/login")}
+            onPress={() => {
+              console.log("Navigating to /login from Student button");
+              router.push("/login");
+            }}
           >
             <FontAwesome5
               name="user-graduate"
@@ -57,15 +65,7 @@ export default function SignUpLandingScreen() {
               color="#FFFFFF"
               style={styles.buttonIcon}
             />
-            <Text style={styles.buttonText}>I&apos;m a Student</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Footer Link */}
-        <View style={styles.footerContainer}>
-          <Text style={styles.footerText}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => router.push("/login")}>
-            <Text style={styles.signInText}>Sign In</Text>
+            <Text style={styles.buttonText}>I'm a Student</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: "100%",
     gap: 14,
-    marginBottom: 36,
   },
   primaryButton: {
     backgroundColor: "#FF7A45",
@@ -125,19 +124,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
-  },
-  footerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  footerText: {
-    fontSize: 14,
-    color: "#555555",
-  },
-  signInText: {
-    fontSize: 14,
-    color: "#FF7A45",
     fontWeight: "600",
   },
 });
