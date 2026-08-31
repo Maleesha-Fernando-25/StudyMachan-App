@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -32,7 +33,7 @@ export default function LoginScreen() {
       return;
     }
 
-    // TODO: Replace with real login logic (API / Firebase / etc.)
+    // TODO: Replace with real login logic later
     Alert.alert("Login", "Login successful (demo).", [
       {
         text: "OK",
@@ -45,77 +46,62 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#E6E8EA]">
+    <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#E6E8EA" />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
+        style={styles.keyboardView}
       >
         <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingTop: 60,
-            paddingBottom: 40,
-          }}
-          className="px-6"
+          contentContainerStyle={styles.scrollContent}
+          style={styles.scroll}
           showsVerticalScrollIndicator={false}
         >
-          {/* Logo & Title Section */}
-          <View className="items-center mb-8">
-            <View className="bg-white p-2 rounded-2xl shadow-sm mb-4">
-              {/* Replace with your local logo */}
+          {/* Logo & Title */}
+          <View style={styles.logoSection}>
+            <View style={styles.logoBox}>
               <Image
                 source={require("../assets/images/studymachan-logo.png")}
-                className="w-28 h-28"
+                style={styles.logo}
                 resizeMode="contain"
               />
             </View>
-            <Text className="text-[22px] font-extrabold text-black">
-              StudyMachan
-            </Text>
+            <Text style={styles.logoText}>StudyMachan</Text>
           </View>
 
           {/* Login Card */}
-          <View className="bg-white rounded-[20px] p-6 w-full max-w-sm shadow-md">
-            {/* Username Input */}
-            <View className="mb-2">
-              <Text className="text-xs text-[#7DA2A9] font-medium mb-1.5 ml-1">
-                Username
-              </Text>
-              <View className="flex-row items-center border border-gray-200 rounded-xl px-3 h-12">
+          <View style={styles.card}>
+            {/* Username */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Username</Text>
+              <View style={styles.inputRow}>
                 <Feather name="user" size={18} color="#7DA2A9" />
                 <TextInput
                   placeholder="Enter your username"
                   placeholderTextColor="#9CA3AF"
                   value={username}
                   onChangeText={setUsername}
-                  className="flex-1 ml-2.5 text-sm text-gray-800"
+                  style={styles.input}
                   autoCapitalize="none"
                 />
               </View>
             </View>
 
-            {/* Forgot Password Link */}
+            {/* Forgot */}
             <TouchableOpacity
-              className="self-end mb-2"
+              style={styles.forgot}
               onPress={() =>
                 Alert.alert("Forgot password", "Implement forgot password flow")
               }
             >
-              <Text className="text-xs font-semibold text-[#B85C38]">
-                Forgot?
-              </Text>
+              <Text style={styles.forgotText}>Forgot?</Text>
             </TouchableOpacity>
 
-            {/* Password Input */}
-            <View className="mb-5">
-              <Text className="text-xs text-[#7DA2A9] font-medium mb-1.5 ml-1">
-                Password
-              </Text>
-              <View className="flex-row items-center border border-gray-200 rounded-xl px-3 h-12">
+            {/* Password */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Password</Text>
+              <View style={styles.inputRow}>
                 <Feather name="lock" size={18} color="#7DA2A9" />
                 <TextInput
                   placeholder="Enter your password"
@@ -123,7 +109,7 @@ export default function LoginScreen() {
                   secureTextEntry={!isPasswordVisible}
                   value={password}
                   onChangeText={setPassword}
-                  className="flex-1 ml-2.5 text-sm text-gray-800"
+                  style={styles.input}
                 />
                 <TouchableOpacity
                   onPress={() => setIsPasswordVisible(!isPasswordVisible)}
@@ -141,37 +127,36 @@ export default function LoginScreen() {
             {/* Login Button */}
             <TouchableOpacity
               activeOpacity={0.8}
-              className="bg-[#FF7A45] h-12 rounded-xl flex-row items-center justify-center gap-2 mb-8 shadow-sm"
+              style={styles.loginButton}
               onPress={handleLogin}
             >
-              <Text className="text-white font-bold text-base">Login</Text>
+              <Text style={styles.loginButtonText}>Login</Text>
               <Feather name="arrow-right" size={18} color="#FFFFFF" />
             </TouchableOpacity>
 
             {/* Sign Up Redirect */}
-            <View className="flex-row items-center justify-center mb-4">
-              <Text className="text-xs text-[#7DA2A9] font-medium">
-                Don't have an account?{" "}
-              </Text>
-              <TouchableOpacity onPress={() => router.push("/signup")}>
-                <Text className="text-xs font-bold text-[#B85C38]">
-                  Sign Up
-                </Text>
+            <View style={styles.footerRow}>
+              <Text style={styles.footerText}>Don't have an account? </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log("Navigating to /create-account from login");
+                  router.push("/create-account");
+                }}
+              >
+                <Text style={styles.signUpText}>Sign Up</Text>
               </TouchableOpacity>
             </View>
 
-            {/* Continue with Google */}
+            {/* Google */}
             <TouchableOpacity
               activeOpacity={0.8}
-              className="bg-white border border-gray-200 h-12 rounded-xl flex-row items-center justify-center gap-3"
+              style={styles.googleButton}
               onPress={() =>
                 Alert.alert("Google login", "Implement Google OAuth later")
               }
             >
               <AntDesign name="google" size={18} color="#EA4335" />
-              <Text className="text-gray-800 font-bold text-sm">
-                Continue with Google
-              </Text>
+              <Text style={styles.googleButtonText}>Continue with Google</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -179,3 +164,148 @@ export default function LoginScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: "#E6E8EA",
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 60,
+    paddingBottom: 40,
+    paddingHorizontal: 24,
+  },
+  logoSection: {
+    alignItems: "center",
+    marginBottom: 28,
+  },
+  logoBox: {
+    backgroundColor: "#FFFFFF",
+    padding: 8,
+    borderRadius: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.07,
+    shadowRadius: 3,
+    elevation: 1,
+    marginBottom: 8,
+  },
+  logo: {
+    width: 112,
+    height: 112,
+  },
+  logoText: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#000000",
+  },
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 24,
+    width: "100%",
+    maxWidth: 360,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  inputGroup: {
+    marginBottom: 12,
+  },
+  label: {
+    fontSize: 12,
+    color: "#7DA2A9",
+    fontWeight: "600",
+    marginBottom: 6,
+    marginLeft: 4,
+  },
+  inputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    height: 48,
+  },
+  input: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 14,
+    color: "#1F2937",
+  },
+  forgot: {
+    alignSelf: "flex-end",
+    marginBottom: 8,
+  },
+  forgotText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#B85C38",
+  },
+  loginButton: {
+    backgroundColor: "#FF7A45",
+    height: 48,
+    borderRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 8,
+    marginBottom: 20,
+    shadowColor: "#FF7A45",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  loginButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  footerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+  },
+  footerText: {
+    fontSize: 13,
+    color: "#7DA2A9",
+    fontWeight: "500",
+  },
+  signUpText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#B85C38",
+  },
+  googleButton: {
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    height: 48,
+    borderRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  googleButtonText: {
+    color: "#1F2937",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+});
