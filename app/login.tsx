@@ -38,6 +38,7 @@ export default function LoginScreen() {
       {
         text: "OK",
         onPress: () => {
+          // After login, go to main app (tabs)
           router.replace("/(tabs)");
         },
       },
@@ -138,8 +139,8 @@ export default function LoginScreen() {
               <Text style={styles.footerText}>Don't have an account? </Text>
               <TouchableOpacity
                 onPress={() => {
-                  console.log("Navigating to /signup from login");
-                  router.push("/signup");
+                  console.log("Navigating to /create-account from login");
+                  router.push("/create-account");
                 }}
               >
                 <Text style={styles.signUpText}>Sign Up</Text>
