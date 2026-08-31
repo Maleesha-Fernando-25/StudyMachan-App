@@ -23,6 +23,7 @@ export default function CreateAccountScreen() {
 
   // Form State
   const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -49,9 +50,22 @@ export default function CreateAccountScreen() {
     setShowGenderModal(false);
   };
 
+  const isFormValid = () => {
+    if (!fullName.trim()) return false;
+    if (!username.trim()) return false;
+    if (!email.trim() || !email.includes("@")) return false;
+    if (password.length < 8) return false;
+    if (!isTermsAccepted) return false;
+    return true;
+  };
+
   const handleCreateAccount = () => {
     if (!fullName.trim()) {
       Alert.alert("Missing name", "Please enter your full name.");
+      return;
+    }
+    if (!username.trim()) {
+      Alert.alert("Missing username", "Please enter a username.");
       return;
     }
     if (!email.trim() || !email.includes("@")) {
@@ -218,6 +232,22 @@ export default function CreateAccountScreen() {
                 </View>
               </View>
 
+              {/* Username */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Username</Text>
+                <View style={styles.inputRow}>
+                  <Feather name="at-sign" size={18} color="#8A7F78" />
+                  <TextInput
+                    placeholder="Choose a username"
+                    placeholderTextColor="#A39A94"
+                    value={username}
+                    onChangeText={setUsername}
+                    style={styles.input}
+                    autoCapitalize="none"
+                  />
+                </View>
+              </View>
+
               {/* Password */}
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Password</Text>
@@ -274,12 +304,31 @@ export default function CreateAccountScreen() {
 
               {/* Submit Button */}
               <TouchableOpacity
-                activeOpacity={0.8}
-                style={styles.submitButton}
+                activeOpacity={isFormValid() ? 0.8 : 0.5}
+                style={[
+                  styles.submitButton,
+                  {
+                    backgroundColor: isFormValid() ? "#FF7A45" : "#CCCCCC",
+                  },
+                ]}
                 onPress={handleCreateAccount}
+                disabled={!isFormValid()}
               >
-                <Text style={styles.submitButtonText}>Create Account</Text>
-                <Feather name="arrow-right" size={18} color="#FFFFFF" />
+                <Text
+                  style={[
+                    styles.submitButtonText,
+                    {
+                      color: isFormValid() ? "#FFFFFF" : "#888888",
+                    },
+                  ]}
+                >
+                  Create Account
+                </Text>
+                <Feather
+                  name="arrow-right"
+                  size={18}
+                  color={isFormValid() ? "#FFFFFF" : "#888888"}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -452,7 +501,6 @@ const styles = StyleSheet.create({
     color: "#D96B43",
   },
   submitButton: {
-    backgroundColor: "#FF7A45",
     height: 48,
     borderRadius: 12,
     flexDirection: "row",
@@ -466,7 +514,6 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   submitButtonText: {
-    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700",
   },
