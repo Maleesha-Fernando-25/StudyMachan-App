@@ -59,7 +59,7 @@ export default function CreateAccountScreen() {
     return true;
   };
 
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async () => {
     if (!fullName.trim()) {
       Alert.alert("Missing name", "Please enter your full name.");
       return;
@@ -84,9 +84,33 @@ export default function CreateAccountScreen() {
       return;
     }
 
-    // TODO: Replace with real sign-up logic later
-    // For now, navigate to email verification page
-    router.push("/verify_email");
+    const payload = {
+      fullName,
+      username,
+      email,
+      password,
+      dateOfBirth: dateOfBirth ? dateOfBirth.toISOString().split("T")[0] : null,
+      gender: gender || null,
+    };
+
+    try {
+      // TODO: Replace with real backend call when ready
+      // await createAccountApi(payload);
+
+      // Simulate backend success for now (remove this when using real API)
+      await new Promise((res) => setTimeout(res, 600));
+
+      // On success, navigate to verification page
+      router.push({
+        pathname: "/verify-email",
+        params: { email },
+      });
+    } catch (err: any) {
+      Alert.alert(
+        "Account creation failed",
+        err?.message || "Please try again.",
+      );
+    }
   };
 
   return (
@@ -290,8 +314,11 @@ export default function CreateAccountScreen() {
                 </TouchableOpacity>
                 <Text style={styles.termsText}>
                   I accept the{" "}
-                  <Text style={styles.termsLink}>Terms & Conditions</Text> and{" "}
-                  <Text style={styles.termsLink}>Privacy Policy</Text>
+                  <TouchableOpacity
+                    onPress={() => router.push("/terms_and_conditions")}
+                  >
+                    <Text style={styles.termsLink}>Terms & Conditions</Text>
+                  </TouchableOpacity>
                 </Text>
               </View>
 
@@ -491,7 +518,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   termsLink: {
+    fontSize: 12,
     color: "#D96B43",
+    fontWeight: "700",
   },
   submitButton: {
     height: 48,
