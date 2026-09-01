@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
     Alert,
@@ -16,25 +16,24 @@ import {
 
 export default function VerifyEmailScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
+  const email = (params.email as string) || "";
 
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputs = useRef<(TextInput | null)[]>([]);
 
   const handleCodeChange = (text: string, index: number) => {
-    // Only allow numbers
     const newText = text.replace(/[^0-9]/g, "");
     const newCode = [...code];
     newCode[index] = newText;
     setCode(newCode);
 
-    // Auto-advance to next input
     if (newText && index < 5 && inputs.current[index + 1]) {
       inputs.current[index + 1]!.focus();
     }
   };
 
   const handleKeyPress = (e: any, index: number) => {
-    // Auto-backspace to previous input
     if (e.nativeEvent.key === "Backspace" && !code[index] && index > 0) {
       if (inputs.current[index - 1]) {
         inputs.current[index - 1]!.focus();
@@ -44,22 +43,46 @@ export default function VerifyEmailScreen() {
 
   const isCodeComplete = code.every((digit) => digit.length === 1);
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (!isCodeComplete) {
       Alert.alert("Incomplete code", "Please enter all 6 digits.");
       return;
     }
 
-    // TODO: Replace with real OTP verification logic
-    Alert.alert("Verified", "Your email has been verified (demo).", [
-      {
-        text: "OK",
-        onPress: () => {
-          // After verification, go to login or next onboarding step
-          router.replace("/login");
+    const otp = code.join("");
+
+    try {
+      // TODO: Replace with real backend call when ready
+      // await verifyOtpApi({ email, otp });
+
+      // Simulate backend success for now (remove this when using real API)
+      await new Promise((res) => setTimeout(res, 600));
+
+      // 1) Verification successful
+      Alert.alert("Verification successful", "Your email has been verified.", [
+        {
+          text: "OK",
+          onPress: () => {
+            // 2) Account created
+            Alert.alert(
+              "Account created",
+              "Your StudyMachan account has been created successfully.",
+              [
+                {
+                  text: "OK",
+                  onPress: () => {
+                    // 3) Navigate to login
+                    router.replace("/login");
+                  },
+                },
+              ],
+            );
+          },
         },
-      },
-    ]);
+      ]);
+    } catch (err: any) {
+      Alert.alert("Verification failed", err?.message || "Please try again.");
+    }
   };
 
   return (
@@ -174,7 +197,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingTop: 18,
+    paddingBottom: 14,
     backgroundColor: "#FAFAFA",
   },
   headerTitle: {
