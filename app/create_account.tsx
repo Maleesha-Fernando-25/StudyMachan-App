@@ -3,19 +3,19 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    Alert,
-    Image,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function CreateAccountScreen() {
@@ -85,15 +85,8 @@ export default function CreateAccountScreen() {
     }
 
     // TODO: Replace with real sign-up logic later
-    Alert.alert("Account created", "Your account has been created (demo).", [
-      {
-        text: "OK",
-        onPress: () => {
-          // After creating account, go to login
-          router.replace("/login");
-        },
-      },
-    ]);
+    // For now, navigate to email verification page
+    router.push("/verify-email");
   };
 
   return (
