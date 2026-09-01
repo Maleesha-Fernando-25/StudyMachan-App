@@ -86,7 +86,7 @@ export default function CreateAccountScreen() {
 
     // TODO: Replace with real sign-up logic later
     // For now, navigate to email verification page
-    router.push("/verify-email");
+    router.push("/verify_email");
   };
 
   return (
