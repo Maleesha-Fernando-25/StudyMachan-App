@@ -2,11 +2,11 @@ import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
 import Animated, {
-    Easing,
-    useAnimatedStyle,
-    useSharedValue,
-    withDelay,
-    withTiming
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming
 } from "react-native-reanimated";
 
 const ORANGE = "#FF7A45";

@@ -1,6 +1,6 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
@@ -17,9 +17,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { registerUser } from "../supabase/authService";
+
 
 export default function CreateAccountScreen() {
   const router = useRouter();
+  const { role } = useLocalSearchParams<{ role?: "student" | "tutor" }>();
 
   // Form State
   const [fullName, setFullName] = useState("");
@@ -59,7 +62,7 @@ export default function CreateAccountScreen() {
     return true;
   };
 
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async () => {
     if (!fullName.trim()) {
       Alert.alert("Missing name", "Please enter your full name.");
       return;
@@ -84,9 +87,45 @@ export default function CreateAccountScreen() {
       return;
     }
 
-    // TODO: Replace with real sign-up logic later
-    // For now, navigate to email verification page
-    router.push("/verify_email");
+    if (role !== "student" && role !== "tutor") {
+      Alert.alert("Role missing", "Please choose Student or Tutor again.");
+      return;
+    }
+
+    let dateOfBirthString = "";
+
+    if (dateOfBirth) {
+      const year = dateOfBirth.getFullYear();
+      const month = String(dateOfBirth.getMonth() + 1).padStart(2, "0");
+      const day = String(dateOfBirth.getDate()).padStart(2, "0");
+
+      dateOfBirthString = `${year}-${month}-${day}`;
+    }
+
+    try {
+      await registerUser(
+        fullName.trim(),
+        email.trim(),
+        password,
+        role,
+        username.trim(),
+        dateOfBirthString,
+        gender
+     );
+
+     Alert.alert(
+       "Account created",
+       "Your StudyMachan account was created successfully.",
+       [
+         {
+           text: "OK",
+           onPress: () => router.replace("/login"),
+         },
+       ]
+      );
+    } catch (error: any) {
+      Alert.alert("Sign up failed", error.message);
+    }
   };
 
   return (
