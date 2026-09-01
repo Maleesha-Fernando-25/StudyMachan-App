@@ -102,7 +102,7 @@ export default function CreateAccountScreen() {
 
       // On success, navigate to verification page
       router.push({
-        pathname: "/verify-email",
+        pathname: "/verify_email",
         params: { email },
       });
     } catch (err: any) {

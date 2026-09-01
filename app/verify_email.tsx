@@ -121,7 +121,9 @@ export default function VerifyEmailScreen() {
               {code.map((digit, index) => (
                 <TextInput
                   key={index}
-                  ref={(ref) => (inputs.current[index] = ref)}
+                  ref={(ref: TextInput | null) => {
+                    inputs.current[index] = ref;
+                  }}
                   style={[
                     styles.otpInput,
                     {
@@ -177,7 +179,7 @@ export default function VerifyEmailScreen() {
 
             <TouchableOpacity
               style={styles.actionLink}
-              onPress={() => router.push("/create-account")}
+              onPress={() => router.push("/create_account")}
             >
               <Text style={styles.changeEmailText}>Change email address</Text>
             </TouchableOpacity>
