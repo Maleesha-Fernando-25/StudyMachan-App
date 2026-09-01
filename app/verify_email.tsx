@@ -13,8 +13,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-// Import API helper
-// import { verifyOtpApi } from "./api";
 
 export default function VerifyEmailScreen() {
   const router = useRouter();
@@ -199,7 +197,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingTop: 18,
+    paddingBottom: 14,
     backgroundColor: "#FAFAFA",
   },
   headerTitle: {

@@ -316,8 +316,16 @@ export default function CreateAccountScreen() {
                   I accept the{" "}
                   <TouchableOpacity
                     onPress={() => router.push("/terms_and_conditions")}
+                    activeOpacity={0.7}
                   >
                     <Text style={styles.termsLink}>Terms & Conditions</Text>
+                  </TouchableOpacity>{" "}
+                  and{" "}
+                  <TouchableOpacity
+                    onPress={() => router.push("/terms_and_conditions")}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.termsLink}>Privacy Policy</Text>
                   </TouchableOpacity>
                 </Text>
               </View>
@@ -505,7 +513,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginTop: 12,
     marginLeft: 4,
-    paddingRight: 16,
+    paddingRight: 8,
   },
   checkbox: {
     marginRight: 8,
@@ -514,7 +522,7 @@ const styles = StyleSheet.create({
   termsText: {
     fontSize: 12,
     color: "#6B7280",
-    lineHeight: 16,
+    lineHeight: 18,
     flex: 1,
   },
   termsLink: {
