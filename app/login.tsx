@@ -1,6 +1,8 @@
 import { AntDesign, Feather } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
+import { loginUser } from "../supabase/authService";
+
 import {
   Alert,
   Image,
@@ -18,32 +20,35 @@ import {
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { role } = useLocalSearchParams<{ role?: "student" | "tutor" }>();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const handleLogin = () => {
-    if (!username.trim()) {
-      Alert.alert("Missing username", "Please enter your username.");
-      return;
-    }
-    if (!password) {
-      Alert.alert("Missing password", "Please enter your password.");
-      return;
-    }
+  const handleLogin = async () => {
+  if (!email.trim()) {
+    Alert.alert("Missing email", "Please enter your email.");
+    return;
+  }
 
-    // TODO: Replace with real login logic later
-    Alert.alert("Login", "Login successful (demo).", [
-      {
-        text: "OK",
-        onPress: () => {
-          // After login, go to main app (tabs)
-          router.replace("/(tabs)");
-        },
-      },
-    ]);
-  };
+  if (!password) {
+    Alert.alert("Missing password", "Please enter your password.");
+    return;
+  }
+
+  try {
+    const result = await loginUser(email.trim(), password);
+
+    if (result.profile.role === "student") {
+      router.replace("/student-home");
+    } else if (result.profile.role === "tutor") {
+      router.replace("/tutor-home");
+    }
+  } catch (error: any) {
+    Alert.alert("Login failed", error.message);
+  }
+};
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -72,16 +77,16 @@ export default function LoginScreen() {
 
           {/* Login Card */}
           <View style={styles.card}>
-            {/* Username */}
+            {/* Email */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Username</Text>
               <View style={styles.inputRow}>
                 <Feather name="user" size={18} color="#7DA2A9" />
                 <TextInput
-                  placeholder="Enter your username"
+                  placeholder="Enter your email"
                   placeholderTextColor="#9CA3AF"
-                  value={username}
-                  onChangeText={setUsername}
+                  value={email}
+                  onChangeText={setEmail}
                   style={styles.input}
                   autoCapitalize="none"
                 />
@@ -139,8 +144,10 @@ export default function LoginScreen() {
               <Text style={styles.footerText}>Don't have an account? </Text>
               <TouchableOpacity
                 onPress={() => {
-                  console.log("Navigating to /create-account from login");
-                  router.push("/create_account");
+                  router.push({
+                    pathname: "/create_account",
+                    params: { role },
+                  });
                 }}
               >
                 <Text style={styles.signUpText}>Sign Up</Text>

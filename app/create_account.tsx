@@ -1,6 +1,6 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
@@ -17,9 +17,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { registerUser } from "../supabase/authService";
+
 
 export default function CreateAccountScreen() {
   const router = useRouter();
+  const { role } = useLocalSearchParams<{ role?: "student" | "tutor" }>();
 
   // Form State
   const [fullName, setFullName] = useState("");
@@ -84,32 +87,44 @@ export default function CreateAccountScreen() {
       return;
     }
 
-    const payload = {
-      fullName,
-      username,
-      email,
-      password,
-      dateOfBirth: dateOfBirth ? dateOfBirth.toISOString().split("T")[0] : null,
-      gender: gender || null,
-    };
+    if (role !== "student" && role !== "tutor") {
+      Alert.alert("Role missing", "Please choose Student or Tutor again.");
+      return;
+    }
+
+    let dateOfBirthString = "";
+
+    if (dateOfBirth) {
+      const year = dateOfBirth.getFullYear();
+      const month = String(dateOfBirth.getMonth() + 1).padStart(2, "0");
+      const day = String(dateOfBirth.getDate()).padStart(2, "0");
+
+      dateOfBirthString = `${year}-${month}-${day}`;
+    }
 
     try {
-      // TODO: Replace with real backend call when ready
-      // await createAccountApi(payload);
+      await registerUser(
+        fullName.trim(),
+        email.trim(),
+        password,
+        role,
+        username.trim(),
+        dateOfBirthString,
+        gender
+     );
 
-      // Simulate backend success for now (remove this when using real API)
-      await new Promise((res) => setTimeout(res, 600));
-
-      // On success, navigate to verification page
-      router.push({
-        pathname: "/verify_email",
-        params: { email },
-      });
-    } catch (err: any) {
-      Alert.alert(
-        "Account creation failed",
-        err?.message || "Please try again.",
+     Alert.alert(
+       "Account created",
+       "Your StudyMachan account was created successfully.",
+       [
+         {
+           text: "OK",
+           onPress: () => router.replace("/login"),
+         },
+       ]
       );
+    } catch (error: any) {
+      Alert.alert("Sign up failed", error.message);
     }
   };
 
