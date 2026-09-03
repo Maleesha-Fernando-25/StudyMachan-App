@@ -20,7 +20,9 @@ export default function StudentHomeScreen() {
 
       {/* Top Header */}
       <View style={styles.header}>
-        <TouchableOpacity>
+        <TouchableOpacity
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
           <Feather name="menu" size={22} color="#B45325" />
         </TouchableOpacity>
 
