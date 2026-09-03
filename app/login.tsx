@@ -1,8 +1,6 @@
 import { AntDesign, Feather } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { loginUser } from "../supabase/authService";
-
 import {
   Alert,
   Image,
@@ -17,38 +15,39 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { getUserRole } from "./lib/auth";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { role } = useLocalSearchParams<{ role?: "student" | "tutor" }>();
 
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleLogin = async () => {
-  if (!email.trim()) {
-    Alert.alert("Missing email", "Please enter your email.");
-    return;
-  }
-
-  if (!password) {
-    Alert.alert("Missing password", "Please enter your password.");
-    return;
-  }
-
-  try {
-    const result = await loginUser(email.trim(), password);
-
-    if (result.profile.role === "student") {
-      router.replace("/student-home");
-    } else if (result.profile.role === "tutor") {
-      router.replace("/tutor-home");
+    if (!username.trim()) {
+      Alert.alert("Missing username", "Please enter your username.");
+      return;
     }
-  } catch (error: any) {
-    Alert.alert("Login failed", error.message);
-  }
-};
+    if (!password) {
+      Alert.alert("Missing password", "Please enter your password.");
+      return;
+    }
+
+    // TODO: Later, replace this with real backend login call.
+    // For now, assume credentials are valid and just check stored role.
+
+    const role = await getUserRole();
+
+    if (role === "tutor") {
+      router.replace("/tutor-home");
+    } else if (role === "student") {
+      router.replace("/student-home");
+    } else {
+      // Fallback if no role is stored (e.g., direct login without signup flow)
+      router.replace("/signup");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -77,16 +76,16 @@ export default function LoginScreen() {
 
           {/* Login Card */}
           <View style={styles.card}>
-            {/* Email */}
+            {/* Username */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Username</Text>
               <View style={styles.inputRow}>
                 <Feather name="user" size={18} color="#7DA2A9" />
                 <TextInput
-                  placeholder="Enter your email"
+                  placeholder="Enter your username"
                   placeholderTextColor="#9CA3AF"
-                  value={email}
-                  onChangeText={setEmail}
+                  value={username}
+                  onChangeText={setUsername}
                   style={styles.input}
                   autoCapitalize="none"
                 />
@@ -144,10 +143,8 @@ export default function LoginScreen() {
               <Text style={styles.footerText}>Don't have an account? </Text>
               <TouchableOpacity
                 onPress={() => {
-                  router.push({
-                    pathname: "/create_account",
-                    params: { role },
-                  });
+                  console.log("Navigating to /create-account from login");
+                  router.push("/create-account");
                 }}
               >
                 <Text style={styles.signUpText}>Sign Up</Text>
