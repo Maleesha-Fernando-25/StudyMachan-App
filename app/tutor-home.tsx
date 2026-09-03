@@ -19,16 +19,29 @@ import {
 export default function TutorHomeScreen() {
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F9F8F6" />
+      <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
 
-      {/* Main Content */}
+      {/* Top Header */}
+      <View style={styles.header}>
+        <View style={styles.headerLeftPlaceholder} />
+        <Text style={styles.headerTitle}>StudyMachan</Text>
+        <TouchableOpacity activeOpacity={0.8}>
+          <Image
+            source={{
+              uri: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+            }}
+            style={styles.avatar}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {/* Scrollable Main Content */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         {/* Rating & Weekly Goal Card */}
         <View style={styles.statsCard}>
-          {/* Left: Rating */}
           <View style={styles.statsRow}>
             <View style={styles.starIconBox}>
               <FontAwesome name="star" size={18} color="#FF7A45" />
@@ -41,7 +54,6 @@ export default function TutorHomeScreen() {
             </View>
           </View>
 
-          {/* Right: Weekly Goal */}
           <View style={styles.goalBox}>
             <Text style={styles.statsLabel}>Weekly Goal</Text>
             <Text style={styles.goalText}>8 / 10 Sessions</Text>
@@ -208,11 +220,34 @@ export default function TutorHomeScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#F9F8F6",
+    backgroundColor: "#FAF8F5",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: "#FAF8F5",
+  },
+  headerLeftPlaceholder: {
+    width: 36,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#B45325",
+  },
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "#FFD7C2",
   },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 12,
     paddingBottom: 90,
   },
   statsCard: {
@@ -499,7 +534,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   bottomNavEarnings: {
-    backgroundColor: "rgba(0,0,0,0.04)",
+    backgroundColor: "rgba(0,0,0,0.06)",
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,
