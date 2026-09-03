@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { saveUserRole } from "./lib/auth";
 
 export default function SignUpLandingScreen() {
   const router = useRouter();
@@ -36,8 +37,9 @@ export default function SignUpLandingScreen() {
           <TouchableOpacity
             style={styles.primaryButton}
             activeOpacity={0.8}
-            onPress={() => {
+            onPress={async () => {
               console.log("Navigating to /login from Tutor button");
+              await saveUserRole("tutor");
               router.push("/login");
             }}
           >
@@ -54,8 +56,9 @@ export default function SignUpLandingScreen() {
           <TouchableOpacity
             style={styles.primaryButton}
             activeOpacity={0.8}
-            onPress={() => {
+            onPress={async () => {
               console.log("Navigating to /login from Student button");
+              await saveUserRole("student");
               router.push("/login");
             }}
           >
