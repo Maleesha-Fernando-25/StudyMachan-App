@@ -320,13 +320,10 @@ export default function CreateAccountScreen() {
                   >
                     <Text style={styles.termsLink}>Terms & Conditions</Text>
                   </TouchableOpacity>{" "}
-                  and{" "}
                   <TouchableOpacity
                     onPress={() => router.push("/terms_and_conditions")}
                     activeOpacity={0.7}
-                  >
-                    <Text style={styles.termsLink}>Privacy Policy</Text>
-                  </TouchableOpacity>
+                  ></TouchableOpacity>
                 </Text>
               </View>
 
