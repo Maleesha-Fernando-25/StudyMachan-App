@@ -144,7 +144,7 @@ export default function LoginScreen() {
               <TouchableOpacity
                 onPress={() => {
                   console.log("Navigating to /create-account from login");
-                  router.push("/create-account");
+                  router.push("/create_account");
                 }}
               >
                 <Text style={styles.signUpText}>Sign Up</Text>
