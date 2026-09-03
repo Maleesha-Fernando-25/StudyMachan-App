@@ -37,8 +37,10 @@ export default function SignUpLandingScreen() {
             style={styles.primaryButton}
             activeOpacity={0.8}
             onPress={() => {
-              console.log("Navigating to /login from Tutor button");
-              router.push("/login");
+              router.push({
+                pathname: "/login",
+                params: { role: "tutor" },
+              });
             }}
           >
             <MaterialCommunityIcons
@@ -55,8 +57,10 @@ export default function SignUpLandingScreen() {
             style={styles.primaryButton}
             activeOpacity={0.8}
             onPress={() => {
-              console.log("Navigating to /login from Student button");
-              router.push("/login");
+              router.push({
+                pathname: "/login",
+                params: { role: "student" },
+              });
             }}
           >
             <FontAwesome5
