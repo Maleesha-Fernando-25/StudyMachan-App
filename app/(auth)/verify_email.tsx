@@ -18,6 +18,7 @@ export default function VerifyEmailScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const email = (params.email as string) || "";
+  const role = (params.role as "student" | "tutor") || "student";
 
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputs = useRef<(TextInput | null)[]>([]);
@@ -55,28 +56,19 @@ export default function VerifyEmailScreen() {
       // TODO: Replace with real backend call when ready
       // await verifyOtpApi({ email, otp });
 
-      // Simulate backend success for now (remove this when using real API)
+      // Simulate backend success for now
       await new Promise((res) => setTimeout(res, 600));
 
-      // 1) Verification successful
       Alert.alert("Verification successful", "Your email has been verified.", [
         {
           text: "OK",
           onPress: () => {
-            // 2) Account created
-            Alert.alert(
-              "Account created",
-              "Your StudyMachan account has been created successfully.",
-              [
-                {
-                  text: "OK",
-                  onPress: () => {
-                    // 3) Navigate to login
-                    router.replace("/login");
-                  },
-                },
-              ],
-            );
+            // Navigate based on role selected at create-account
+            if (role === "tutor") {
+              router.replace("/tutor-home" as any);
+            } else {
+              router.replace("/student-home" as any);
+            }
           },
         },
       ]);
@@ -104,17 +96,13 @@ export default function VerifyEmailScreen() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
-        {/* Main Content Area */}
         <View style={styles.content}>
-          {/* White Card */}
           <View style={styles.card}>
-            {/* Titles */}
             <Text style={styles.title}>Verify your account</Text>
             <Text style={styles.subtitle}>
               We've sent a 6-digit code to your email.
             </Text>
 
-            {/* OTP Input Boxes */}
             <View style={styles.otpRow}>
               {code.map((digit, index) => (
                 <TextInput
@@ -143,7 +131,6 @@ export default function VerifyEmailScreen() {
               ))}
             </View>
 
-            {/* Verify Button */}
             <TouchableOpacity
               activeOpacity={isCodeComplete ? 0.8 : 0.5}
               style={[
@@ -167,7 +154,6 @@ export default function VerifyEmailScreen() {
               </Text>
             </TouchableOpacity>
 
-            {/* Action Links */}
             <TouchableOpacity
               style={styles.actionLink}
               onPress={() => Alert.alert("Resend", "Resend code (demo)")}

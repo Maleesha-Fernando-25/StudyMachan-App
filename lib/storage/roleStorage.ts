@@ -4,20 +4,19 @@ export type UserRole = "student" | "tutor";
 
 const USER_ROLE_KEY = "user_role";
 
-export async function saveUserRole(role: UserRole): Promise<void> {
-  await AsyncStorage.setItem(USER_ROLE_KEY, role);
+const ROLE_KEY = "@studymachan:user_role";
+
+export async function saveUserRole(role: "student" | "tutor") {
+  await AsyncStorage.setItem(ROLE_KEY, role);
 }
-
-export async function getUserRole(): Promise<UserRole | null> {
-  const storedRole = await AsyncStorage.getItem(USER_ROLE_KEY);
-
-  if (storedRole === "student" || storedRole === "tutor") {
-    return storedRole;
+export async function getUserRole(): Promise<"student" | "tutor" | null> {
+  const role = await AsyncStorage.getItem(ROLE_KEY);
+  if (role === "student" || role === "tutor") {
+    return role;
   }
-
   return null;
 }
 
-export async function clearUserRole(): Promise<void> {
-  await AsyncStorage.removeItem(USER_ROLE_KEY);
+export async function clearUserRole() {
+  await AsyncStorage.removeItem(ROLE_KEY);
 }

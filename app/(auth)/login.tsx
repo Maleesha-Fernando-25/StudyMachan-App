@@ -17,6 +17,9 @@ import {
 } from "react-native";
 import { getUserRole } from "../../lib/storage/roleStorage";
 
+// Replace with your actual login function
+// import { loginUser } from "../../supabase/authService";
+
 export default function LoginScreen() {
   const router = useRouter();
 
@@ -30,46 +33,45 @@ export default function LoginScreen() {
       Alert.alert("Missing username", "Please enter your username.");
       return;
     }
-
     if (!password) {
       Alert.alert("Missing password", "Please enter your password.");
       return;
     }
 
+    setIsLoggingIn(true);
+
     try {
-      setIsLoggingIn(true);
+      // Replace with your real auth call
+      // const user = await loginUser(username.trim(), password);
 
-      /*
-        Later, replace this section with your real backend login request.
+      // For demo, simulate a successful login:
+      await new Promise((res) => setTimeout(res, 600));
 
-        Example:
-        const response = await loginUser({ username, password });
-        const role = response.user.role;
-      */
+      // Read the role that was saved at signup landing (used only for login path)
+      const role = await getUserRole(); // "student" | "tutor" | null
 
-      const role = await getUserRole();
-
-      if (role === "student") {
-        router.replace("/student-home");
+      if (!role) {
+        Alert.alert(
+          "Role not found",
+          "Please go back and choose Student or Tutor again.",
+          [
+            {
+              text: "OK",
+              onPress: () => router.replace("/signup" as any),
+            },
+          ],
+        );
         return;
       }
 
+      // Navigate based on role (for existing users)
       if (role === "tutor") {
-        router.replace("/tutor-home");
-        return;
+        router.replace("/tutor-home" as any);
+      } else {
+        router.replace("/student-home" as any);
       }
-
-      Alert.alert(
-        "Select your role",
-        "Please go back and choose whether you are a Student or Tutor.",
-      );
-
-      router.replace("/signup");
-    } catch (error) {
-      Alert.alert(
-        "Login failed",
-        "Something went wrong while logging in. Please try again.",
-      );
+    } catch (err: any) {
+      Alert.alert("Login failed", err?.message || "Please try again.");
     } finally {
       setIsLoggingIn(false);
     }

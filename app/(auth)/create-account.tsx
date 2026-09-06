@@ -1,6 +1,6 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
@@ -22,7 +22,6 @@ import { registerUser } from "../../supabase/authService";
 
 export default function CreateAccountScreen() {
   const router = useRouter();
-  const { role } = useLocalSearchParams<{ role?: "student" | "tutor" }>();
 
   // Form State
   const [fullName, setFullName] = useState("");
@@ -39,6 +38,11 @@ export default function CreateAccountScreen() {
   // Gender Picker State
   const [gender, setGender] = useState("");
   const [showGenderModal, setShowGenderModal] = useState(false);
+
+  // Role State (for new accounts, selected here)
+  const [selectedRole, setSelectedRole] = useState<"student" | "tutor">(
+    "student",
+  );
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || dateOfBirth;
@@ -59,6 +63,7 @@ export default function CreateAccountScreen() {
     if (!email.trim() || !email.includes("@")) return false;
     if (password.length < 8) return false;
     if (!isTermsAccepted) return false;
+    if (selectedRole !== "student" && selectedRole !== "tutor") return false;
     return true;
   };
 
@@ -87,8 +92,8 @@ export default function CreateAccountScreen() {
       return;
     }
 
-    if (role !== "student" && role !== "tutor") {
-      Alert.alert("Role missing", "Please choose Student or Tutor again.");
+    if (selectedRole !== "student" && selectedRole !== "tutor") {
+      Alert.alert("Role missing", "Please choose Student or Tutor.");
       return;
     }
 
@@ -107,7 +112,7 @@ export default function CreateAccountScreen() {
         fullName.trim(),
         email.trim(),
         password,
-        role,
+        selectedRole,
         username.trim(),
         dateOfBirthString,
         gender,
@@ -119,7 +124,14 @@ export default function CreateAccountScreen() {
         [
           {
             text: "OK",
-            onPress: () => router.replace("/login"),
+            onPress: () =>
+              router.replace({
+                pathname: "/verify_email" as any,
+                params: {
+                  email: email.trim(),
+                  role: selectedRole,
+                },
+              }),
           },
         ],
       );
@@ -141,215 +153,242 @@ export default function CreateAccountScreen() {
           style={styles.scroll}
           showsVerticalScrollIndicator={false}
         >
-          {/* Main White Card Container */}
-          <View style={styles.card}>
-            {/* Back Button (Top Left) */}
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => router.back()}
-            >
-              <Feather name="arrow-left" size={24} color="#D96B43" />
-            </TouchableOpacity>
+          {/* Back Button (Top Left) */}
+          <TouchableOpacity
+            style={styles.backButtonWrapper}
+            onPress={() => router.back()}
+          >
+            <Feather name="arrow-left" size={24} color="#D96B43" />
+          </TouchableOpacity>
 
-            {/* Header Section */}
-            <View style={styles.header}>
-              <View style={styles.logoBox}>
-                <Image
-                  source={require("../../assets/images/studymachan-logo.png")}
-                  style={styles.logo}
-                  resizeMode="contain"
+          {/* Header Section */}
+          <View style={styles.header}>
+            <View style={styles.logoBox}>
+              <Image
+                source={require("../../assets/images/studymachan-logo.png")}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.subtitle}>
+              Join StudyMachan to start learning today.
+            </Text>
+          </View>
+
+          {/* Form Fields */}
+          <View style={styles.form}>
+            {/* Full Name */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Full Name</Text>
+              <View style={styles.inputRow}>
+                <Feather name="user" size={18} color="#8A7F78" />
+                <TextInput
+                  placeholder="Enter your full name"
+                  placeholderTextColor="#A39A94"
+                  value={fullName}
+                  onChangeText={setFullName}
+                  style={styles.input}
                 />
               </View>
-              <Text style={styles.title}>Create Account</Text>
-              <Text style={styles.subtitle}>
-                Join StudyMachan to start learning today.
-              </Text>
             </View>
 
-            {/* Form Fields */}
-            <View style={styles.form}>
-              {/* Full Name */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Full Name</Text>
-                <View style={styles.inputRow}>
-                  <Feather name="user" size={18} color="#8A7F78" />
-                  <TextInput
-                    placeholder="Enter your full name"
-                    placeholderTextColor="#A39A94"
-                    value={fullName}
-                    onChangeText={setFullName}
-                    style={styles.input}
-                  />
-                </View>
-              </View>
-
-              {/* Birthday Picker */}
-              <View style={styles.inputGroup}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => setShowDatePicker(true)}
-                  style={styles.inputRow}
+            {/* Birthday Picker */}
+            <View style={styles.inputGroup}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => setShowDatePicker(true)}
+                style={styles.inputRow}
+              >
+                <Feather name="calendar" size={18} color="#8A7F78" />
+                <Text
+                  style={[
+                    styles.input,
+                    {
+                      color: dateOfBirth ? "#1F2937" : "#A39A94",
+                    },
+                  ]}
                 >
-                  <Feather name="calendar" size={18} color="#8A7F78" />
+                  {dateOfBirth
+                    ? `${String(dateOfBirth.getMonth() + 1).padStart(
+                        2,
+                        "0",
+                      )}/${String(dateOfBirth.getDate()).padStart(
+                        2,
+                        "0",
+                      )}/${dateOfBirth.getFullYear()}`
+                    : "mm/dd/yyyy"}
+                </Text>
+              </TouchableOpacity>
+
+              {showDatePicker && (
+                <DateTimePicker
+                  value={dateOfBirth || new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={handleDateChange}
+                  maximumDate={new Date()}
+                />
+              )}
+            </View>
+
+            {/* Gender Dropdown */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Gender</Text>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => setShowGenderModal(true)}
+                style={styles.inputRow}
+              >
+                <View style={styles.inputRowInner}>
+                  <Ionicons name="people-outline" size={20} color="#8A7F78" />
                   <Text
                     style={[
                       styles.input,
                       {
-                        color: dateOfBirth ? "#1F2937" : "#A39A94",
+                        color: gender ? "#1F2937" : "#A39A94",
                       },
                     ]}
                   >
-                    {dateOfBirth
-                      ? `${String(dateOfBirth.getMonth() + 1).padStart(
-                          2,
-                          "0",
-                        )}/${String(dateOfBirth.getDate()).padStart(
-                          2,
-                          "0",
-                        )}/${dateOfBirth.getFullYear()}`
-                      : "mm/dd/yyyy"}
+                    {gender || "Select Gender"}
+                  </Text>
+                </View>
+                <Feather name="chevron-down" size={18} color="#8A7F78" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Email Address */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Email Address</Text>
+              <View style={styles.inputRow}>
+                <Feather name="mail" size={18} color="#8A7F78" />
+                <TextInput
+                  placeholder="Enter your email"
+                  placeholderTextColor="#A39A94"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={email}
+                  onChangeText={setEmail}
+                  style={styles.input}
+                />
+              </View>
+            </View>
+
+            {/* Username */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Username</Text>
+              <View style={styles.inputRow}>
+                <Feather name="at-sign" size={18} color="#8A7F78" />
+                <TextInput
+                  placeholder="Choose a username"
+                  placeholderTextColor="#A39A94"
+                  value={username}
+                  onChangeText={setUsername}
+                  style={styles.input}
+                  autoCapitalize="none"
+                />
+              </View>
+            </View>
+
+            {/* Password */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Password</Text>
+              <View style={styles.inputRow}>
+                <Feather name="lock" size={18} color="#8A7F78" />
+                <TextInput
+                  placeholder="Create a password"
+                  placeholderTextColor="#A39A94"
+                  secureTextEntry={!isPasswordVisible}
+                  value={password}
+                  onChangeText={setPassword}
+                  style={styles.input}
+                />
+                <TouchableOpacity
+                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                >
+                  <Feather
+                    name={isPasswordVisible ? "eye" : "eye-off"}
+                    size={18}
+                    color="#8A7F78"
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Role Selector (Student / Tutor) */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>I am a</Text>
+              <View style={styles.roleRow}>
+                <TouchableOpacity
+                  style={[
+                    styles.roleChip,
+                    selectedRole === "student" && styles.roleChipSelected,
+                  ]}
+                  onPress={() => setSelectedRole("student")}
+                >
+                  <Text
+                    style={[
+                      styles.roleChipText,
+                      selectedRole === "student" && styles.roleChipTextSelected,
+                    ]}
+                  >
+                    Student
                   </Text>
                 </TouchableOpacity>
 
-                {showDatePicker && (
-                  <DateTimePicker
-                    value={dateOfBirth || new Date()}
-                    mode="date"
-                    display="default"
-                    onChange={handleDateChange}
-                    maximumDate={new Date()}
-                  />
-                )}
-              </View>
-
-              {/* Gender Dropdown */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Gender</Text>
                 <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => setShowGenderModal(true)}
-                  style={styles.inputRow}
+                  style={[
+                    styles.roleChip,
+                    selectedRole === "tutor" && styles.roleChipSelected,
+                  ]}
+                  onPress={() => setSelectedRole("tutor")}
                 >
-                  <View style={styles.inputRowInner}>
-                    <Ionicons name="people-outline" size={20} color="#8A7F78" />
-                    <Text
-                      style={[
-                        styles.input,
-                        {
-                          color: gender ? "#1F2937" : "#A39A94",
-                        },
-                      ]}
-                    >
-                      {gender || "Select Gender"}
-                    </Text>
-                  </View>
-                  <Feather name="chevron-down" size={18} color="#8A7F78" />
+                  <Text
+                    style={[
+                      styles.roleChipText,
+                      selectedRole === "tutor" && styles.roleChipTextSelected,
+                    ]}
+                  >
+                    Tutor
+                  </Text>
                 </TouchableOpacity>
               </View>
-
-              {/* Email Address */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Email Address</Text>
-                <View style={styles.inputRow}>
-                  <Feather name="mail" size={18} color="#8A7F78" />
-                  <TextInput
-                    placeholder="Enter your email"
-                    placeholderTextColor="#A39A94"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    value={email}
-                    onChangeText={setEmail}
-                    style={styles.input}
-                  />
-                </View>
-              </View>
-
-              {/* Username */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Username</Text>
-                <View style={styles.inputRow}>
-                  <Feather name="at-sign" size={18} color="#8A7F78" />
-                  <TextInput
-                    placeholder="Choose a username"
-                    placeholderTextColor="#A39A94"
-                    value={username}
-                    onChangeText={setUsername}
-                    style={styles.input}
-                    autoCapitalize="none"
-                  />
-                </View>
-              </View>
-
-              {/* Password */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Password</Text>
-                <View style={styles.inputRow}>
-                  <Feather name="lock" size={18} color="#8A7F78" />
-                  <TextInput
-                    placeholder="Create a password"
-                    placeholderTextColor="#A39A94"
-                    secureTextEntry={!isPasswordVisible}
-                    value={password}
-                    onChangeText={setPassword}
-                    style={styles.input}
-                  />
-                  <TouchableOpacity
-                    onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                  >
-                    <Feather
-                      name={isPasswordVisible ? "eye" : "eye-off"}
-                      size={18}
-                      color="#8A7F78"
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {/* Password Helper Text */}
-              <Text style={styles.helperText}>
-                Must be at least 8 characters.{"\n"}
-                Verification code will be sent to your email or phone.
-              </Text>
-
-              {/* Terms & Conditions Checkbox */}
-              <View style={styles.termsRow}>
-                <TouchableOpacity
-                  onPress={() => setIsTermsAccepted(!isTermsAccepted)}
-                  style={styles.checkbox}
-                >
-                  <MaterialCommunityIcons
-                    name={
-                      isTermsAccepted
-                        ? "checkbox-marked"
-                        : "checkbox-blank-outline"
-                    }
-                    size={20}
-                    color={isTermsAccepted ? "#FF7A45" : "#D1D5DB"}
-                  />
-                </TouchableOpacity>
-                <Text style={styles.termsText}>
-                  I accept the{" "}
-                  <TouchableOpacity
-                    onPress={() => router.push("/terms_and_conditions")}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={styles.termsLink}>Terms & Conditions</Text>
-                  </TouchableOpacity>{" "}
-                  <TouchableOpacity
-                    onPress={() => router.push("/terms_and_conditions")}
-                    activeOpacity={0.7}
-                  ></TouchableOpacity>
-                </Text>
-              </View>
-
-              {/* Submit Button */}
-              <AppButton
-                title="Create Account"
-                onPress={handleCreateAccount}
-                disabled={!isFormValid()}
-              />
             </View>
 
+            {/* Password Helper Text */}
+            <Text style={styles.helperText}>
+              Must be at least 8 characters.{"\n"}
+              Verification code will be sent to your email or phone.
+            </Text>
+
+            {/* Terms & Conditions Checkbox */}
+            <View style={styles.termsRow}>
+              <TouchableOpacity
+                onPress={() => setIsTermsAccepted(!isTermsAccepted)}
+                style={styles.checkbox}
+              >
+                <MaterialCommunityIcons
+                  name={
+                    isTermsAccepted
+                      ? "checkbox-marked"
+                      : "checkbox-blank-outline"
+                  }
+                  size={20}
+                  color={isTermsAccepted ? "#FF7A45" : "#D1D5DB"}
+                />
+              </TouchableOpacity>
+              <Text style={styles.termsText}>
+                I accept the{" "}
+                <TouchableOpacity
+                  onPress={() => router.push("/terms_and_conditions")}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.termsLink}>Terms & Conditions</Text>
+                </TouchableOpacity>
+              </Text>
+            </View>
+
+            {/* Submit Button */}
             <AppButton
               title="Create Account"
               onPress={handleCreateAccount}
@@ -409,32 +448,27 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
   },
-  card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    padding: 24,
-    width: "100%",
-    paddingTop: 40,
-    paddingBottom: 32,
-    marginTop: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-  },
-  backButton: {
+  backButtonWrapper: {
     position: "absolute",
-    top: 24,
-    left: 24,
+    top: 16,
+    left: 16,
     zIndex: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
   },
   header: {
     alignItems: "center",
     marginBottom: 24,
-    marginTop: 8,
+    marginTop: 56,
   },
   logoBox: {
     width: 80,
@@ -525,6 +559,32 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#D96B43",
     fontWeight: "700",
+  },
+  roleRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  roleChip: {
+    flex: 1,
+    height: 44,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  roleChipSelected: {
+    backgroundColor: "#FF7A45",
+    borderColor: "#FF7A45",
+  },
+  roleChipText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#5C534D",
+  },
+  roleChipTextSelected: {
+    color: "#FFFFFF",
   },
   modalOverlay: {
     flex: 1,
