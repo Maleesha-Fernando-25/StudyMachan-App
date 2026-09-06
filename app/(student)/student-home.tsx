@@ -334,7 +334,10 @@ export default function StudentHomeScreen() {
         </TouchableOpacity>
 
         {/* Schedule */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/schedule")}
+        >
           <Feather name="calendar" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Schedule</Text>
         </TouchableOpacity>
