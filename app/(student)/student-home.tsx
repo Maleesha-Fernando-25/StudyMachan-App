@@ -325,7 +325,10 @@ export default function StudentHomeScreen() {
         </TouchableOpacity>
 
         {/* Focus */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/stay-focus")}
+        >
           <Feather name="clock" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Focus</Text>
         </TouchableOpacity>
