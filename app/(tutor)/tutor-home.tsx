@@ -55,7 +55,11 @@ export default function TutorDashboardScreen() {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.avatarButton}>
+          <TouchableOpacity
+            style={styles.avatarButton}
+            onPress={() => router.push("/profile" as any)}
+            activeOpacity={0.8}
+          >
             <Image
               source={{
                 uri: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100",
@@ -364,7 +368,10 @@ export default function TutorDashboardScreen() {
         </TouchableOpacity>
 
         {/* My Schedule */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/sessions")}
+        >
           <Feather name="calendar" size={18} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>My Schedule</Text>
         </TouchableOpacity>
@@ -389,7 +396,10 @@ export default function TutorDashboardScreen() {
         </TouchableOpacity>
 
         {/* Notifications */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/messages")}
+        >
           <Feather name="bell" size={18} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Notifications</Text>
         </TouchableOpacity>
