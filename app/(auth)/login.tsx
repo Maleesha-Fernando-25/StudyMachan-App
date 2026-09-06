@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { getUserRole } from "./lib/auth";
+import { getUserRole } from "../../lib/storage/roleStorage";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -23,29 +23,55 @@ export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleLogin = async () => {
     if (!username.trim()) {
       Alert.alert("Missing username", "Please enter your username.");
       return;
     }
+
     if (!password) {
       Alert.alert("Missing password", "Please enter your password.");
       return;
     }
 
-    // TODO: Later, replace this with real backend login call.
-    // For now, assume credentials are valid and just check stored role.
+    try {
+      setIsLoggingIn(true);
 
-    const role = await getUserRole();
+      /*
+        Later, replace this section with your real backend login request.
 
-    if (role === "tutor") {
-      router.replace("/tutor-home");
-    } else if (role === "student") {
-      router.replace("/student-home");
-    } else {
-      // Fallback if no role is stored (e.g., direct login without signup flow)
+        Example:
+        const response = await loginUser({ username, password });
+        const role = response.user.role;
+      */
+
+      const role = await getUserRole();
+
+      if (role === "student") {
+        router.replace("/student-home");
+        return;
+      }
+
+      if (role === "tutor") {
+        router.replace("/tutor-home");
+        return;
+      }
+
+      Alert.alert(
+        "Select your role",
+        "Please go back and choose whether you are a Student or Tutor.",
+      );
+
       router.replace("/signup");
+    } catch (error) {
+      Alert.alert(
+        "Login failed",
+        "Something went wrong while logging in. Please try again.",
+      );
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -61,16 +87,18 @@ export default function LoginScreen() {
           contentContainerStyle={styles.scrollContent}
           style={styles.scroll}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          {/* Logo & Title */}
+          {/* Logo and Title */}
           <View style={styles.logoSection}>
             <View style={styles.logoBox}>
               <Image
-                source={require("../assets/images/studymachan-logo.png")}
+                source={require("../../assets/images/studymachan-logo.png")}
                 style={styles.logo}
                 resizeMode="contain"
               />
             </View>
+
             <Text style={styles.logoText}>StudyMachan</Text>
           </View>
 
@@ -79,8 +107,10 @@ export default function LoginScreen() {
             {/* Username */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Username</Text>
+
               <View style={styles.inputRow}>
                 <Feather name="user" size={18} color="#7DA2A9" />
+
                 <TextInput
                   placeholder="Enter your username"
                   placeholderTextColor="#9CA3AF"
@@ -88,16 +118,22 @@ export default function LoginScreen() {
                   onChangeText={setUsername}
                   style={styles.input}
                   autoCapitalize="none"
+                  autoCorrect={false}
+                  editable={!isLoggingIn}
                 />
               </View>
             </View>
 
-            {/* Forgot */}
+            {/* Forgot Password */}
             <TouchableOpacity
               style={styles.forgot}
               onPress={() =>
-                Alert.alert("Forgot password", "Implement forgot password flow")
+                Alert.alert(
+                  "Forgot password",
+                  "The forgot-password feature will be added later.",
+                )
               }
+              disabled={isLoggingIn}
             >
               <Text style={styles.forgotText}>Forgot?</Text>
             </TouchableOpacity>
@@ -105,8 +141,10 @@ export default function LoginScreen() {
             {/* Password */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Password</Text>
+
               <View style={styles.inputRow}>
                 <Feather name="lock" size={18} color="#7DA2A9" />
+
                 <TextInput
                   placeholder="Enter your password"
                   placeholderTextColor="#9CA3AF"
@@ -114,10 +152,15 @@ export default function LoginScreen() {
                   value={password}
                   onChangeText={setPassword}
                   style={styles.input}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  editable={!isLoggingIn}
                 />
+
                 <TouchableOpacity
-                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                  onPress={() => setIsPasswordVisible((visible) => !visible)}
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  disabled={isLoggingIn}
                 >
                   <Feather
                     name={isPasswordVisible ? "eye" : "eye-off"}
@@ -131,33 +174,43 @@ export default function LoginScreen() {
             {/* Login Button */}
             <TouchableOpacity
               activeOpacity={0.8}
-              style={styles.loginButton}
+              style={[
+                styles.loginButton,
+                isLoggingIn && styles.loginButtonDisabled,
+              ]}
               onPress={handleLogin}
+              disabled={isLoggingIn}
             >
-              <Text style={styles.loginButtonText}>Login</Text>
+              <Text style={styles.loginButtonText}>
+                {isLoggingIn ? "Logging in..." : "Login"}
+              </Text>
+
               <Feather name="arrow-right" size={18} color="#FFFFFF" />
             </TouchableOpacity>
 
-            {/* Sign Up Redirect */}
+            {/* Create Account Navigation */}
             <View style={styles.footerRow}>
               <Text style={styles.footerText}>Don't have an account? </Text>
+
               <TouchableOpacity
-                onPress={() => {
-                  console.log("Navigating to /create-account from login");
-                  router.push("/create_account");
-                }}
+                onPress={() => router.push("/create-account")}
+                disabled={isLoggingIn}
               >
                 <Text style={styles.signUpText}>Sign Up</Text>
               </TouchableOpacity>
             </View>
 
-            {/* Google */}
+            {/* Google Login Placeholder */}
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.googleButton}
               onPress={() =>
-                Alert.alert("Google login", "Implement Google OAuth later")
+                Alert.alert(
+                  "Google login",
+                  "Google authentication will be connected later.",
+                )
               }
+              disabled={isLoggingIn}
             >
               <AntDesign name="google" size={18} color="#EA4335" />
               <Text style={styles.googleButtonText}>Continue with Google</Text>
@@ -196,7 +249,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     padding: 8,
     borderRadius: 16,
-    shadowColor: "#000",
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.07,
     shadowRadius: 3,
@@ -218,7 +271,7 @@ const styles = StyleSheet.create({
     padding: 24,
     width: "100%",
     maxWidth: 360,
-    shadowColor: "#000",
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 6,
@@ -244,6 +297,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 12,
     height: 48,
+    backgroundColor: "#FFFFFF",
   },
   input: {
     flex: 1,
@@ -275,10 +329,16 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  loginButtonDisabled: {
+    backgroundColor: "#D1D5DB",
+    shadowOpacity: 0,
+    elevation: 0,
+  },
   loginButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700",
+    marginRight: 8,
   },
   footerRow: {
     flexDirection: "row",
@@ -305,11 +365,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
   },
   googleButtonText: {
     color: "#1F2937",
     fontSize: 14,
     fontWeight: "700",
+    marginLeft: 10,
   },
 });

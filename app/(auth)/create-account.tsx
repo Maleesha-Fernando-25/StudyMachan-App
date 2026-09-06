@@ -17,8 +17,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { registerUser } from "../supabase/authService";
-
+import AppButton from "../../components/common/AppButton";
+import { registerUser } from "../../supabase/authService";
 
 export default function CreateAccountScreen() {
   const router = useRouter();
@@ -110,18 +110,18 @@ export default function CreateAccountScreen() {
         role,
         username.trim(),
         dateOfBirthString,
-        gender
-     );
+        gender,
+      );
 
-     Alert.alert(
-       "Account created",
-       "Your StudyMachan account was created successfully.",
-       [
-         {
-           text: "OK",
-           onPress: () => router.replace("/login"),
-         },
-       ]
+      Alert.alert(
+        "Account created",
+        "Your StudyMachan account was created successfully.",
+        [
+          {
+            text: "OK",
+            onPress: () => router.replace("/login"),
+          },
+        ],
       );
     } catch (error: any) {
       Alert.alert("Sign up failed", error.message);
@@ -155,7 +155,7 @@ export default function CreateAccountScreen() {
             <View style={styles.header}>
               <View style={styles.logoBox}>
                 <Image
-                  source={require("../assets/images/studymachan-logo.png")}
+                  source={require("../../assets/images/studymachan-logo.png")}
                   style={styles.logo}
                   resizeMode="contain"
                 />
@@ -343,34 +343,18 @@ export default function CreateAccountScreen() {
               </View>
 
               {/* Submit Button */}
-              <TouchableOpacity
-                activeOpacity={isFormValid() ? 0.8 : 0.5}
-                style={[
-                  styles.submitButton,
-                  {
-                    backgroundColor: isFormValid() ? "#FF7A45" : "#CCCCCC",
-                  },
-                ]}
+              <AppButton
+                title="Create Account"
                 onPress={handleCreateAccount}
                 disabled={!isFormValid()}
-              >
-                <Text
-                  style={[
-                    styles.submitButtonText,
-                    {
-                      color: isFormValid() ? "#FFFFFF" : "#888888",
-                    },
-                  ]}
-                >
-                  Create Account
-                </Text>
-                <Feather
-                  name="arrow-right"
-                  size={18}
-                  color={isFormValid() ? "#FFFFFF" : "#888888"}
-                />
-              </TouchableOpacity>
+              />
             </View>
+
+            <AppButton
+              title="Create Account"
+              onPress={handleCreateAccount}
+              disabled={!isFormValid()}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -540,23 +524,6 @@ const styles = StyleSheet.create({
   termsLink: {
     fontSize: 12,
     color: "#D96B43",
-    fontWeight: "700",
-  },
-  submitButton: {
-    height: 48,
-    borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 16,
-    shadowColor: "#FF7A45",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  submitButtonText: {
-    fontSize: 16,
     fontWeight: "700",
   },
   modalOverlay: {

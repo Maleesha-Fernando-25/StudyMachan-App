@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { saveUserRole } from "./lib/auth";
+import { saveUserRole } from "../../lib/storage/roleStorage";
 
 export default function SignUpLandingScreen() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function SignUpLandingScreen() {
       <View style={styles.content}>
         {/* Logo */}
         <Image
-          source={require("../assets/images/studymachan-logo.png")}
+          source={require("../../assets/images/studymachan-logo.png")}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -38,7 +38,6 @@ export default function SignUpLandingScreen() {
             style={styles.primaryButton}
             activeOpacity={0.8}
             onPress={async () => {
-              console.log("Navigating to /login from Tutor button");
               await saveUserRole("tutor");
               router.push("/login");
             }}
@@ -57,7 +56,6 @@ export default function SignUpLandingScreen() {
             style={styles.primaryButton}
             activeOpacity={0.8}
             onPress={async () => {
-              console.log("Navigating to /login from Student button");
               await saveUserRole("student");
               router.push("/login");
             }}

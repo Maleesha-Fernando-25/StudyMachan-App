@@ -2,16 +2,16 @@ import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function VerifyEmailScreen() {
@@ -177,7 +177,7 @@ export default function VerifyEmailScreen() {
 
             <TouchableOpacity
               style={styles.actionLink}
-              onPress={() => router.push("/create_account")}
+              onPress={() => router.push("/create-account")}
             >
               <Text style={styles.changeEmailText}>Change email address</Text>
             </TouchableOpacity>
