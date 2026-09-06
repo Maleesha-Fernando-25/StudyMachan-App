@@ -343,7 +343,10 @@ export default function StudentHomeScreen() {
         </TouchableOpacity>
 
         {/* Alerts */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/alerts")}
+        >
           <View style={styles.alertsIconWrapper}>
             <Feather name="bell" size={20} color="#9CA3AF" />
             <View style={styles.alertDot} />
