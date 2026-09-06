@@ -370,7 +370,10 @@ export default function TutorDashboardScreen() {
         </TouchableOpacity>
 
         {/* Earnings */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/earnings")}
+        >
           <MaterialCommunityIcons
             name="wallet-outline"
             size={18}
