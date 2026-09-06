@@ -356,36 +356,39 @@ export default function TutorDashboardScreen() {
 
       {/* Bottom Navigation Bar */}
       <View style={styles.bottomNav}>
-        {/* Active Home Tab */}
+        {/* Home (Active) */}
         <TouchableOpacity style={styles.navItem}>
           <Ionicons name="home" size={20} color="#FF6B35" />
           <Text style={styles.navTextActive}>Home</Text>
           <View style={styles.navIndicator} />
         </TouchableOpacity>
 
-        {/* Schedule */}
+        {/* My Schedule */}
         <TouchableOpacity style={styles.navItem}>
-          <Feather name="calendar" size={20} color="#9CA3AF" />
-          <Text style={styles.navTextInactive}>Schedule</Text>
+          <Feather name="calendar" size={18} color="#9CA3AF" />
+          <Text style={styles.navTextInactive}>My Schedule</Text>
         </TouchableOpacity>
 
         {/* Earnings */}
         <TouchableOpacity style={styles.navItem}>
           <MaterialCommunityIcons
             name="wallet-outline"
-            size={20}
+            size={18}
             color="#9CA3AF"
           />
           <Text style={styles.navTextInactive}>Earnings</Text>
         </TouchableOpacity>
 
-        {/* Alerts */}
+        {/* Reviews */}
         <TouchableOpacity style={styles.navItem}>
-          <View style={styles.alertsIconWrapper}>
-            <Feather name="bell" size={20} color="#9CA3AF" />
-            <View style={styles.alertDot} />
-          </View>
-          <Text style={styles.navTextInactive}>Alerts</Text>
+          <FontAwesome name="star" size={16} color="#9CA3AF" />
+          <Text style={styles.navTextInactive}>Reviews</Text>
+        </TouchableOpacity>
+
+        {/* Notifications */}
+        <TouchableOpacity style={styles.navItem}>
+          <Feather name="bell" size={18} color="#9CA3AF" />
+          <Text style={styles.navTextInactive}>Notifications</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -783,7 +786,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#FFFFFF",
   },
-
   sessionTime: {
     fontSize: 10,
     color: "rgba(255,255,255,0.8)",
@@ -1040,7 +1042,7 @@ const styles = StyleSheet.create({
     color: "#059669",
   },
 
-  // Bottom nav
+  // Bottom nav (5 items)
   bottomNav: {
     position: "absolute",
     bottom: 0,
@@ -1049,24 +1051,25 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
     borderTopColor: "#F3F4F6",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    paddingBottom: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    paddingBottom: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
   navItem: {
     alignItems: "center",
+    flex: 1,
   },
   navTextActive: {
-    fontSize: 10,
-    fontWeight: "800",
+    fontSize: 9,
+    fontWeight: "700",
     color: "#FF6B35",
     marginTop: 2,
   },
   navTextInactive: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: "600",
     color: "#9CA3AF",
     marginTop: 2,
@@ -1077,19 +1080,5 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: "#FF6B35",
     marginTop: 2,
-  },
-  alertsIconWrapper: {
-    position: "relative",
-  },
-  alertDot: {
-    position: "absolute",
-    top: -2,
-    right: -6,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#FF6B35",
-    borderWidth: 2,
-    borderColor: "#FFFFFF",
   },
 });
