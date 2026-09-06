@@ -13,65 +13,63 @@ import {
     View,
 } from "react-native";
 
-export default function AlertsScreen() {
+type NotificationItem = {
+  id: string;
+  title: string;
+  time: string;
+  description: string;
+  avatar?: string;
+  icon?: "calendar" | "award" | "info";
+  hasButton?: boolean;
+  buttonText?: string;
+  hasAccentBorder?: boolean;
+};
+
+export default function NotificationsScreen() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const messages = [
+  const todayNotifications: NotificationItem[] = [
     {
       id: "1",
-      name: "Sarah Jenkins",
-      time: "2m ago",
-      timeColor: "#FF6B35",
-      message: "That sounds great! I'll see you at 3 PM for our math session.",
+      title: "Sarah J. sent you a message",
+      time: "10:42 AM",
+      description:
+        '"Hi there! Just checking if you had any questions about chapter 4...',
       avatar:
         "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
-      isUnread: true,
-      hasDot: true,
+      hasAccentBorder: true,
     },
     {
       id: "2",
-      name: "David Chen",
-      time: "1h ago",
-      timeColor: "#FF6B35",
-      message: "Can we review chapter 4 before the quiz?",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
-      isUnread: true,
-      hasDot: true,
+      title: "Your session with David M. starts...",
+      time: "12:45 PM",
+      description: "Calculus 101 · Starts in 15 mins",
+      icon: "calendar",
+      hasButton: true,
+      buttonText: "Join Workspace",
+      hasAccentBorder: true,
     },
+  ];
+
+  const yesterdayNotifications: NotificationItem[] = [
     {
       id: "3",
-      name: "Dr. Emily Rogers",
+      title: "Weekly Goal Achieved! 🏆",
       time: "Yesterday",
-      timeColor: "#9CA3AF",
-      message:
-        "Thanks for sending over the essay draft. I've left some comments.",
-      avatar:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150",
-      isUnread: false,
-      hasDot: false,
+      description:
+        "You've completed 5 hours of focused study time this week. Keep",
+      icon: "award",
+      hasAccentBorder: false,
     },
     {
       id: "4",
-      name: "Michael Torres",
-      time: "Mon",
-      timeColor: "#9CA3AF",
-      message: "Got it, thanks! The physics formulas make much more sense now.",
-      avatar:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-      isUnread: false,
-      hasDot: false,
-    },
-    {
-      id: "5",
-      name: "Alicia Johnson",
-      time: "Oct 12",
-      timeColor: "#9CA3AF",
-      message: "Could we reschedule our session to Thursday?",
-      initials: "AJ",
-      isUnread: false,
-      hasDot: false,
+      title: "New feature: Shared Whiteboard",
+      time: "Yesterday",
+      description:
+        "You can now collaborate in real-time with your tutors using our new...",
+      icon: "info",
+      hasAccentBorder: false,
     },
   ];
 
@@ -80,18 +78,22 @@ export default function AlertsScreen() {
       <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
 
       {/* Top Header Bar */}
-      <View style={styles.headerRow}>
+      <View style={styles.headerBar}>
         <TouchableOpacity
           style={styles.iconButton}
           onPress={() => router.back()}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           <Feather name="arrow-left" size={22} color="#A33A19" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Messages</Text>
       </View>
 
-      {/* Main Container */}
-      <View style={styles.container}>
+      {/* Main Content */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Search Bar */}
         <View style={styles.searchBar}>
           <Feather name="search" size={18} color="#9CA3AF" />
@@ -104,50 +106,112 @@ export default function AlertsScreen() {
           />
         </View>
 
-        {/* Message Cards List */}
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.messagesList}
-        >
-          {messages.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              activeOpacity={0.9}
-              style={styles.messageCard}
-            >
-              {/* Unread Left Border Line */}
-              {item.isUnread && <View style={styles.unreadLine} />}
+        {/* Today Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Today</Text>
 
-              {/* Avatar Column */}
-              <View style={styles.avatarWrapper}>
-                {item.avatar ? (
-                  <Image source={{ uri: item.avatar }} style={styles.avatar} />
-                ) : (
-                  <View style={styles.avatarPlaceholder}>
-                    <Text style={styles.avatarInitials}>{item.initials}</Text>
+          <View style={styles.notificationsList}>
+            {todayNotifications.map((item) => (
+              <View
+                key={item.id}
+                style={[
+                  styles.notificationRow,
+                  item.hasAccentBorder && styles.notificationRowAccent,
+                ]}
+              >
+                {/* Left Active Orange Bar Accent */}
+                {item.hasAccentBorder && <View style={styles.accentLine} />}
+
+                {/* Left Icon/Avatar Column */}
+                <View style={styles.avatarColumn}>
+                  {item.avatar ? (
+                    <Image
+                      source={{ uri: item.avatar }}
+                      style={styles.avatar}
+                    />
+                  ) : (
+                    <View style={styles.iconPlaceholder}>
+                      <Feather
+                        name={item.icon || "info"}
+                        size={20}
+                        color="#7A7263"
+                      />
+                    </View>
+                  )}
+                </View>
+
+                {/* Message Content Column */}
+                <View style={styles.contentColumn}>
+                  <View style={styles.titleTimeRow}>
+                    <Text style={styles.notificationTitle} numberOfLines={1}>
+                      {item.title}
+                    </Text>
+                    <Text style={styles.notificationTime}>{item.time}</Text>
                   </View>
-                )}
 
-                {/* Orange Online/Unread Dot */}
-                {item.hasDot && <View style={styles.unreadDot} />}
+                  <Text
+                    style={styles.notificationDescription}
+                    numberOfLines={2}
+                  >
+                    {item.description}
+                  </Text>
+
+                  {/* Action Button */}
+                  {item.hasButton && item.buttonText && (
+                    <TouchableOpacity
+                      activeOpacity={0.85}
+                      style={styles.actionButton}
+                    >
+                      <Text style={styles.actionButtonText}>
+                        {item.buttonText}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
               </View>
+            ))}
+          </View>
+        </View>
 
-              {/* Content Column */}
-              <View style={styles.messageContent}>
-                <View style={styles.messageHeader}>
-                  <Text style={styles.messageName}>{item.name}</Text>
-                  <Text style={[styles.messageTime, { color: item.timeColor }]}>
-                    {item.time}
+        {/* Yesterday Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Yesterday</Text>
+
+          <View style={styles.notificationsList}>
+            {yesterdayNotifications.map((item) => (
+              <View key={item.id} style={styles.notificationRow}>
+                {/* Left Icon Column */}
+                <View style={styles.avatarColumn}>
+                  <View style={styles.iconPlaceholder}>
+                    <Feather
+                      name={item.icon || "info"}
+                      size={20}
+                      color="#7A7263"
+                    />
+                  </View>
+                </View>
+
+                {/* Message Content Column */}
+                <View style={styles.contentColumn}>
+                  <View style={styles.titleTimeRow}>
+                    <Text style={styles.notificationTitle} numberOfLines={1}>
+                      {item.title}
+                    </Text>
+                    <Text style={styles.notificationTime}>{item.time}</Text>
+                  </View>
+
+                  <Text
+                    style={styles.notificationDescription}
+                    numberOfLines={2}
+                  >
+                    {item.description}
                   </Text>
                 </View>
-                <Text style={styles.messageText} numberOfLines={2}>
-                  {item.message}
-                </Text>
               </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
 
       {/* Bottom Navigation Bar */}
       <View style={styles.bottomNav}>
@@ -188,17 +252,17 @@ export default function AlertsScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#FBF2E9",
+    backgroundColor: "#FFFFFF",
   },
 
   // Header
-  headerRow: {
+  headerBar: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
+    gap: 16,
     paddingHorizontal: 20,
     paddingTop: 8,
-    paddingBottom: 8,
+    paddingBottom: 12,
     backgroundColor: "#FAF8F5",
   },
   iconButton: {
@@ -208,16 +272,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "800",
     color: "#A33A19",
   },
 
-  // Container
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 12,
+  // Scroll content
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 100, // space for bottom nav
   },
 
   // Search bar
@@ -225,17 +289,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
-    borderRadius: 999,
+    borderRadius: 16,
     paddingHorizontal: 16,
     height: 48,
     borderWidth: 1,
-    borderColor: "rgba(229, 231, 235, 0.6)",
+    borderColor: "rgba(229, 231, 235, 0.8)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.04,
     shadowRadius: 3,
     elevation: 1,
-    marginBottom: 20,
+    marginBottom: 24,
   },
   searchInput: {
     flex: 1,
@@ -245,90 +309,101 @@ const styles = StyleSheet.create({
     color: "#374151",
   },
 
-  // Messages list
-  messagesList: {
-    paddingBottom: 100,
-    gap: 12,
+  // Sections
+  section: {
+    marginBottom: 24,
   },
-  messageCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    padding: 16,
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: "#374151",
+    marginBottom: 12,
+  },
+  notificationsList: {
+    gap: 16,
+  },
+
+  // Notification row
+  notificationRow: {
     flexDirection: "row",
     alignItems: "flex-start",
+    paddingLeft: 14,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F3F4F6",
     position: "relative",
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "#F3F4F6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
   },
-  unreadLine: {
+  notificationRowAccent: {
+    // extra style if needed in future
+  },
+  accentLine: {
     position: "absolute",
     left: 0,
     top: 0,
-    bottom: 0,
-    width: 6,
-    backgroundColor: "#FF6B35",
+    bottom: 16,
+    width: 4,
+    backgroundColor: "#FF7A45",
+    borderRadius: 999,
   },
-  avatarWrapper: {
-    marginRight: 14,
-    position: "relative",
+  avatarColumn: {
+    marginRight: 12,
   },
   avatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
   },
-  avatarPlaceholder: {
+  iconPlaceholder: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#EAE3D2",
+    backgroundColor: "#EFECE6",
     alignItems: "center",
     justifyContent: "center",
   },
-  avatarInitials: {
-    fontSize: 14,
-    fontWeight: "800",
-    color: "#7A7263",
-  },
-  unreadDot: {
-    position: "absolute",
-    top: -2,
-    right: -2,
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: "#FF6B35",
-    borderWidth: 2,
-    borderColor: "#FFFFFF",
-  },
-  messageContent: {
+  contentColumn: {
     flex: 1,
   },
-  messageHeader: {
+  titleTimeRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 4,
   },
-  messageName: {
-    fontSize: 16,
+  notificationTitle: {
+    fontSize: 14,
     fontWeight: "800",
-    color: "#2A231D",
+    color: "#111827",
+    flex: 1,
+    marginRight: 8,
   },
-  messageTime: {
-    fontSize: 12,
-    fontWeight: "700",
+  notificationTime: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#9CA3AF",
   },
-  messageText: {
+  notificationDescription: {
     fontSize: 12,
-    color: "#5C534B",
+    color: "#6B7280",
     lineHeight: 16,
+    marginTop: 4,
+  },
+  actionButton: {
+    backgroundColor: "#FF7A45",
+    alignSelf: "flex-start",
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 12,
+    marginTop: 12,
+    shadowColor: "#FF7A45",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  actionButtonText: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: "#FFFFFF",
   },
 
   // Bottom nav

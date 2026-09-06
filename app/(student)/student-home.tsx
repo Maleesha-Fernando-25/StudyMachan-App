@@ -59,7 +59,11 @@ export default function StudentHomeScreen() {
           </View>
 
           {/* User Profile Avatar with Online Status */}
-          <TouchableOpacity style={styles.avatarButton}>
+          <TouchableOpacity
+            style={styles.avatarButton}
+            onPress={() => router.push("/profile" as any)}
+            activeOpacity={0.8}
+          >
             <Image
               source={{
                 uri: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
