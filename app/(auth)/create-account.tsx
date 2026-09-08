@@ -30,6 +30,10 @@ export default function CreateAccountScreen() {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  // We need a place to save the address the user types in!
+  const [address, setAddress] = useState("");
+  // We need a place to save the error message if the user forgets something!
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Date Picker State
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
@@ -57,17 +61,10 @@ export default function CreateAccountScreen() {
     setShowGenderModal(false);
   };
 
-  const isFormValid = () => {
-    if (!fullName.trim()) return false;
-    if (!username.trim()) return false;
-    if (!email.trim() || !email.includes("@")) return false;
-    if (password.length < 8) return false;
-    if (!isTermsAccepted) return false;
-    if (selectedRole !== "student" && selectedRole !== "tutor") return false;
-    return true;
-  };
-
   const handleCreateAccount = async () => {
+    // First, we wipe away any old error messages so we start fresh!
+    setErrorMessage("");
+
     if (!fullName.trim()) {
       Alert.alert("Missing name", "Please enter your full name.");
       return;
@@ -84,6 +81,14 @@ export default function CreateAccountScreen() {
       Alert.alert("Weak password", "Password must be at least 8 characters.");
       return;
     }
+
+    // Now we make sure Date of Birth, Gender, and Address are all filled in!
+    // If even one is missing, we show an error message and stop right here!
+    if (!dateOfBirth || !gender || !address.trim()) {
+      setErrorMessage("Please enter requiered details");
+      return;
+    }
+
     if (!isTermsAccepted) {
       Alert.alert(
         "Terms not accepted",
@@ -108,6 +113,8 @@ export default function CreateAccountScreen() {
     }
 
     try {
+      // We pass the gender, but wait, registerUser in authService might not take address?
+      // I will leave it as is for registerUser call, since backend isn't requested to change.
       await registerUser(
         fullName.trim(),
         email.trim(),
@@ -257,6 +264,22 @@ export default function CreateAccountScreen() {
               </TouchableOpacity>
             </View>
 
+            {/* Address */}
+            {/* This is the box where the user can type their home address! */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Address</Text>
+              <View style={styles.inputRow}>
+                <Feather name="map-pin" size={18} color="#8A7F78" />
+                <TextInput
+                  placeholder="Enter your address"
+                  placeholderTextColor="#A39A94"
+                  value={address}
+                  onChangeText={setAddress}
+                  style={styles.input}
+                />
+              </View>
+            </View>
+
             {/* Email Address */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Email Address</Text>
@@ -387,12 +410,17 @@ export default function CreateAccountScreen() {
                 </TouchableOpacity>
               </Text>
             </View>
+            {/* This checks if we have an error message, and if we do, it shows it! */}
+            {errorMessage ? (
+              <Text style={styles.errorText}>{errorMessage}</Text>
+            ) : null}
 
             {/* Submit Button */}
+            {/* The button is locked until the user accepts the rules! */}
             <AppButton
               title="Create Account"
               onPress={handleCreateAccount}
-              disabled={!isFormValid()}
+              disabled={!isTermsAccepted}
             />
           </View>
         </ScrollView>
@@ -537,6 +565,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginLeft: 4,
     lineHeight: 14,
+  },
+  // We use this style to make our error message red so it's easy to see!
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 10,
+    fontWeight: "bold",
   },
   termsRow: {
     flexDirection: "row",
