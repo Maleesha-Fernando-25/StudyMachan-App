@@ -1,6 +1,12 @@
 import { useRouter } from "expo-router";
 import React from "react";
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function TutorOnboardingScreen() {
   const router = useRouter();
@@ -32,8 +38,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 28,
   },
-  title: { color: "#000000", fontSize: 28, fontWeight: "700", marginBottom: 10 },
-  subtitle: { color: "#666666", fontSize: 15, marginBottom: 28, textAlign: "center" },
+  title: {
+    color: "#000000",
+    fontSize: 28,
+    fontWeight: "700",
+    marginBottom: 10,
+  },
+  subtitle: {
+    color: "#666666",
+    fontSize: 15,
+    marginBottom: 28,
+    textAlign: "center",
+  },
   button: {
     alignItems: "center",
     backgroundColor: "#FF7A45",
