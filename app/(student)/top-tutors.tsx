@@ -1,23 +1,41 @@
 import { Feather, FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import {
-    FlatList,
-    Image,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  FlatList,
+  Image,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
+// --- TYPES ---
+type Tutor = {
+  id: string;
+  name: string;
+  badge: string;
+  badgeColor?: string;
+  badgeTextColor?: string;
+  price: string;
+  specialty: string;
+  education: string;
+  rating: string;
+  reviews: string;
+  sessions: string;
+  tags: string[];
+  image: string;
+  verified: boolean;
+};
 
 // --- DUMMY DATA ---
 const CATEGORIES = ["All Tutors", "Combined Maths", "Physics", "Chemistry"];
 
-const TUTORS = [
+const TUTORS: Tutor[] = [
   {
     id: "1",
     name: "Dr. Sarah Jenkins",
@@ -170,7 +188,7 @@ export default function TopTutorsScreen() {
     </ScrollView>
   );
 
-  const renderTutorCard = ({ item }) => (
+  const renderTutorCard = ({ item }: { item: Tutor }) => (
     <View style={styles.card}>
       {/* Top Row: Avatar & Details */}
       <View style={styles.cardTopRow}>
