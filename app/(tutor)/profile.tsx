@@ -226,10 +226,11 @@ export default function TutorProfileScreen() {
           <TouchableOpacity
             activeOpacity={0.7}
             style={[styles.settingRow, styles.settingBorder]}
+            onPress={() => router.push("/help-center" as any)}
           >
             <View style={styles.settingLeft}>
               <View style={styles.settingIconBox}>
-                <Feather name="help-circle" size={18} color="#A33A19" />
+                <Feather name="help-circle" size={18} color="#A34A28" />
               </View>
               <Text style={styles.settingLabel}>Help Center</Text>
             </View>
