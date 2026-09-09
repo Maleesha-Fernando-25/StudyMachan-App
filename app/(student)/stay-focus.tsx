@@ -1,17 +1,17 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-    Image,
-    Modal,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  Modal,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
@@ -121,10 +121,15 @@ export default function StayFocusScreen() {
             <Text style={styles.sectionTitle}>Focus Session</Text>
 
             <View style={styles.actionButtonsRow}>
-              <TouchableOpacity style={styles.actionButton}>
+              {/* Friends icon - navigate to Connect Friends */}
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => router.push("/connect-friends" as any)}
+              >
                 <Feather name="users" size={18} color="#201E1D" />
               </TouchableOpacity>
 
+              {/* Timer icon - open duration modal */}
               <TouchableOpacity
                 style={styles.actionButton}
                 onPress={openDurationModal}
@@ -250,7 +255,7 @@ export default function StayFocusScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Extra spacing at bottom so controls don’t overlap nav */}
+          {/* Extra spacing at bottom so controls don't overlap nav */}
           <View style={{ height: 40 }} />
         </ScrollView>
       </View>
