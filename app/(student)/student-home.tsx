@@ -5,7 +5,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Image,
   SafeAreaView,
@@ -131,8 +131,8 @@ export default function StudentHomeScreen() {
               <Text style={styles.verifiedBadgeText}>Verified</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.seeAllButton}>
-            <Text style={styles.seeAllText}>See All</Text>
+          <TouchableOpacity onPress={() => router.push("/top-tutors" as any)}>
+            <Text>View All</Text>
             <Feather name="chevron-right" size={14} color="#FF6B35" />
           </TouchableOpacity>
         </View>
