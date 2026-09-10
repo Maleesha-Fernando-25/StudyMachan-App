@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -81,16 +81,16 @@ export default function VerifyEmailScreen() {
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          onPress={() => router.back()}
-        >
-          <Feather name="arrow-left" size={22} color="#B45325" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Create Account</Text>
-      </View>
+      {/* Back Button + Title (Top, like Create Account screen) */}
+      <TouchableOpacity
+        style={styles.backButtonWrapper}
+        onPress={() => router.back()}
+        activeOpacity={0.7}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      >
+        <Feather name="arrow-left" size={24} color="#B45325" />
+        <Text style={styles.backTitle}>Create Account</Text>
+      </TouchableOpacity>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -179,19 +179,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FAFAFA",
   },
-  header: {
+  backButtonWrapper: {
+    position: "absolute",
+    top: 16,
+    left: 16,
+    zIndex: 10,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingTop: 18,
-    paddingBottom: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
     backgroundColor: "#FAFAFA",
   },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: "600",
+  backTitle: {
+    fontSize: 14,
+    fontWeight: "700",
     color: "#B45325",
-    marginLeft: 16,
+    marginLeft: 8,
   },
   keyboardView: {
     flex: 1,
