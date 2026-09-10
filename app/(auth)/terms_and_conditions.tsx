@@ -1,14 +1,13 @@
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
 import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function TermsAndConditionsScreen() {
@@ -18,25 +17,27 @@ export default function TermsAndConditionsScreen() {
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          onPress={() => router.back()}
-        >
-          <Feather name="arrow-left" size={22} color="#B45325" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Terms & Conditions</Text>
-      </View>
-
       {/* Scrollable Content */}
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        {/* Back Button + Title */}
+        <TouchableOpacity
+          style={styles.backButtonRow}
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+          hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }}
+        >
+          <Feather name="arrow-left" size={24} color="#B45325" />
+          <Text style={styles.pageTitle}>Terms & Conditions</Text>
+        </TouchableOpacity>
+
         <View style={styles.card}>
-          <Text style={styles.updatedText}>Last Updated: October 24, 2023</Text>
+          <Text style={styles.updatedText}>
+            Last Updated: September 10, 2026
+          </Text>
 
           <Text style={styles.sectionTitle}>
             Study Machan - General Terms and Conditions
@@ -123,28 +124,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingTop: 18,
-    paddingBottom: 14,
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#B45325",
-    marginLeft: 16,
-  },
   scroll: {
     flex: 1,
     backgroundColor: "#F9ECE0",
   },
   scrollContent: {
     padding: 20,
+  },
+  backButtonRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    paddingHorizontal: 4,
+    paddingVertical: 8,
+  },
+  pageTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#B45325",
+    marginLeft: 10,
   },
   card: {
     backgroundColor: "#FFFFFF",
