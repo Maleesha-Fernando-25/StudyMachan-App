@@ -1,7 +1,7 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   Image,
@@ -30,9 +30,7 @@ export default function CreateAccountScreen() {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
-  // We need a place to save the address the user types in!
   const [address, setAddress] = useState("");
-  // We need a place to save the error message if the user forgets something!
   const [errorMessage, setErrorMessage] = useState("");
 
   // Date Picker State
@@ -62,7 +60,6 @@ export default function CreateAccountScreen() {
   };
 
   const handleCreateAccount = async () => {
-    // First, we wipe away any old error messages so we start fresh!
     setErrorMessage("");
 
     if (!fullName.trim()) {
@@ -82,8 +79,6 @@ export default function CreateAccountScreen() {
       return;
     }
 
-    // Now we make sure Date of Birth, Gender, and Address are all filled in!
-    // If even one is missing, we show an error message and stop right here!
     if (!dateOfBirth || !gender || !address.trim()) {
       setErrorMessage("Please enter requiered details");
       return;
@@ -113,8 +108,6 @@ export default function CreateAccountScreen() {
     }
 
     try {
-      // We pass the gender, but wait, registerUser in authService might not take address?
-      // I will leave it as is for registerUser call, since backend isn't requested to change.
       await registerUser(
         fullName.trim(),
         email.trim(),
@@ -179,12 +172,52 @@ export default function CreateAccountScreen() {
             </View>
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>
-              Join StudyMachan to start learning today.
+              Join StudyMachan & start your journey today.
             </Text>
           </View>
 
           {/* Form Fields */}
           <View style={styles.form}>
+            {/* Role Selector (Student / Tutor) - Moved to Top */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>I am a</Text>
+              <View style={styles.roleRow}>
+                <TouchableOpacity
+                  style={[
+                    styles.roleChip,
+                    selectedRole === "student" && styles.roleChipSelected,
+                  ]}
+                  onPress={() => setSelectedRole("student")}
+                >
+                  <Text
+                    style={[
+                      styles.roleChipText,
+                      selectedRole === "student" && styles.roleChipTextSelected,
+                    ]}
+                  >
+                    Student
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.roleChip,
+                    selectedRole === "tutor" && styles.roleChipSelected,
+                  ]}
+                  onPress={() => setSelectedRole("tutor")}
+                >
+                  <Text
+                    style={[
+                      styles.roleChipText,
+                      selectedRole === "tutor" && styles.roleChipTextSelected,
+                    ]}
+                  >
+                    Tutor
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
             {/* Full Name */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Full Name</Text>
@@ -202,6 +235,7 @@ export default function CreateAccountScreen() {
 
             {/* Birthday Picker */}
             <View style={styles.inputGroup}>
+              <Text style={styles.label}>Birthday</Text>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => setShowDatePicker(true)}
@@ -238,7 +272,6 @@ export default function CreateAccountScreen() {
                 />
               )}
             </View>
-
             {/* Gender Dropdown */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Gender</Text>
@@ -265,7 +298,6 @@ export default function CreateAccountScreen() {
             </View>
 
             {/* Address */}
-            {/* This is the box where the user can type their home address! */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Address</Text>
               <View style={styles.inputRow}>
@@ -336,53 +368,11 @@ export default function CreateAccountScreen() {
                   />
                 </TouchableOpacity>
               </View>
+              {/* Password helper text moved right after password field */}
+              <Text style={styles.helperText}>
+                Must be at least 8 characters.
+              </Text>
             </View>
-
-            {/* Role Selector (Student / Tutor) */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>I am a</Text>
-              <View style={styles.roleRow}>
-                <TouchableOpacity
-                  style={[
-                    styles.roleChip,
-                    selectedRole === "student" && styles.roleChipSelected,
-                  ]}
-                  onPress={() => setSelectedRole("student")}
-                >
-                  <Text
-                    style={[
-                      styles.roleChipText,
-                      selectedRole === "student" && styles.roleChipTextSelected,
-                    ]}
-                  >
-                    Student
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[
-                    styles.roleChip,
-                    selectedRole === "tutor" && styles.roleChipSelected,
-                  ]}
-                  onPress={() => setSelectedRole("tutor")}
-                >
-                  <Text
-                    style={[
-                      styles.roleChipText,
-                      selectedRole === "tutor" && styles.roleChipTextSelected,
-                    ]}
-                  >
-                    Tutor
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* Password Helper Text */}
-            <Text style={styles.helperText}>
-              Must be at least 8 characters.{"\n"}
-              Verification code will be sent to your email or phone.
-            </Text>
 
             {/* Terms & Conditions Checkbox */}
             <View style={styles.termsRow}>
@@ -410,13 +400,12 @@ export default function CreateAccountScreen() {
                 </TouchableOpacity>
               </Text>
             </View>
-            {/* This checks if we have an error message, and if we do, it shows it! */}
+
             {errorMessage ? (
               <Text style={styles.errorText}>{errorMessage}</Text>
             ) : null}
 
             {/* Submit Button */}
-            {/* The button is locked until the user accepts the rules! */}
             <AppButton
               title="Create Account"
               onPress={handleCreateAccount}
@@ -566,7 +555,6 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     lineHeight: 14,
   },
-  // We use this style to make our error message red so it's easy to see!
   errorText: {
     color: "red",
     fontSize: 14,
