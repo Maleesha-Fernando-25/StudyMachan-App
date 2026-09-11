@@ -18,51 +18,163 @@ import {
   View,
 } from "react-native";
 
+const SUBJECTS = [
+  "All Subjects",
+  "Combined Mathematics",
+  "Pure Mathematics",
+  "Applied Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "Science",
+  "English",
+  "Sinhala",
+  "Tamil",
+  "Information & Communication Technology",
+  "Accounting",
+  "Business Studies",
+  "Economics",
+  "History",
+  "Geography",
+  "Civic Education",
+  "General English",
+  "Logic & Scientific Method",
+];
+
+const DISTRICTS = [
+  "All Districts",
+  "Colombo",
+  "Gampaha",
+  "Kalutara",
+  "Kandy",
+  "Matale",
+  "Nuwara Eliya",
+  "Galle",
+  "Matara",
+  "Hambantota",
+  "Jaffna",
+  "Kilinochchi",
+  "Mannar",
+  "Vavuniya",
+  "Mullaitivu",
+  "Batticaloa",
+  "Ampara",
+  "Trincomalee",
+  "Kurunegala",
+  "Puttalam",
+  "Anuradhapura",
+  "Polonnaruwa",
+  "Badulla",
+  "Monaragala",
+  "Ratnapura",
+  "Kegalle",
+];
+
+const LEVELS = [
+  "All Levels",
+  "Grade 6",
+  "Grade 7",
+  "Grade 8",
+  "Grade 9",
+  "Grade 10",
+  "Grade 11",
+  "O/L",
+  "Grade 12",
+  "Grade 13",
+  "A/L",
+];
+
+const PRICE_OPTIONS = [500, 600, 700, 800, 900, 1000];
+
 export default function StudentHomeScreen() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const categories = ["All", "Combined Maths", "Physics", "Chemistry"];
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [searchText, setSearchText] = useState("");
+
+  const [selectedSubject, setSelectedSubject] = useState("All Subjects");
+  const [selectedDistrict, setSelectedDistrict] = useState("All Districts");
+  const [selectedLevel, setSelectedLevel] = useState("All Levels");
+  const [selectedPrice, setSelectedPrice] = useState(1000);
+
+  const [appliedFilters, setAppliedFilters] = useState({
+    subject: "All Subjects",
+    district: "All Districts",
+    level: "All Levels",
+    price: 1000,
+  });
+
+  const applyFilters = () => {
+    setAppliedFilters({
+      subject: selectedSubject,
+      district: selectedDistrict,
+      level: selectedLevel,
+      price: selectedPrice,
+    });
+
+    setIsFilterVisible(false);
+  };
+
+  const clearFilters = () => {
+    setSelectedSubject("All Subjects");
+    setSelectedDistrict("All Districts");
+    setSelectedLevel("All Levels");
+    setSelectedPrice(1000);
+
+    setAppliedFilters({
+      subject: "All Subjects",
+      district: "All Districts",
+      level: "All Levels",
+      price: 1000,
+    });
+  };
+
+  const hasActiveFilters =
+    appliedFilters.subject !== "All Subjects" ||
+    appliedFilters.district !== "All Districts" ||
+    appliedFilters.level !== "All Levels" ||
+    appliedFilters.price !== 1000;
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
 
-      {/* Top bar with back arrow */}
+      {/* Top bar */}
       <View style={styles.topBar}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.replace("/signup" as any)}
+          activeOpacity={0.7}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
         >
           <Feather name="arrow-left" size={22} color="#FF6B35" />
         </TouchableOpacity>
       </View>
 
-      {/* Main Scrollable Content */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Top Header */}
+        {/* Header */}
         <View style={styles.headerRow}>
           <View style={styles.headerLeft}>
-            {/* Logo Image */}
             <Image
               source={require("../../assets/images/studymachan-logo.png")}
               style={styles.logoImage}
               resizeMode="contain"
             />
+
             <View>
               <Text style={styles.appName}>StudyMachan</Text>
-              <Text style={styles.welcomeText}>Welcome back, Ravindu 👋</Text>
+              <Text style={styles.welcomeText}>Welcome, Ravindu 👋</Text>
             </View>
           </View>
 
-          {/* User Profile Avatar with Online Status */}
           <TouchableOpacity
             style={styles.avatarButton}
             onPress={() => router.push("/profile" as any)}
             activeOpacity={0.8}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Image
               source={{
@@ -70,74 +182,251 @@ export default function StudentHomeScreen() {
               }}
               style={styles.avatar}
             />
+
             <View style={styles.onlineDotContainer}>
               <View style={styles.onlineDot} />
             </View>
           </TouchableOpacity>
         </View>
 
-        {/* Search Bar & Filter Button */}
+        {/* Search and filter */}
         <View style={styles.searchRow}>
           <View style={styles.searchBox}>
             <Feather name="search" size={18} color="#9CA3AF" />
+
             <TextInput
               placeholder="Find tutor, subject or topic..."
               placeholderTextColor="#9CA3AF"
               style={styles.searchInput}
+              value={searchText}
+              onChangeText={setSearchText}
             />
           </View>
 
-          <TouchableOpacity style={styles.filterButton}>
+          <TouchableOpacity
+            style={[
+              styles.filterButton,
+              hasActiveFilters && styles.filterButtonActive,
+            ]}
+            activeOpacity={0.8}
+            onPress={() => setIsFilterVisible((previous) => !previous)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
             <Ionicons name="options-outline" size={20} color="#FFFFFF" />
+
+            {hasActiveFilters && <View style={styles.filterIndicator} />}
           </TouchableOpacity>
         </View>
 
-        {/* Category Pills */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.categoriesScroll}
-          contentContainerStyle={styles.categoriesContent}
-        >
-          {categories.map((item) => {
-            const isSelected = selectedCategory === item;
-            return (
+        {/* Active filter summary */}
+        {hasActiveFilters && (
+          <View style={styles.activeFilterSummary}>
+            <Text style={styles.activeFilterSummaryText} numberOfLines={2}>
+              {appliedFilters.subject} • {appliedFilters.district} •{" "}
+              {appliedFilters.level} • Up to LKR {appliedFilters.price}
+            </Text>
+
+            <TouchableOpacity
+              onPress={clearFilters}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text style={styles.clearSummaryText}>Clear</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Filter panel */}
+        {isFilterVisible && (
+          <View style={styles.filterPanel}>
+            <View style={styles.filterHeader}>
+              <Text style={styles.filterTitle}>Filter Tutors</Text>
+
               <TouchableOpacity
-                key={item}
-                onPress={() => setSelectedCategory(item)}
-                style={[
-                  styles.categoryPill,
-                  isSelected && styles.categoryPillSelected,
-                ]}
+                onPress={() => setIsFilterVisible(false)}
+                style={styles.closeFilterButton}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               >
-                <Text
-                  style={[
-                    styles.categoryPillText,
-                    isSelected && styles.categoryPillTextSelected,
-                  ]}
-                >
-                  {item}
-                </Text>
+                <Feather name="x" size={22} color="#1E1E1E" />
               </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+            </View>
+
+            {/* Subject */}
+            <Text style={styles.filterSectionTitle}>Subject</Text>
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.filterOptionsContent}
+            >
+              {SUBJECTS.map((subject) => {
+                const isSelected = selectedSubject === subject;
+
+                return (
+                  <TouchableOpacity
+                    key={subject}
+                    style={[
+                      styles.filterChip,
+                      isSelected && styles.filterChipSelected,
+                    ]}
+                    onPress={() => setSelectedSubject(subject)}
+                  >
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        isSelected && styles.filterChipTextSelected,
+                      ]}
+                    >
+                      {subject}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            {/* Location */}
+            <Text style={styles.filterSectionTitle}>Location</Text>
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.filterOptionsContent}
+            >
+              {DISTRICTS.map((district) => {
+                const isSelected = selectedDistrict === district;
+
+                return (
+                  <TouchableOpacity
+                    key={district}
+                    style={[
+                      styles.filterChip,
+                      isSelected && styles.filterChipSelected,
+                    ]}
+                    onPress={() => setSelectedDistrict(district)}
+                  >
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        isSelected && styles.filterChipTextSelected,
+                      ]}
+                    >
+                      {district}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            {/* Level */}
+            <Text style={styles.filterSectionTitle}>Level</Text>
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.filterOptionsContent}
+            >
+              {LEVELS.map((level) => {
+                const isSelected = selectedLevel === level;
+
+                return (
+                  <TouchableOpacity
+                    key={level}
+                    style={[
+                      styles.filterChip,
+                      isSelected && styles.filterChipSelected,
+                    ]}
+                    onPress={() => setSelectedLevel(level)}
+                  >
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        isSelected && styles.filterChipTextSelected,
+                      ]}
+                    >
+                      {level}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            {/* Price */}
+            <View style={styles.priceTitleRow}>
+              <Text style={styles.filterSectionTitle}>Maximum Price</Text>
+              <Text style={styles.selectedPriceText}>LKR {selectedPrice}</Text>
+            </View>
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.priceScrollContent}
+            >
+              {PRICE_OPTIONS.map((price) => {
+                const isSelected = selectedPrice === price;
+
+                return (
+                  <TouchableOpacity
+                    key={price}
+                    style={[
+                      styles.priceOption,
+                      isSelected && styles.priceOptionSelected,
+                    ]}
+                    onPress={() => setSelectedPrice(price)}
+                  >
+                    <Text
+                      style={[
+                        styles.priceOptionText,
+                        isSelected && styles.priceOptionTextSelected,
+                      ]}
+                    >
+                      LKR {price}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            <Text style={styles.priceHelperText}>
+              Tutor prices will be shown from LKR 500 up to your selected
+              maximum price.
+            </Text>
+
+            {/* Filter buttons */}
+            <View style={styles.filterActions}>
+              <TouchableOpacity
+                style={styles.clearButton}
+                onPress={clearFilters}
+                hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+              >
+                <Text style={styles.clearButtonText}>Clear All</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.applyButton}
+                onPress={applyFilters}
+                hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+              >
+                <Text style={styles.applyButtonText}>Apply Filters</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
         {/* Top Tutors Header */}
         <View style={styles.sectionHeaderRow}>
-          <View style={styles.sectionHeaderLeft}>
-            <Text style={styles.sectionTitle}>Top Tutors</Text>
-            <View style={styles.verifiedBadge}>
-              <Text style={styles.verifiedBadgeText}>Verified</Text>
-            </View>
-          </View>
-          <TouchableOpacity onPress={() => router.push("/top-tutors" as any)}>
-            <Text>View All</Text>
-            <Feather name="chevron-right" size={14} color="#FF6B35" />
+          <Text style={styles.sectionTitle}>Top Tutors</Text>
+
+          <TouchableOpacity
+            style={styles.seeAllButton}
+            onPress={() => router.push("/top-tutors" as any)}
+            activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Text style={styles.seeAllText}>View All</Text>
+            <Feather name="chevron-right" size={16} color="#FF6B35" />
           </TouchableOpacity>
         </View>
 
-        {/* Top Tutors Horizontal Carousel */}
+        {/* Top Tutors */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -154,6 +443,7 @@ export default function StudentHomeScreen() {
                 style={styles.tutorImage}
                 resizeMode="cover"
               />
+
               <View style={styles.ratingBadge}>
                 <FontAwesome name="star" size={10} color="#FFB800" />
                 <Text style={styles.ratingText}>4.9</Text>
@@ -161,20 +451,25 @@ export default function StudentHomeScreen() {
             </View>
 
             <Text style={styles.tutorName} numberOfLines={1}>
-              Dr. Sarah Jenkins
+              Sarah Perera
             </Text>
             <Text style={styles.tutorSubject}>Combined Maths</Text>
             <Text style={styles.tutorSessions}>140+ sessions completed</Text>
+            <Text style={styles.tutorLocation}>
+              <Ionicons name="location-outline" size={12} color="#9CA3AF" />{" "}
+              Colombo
+            </Text>
 
             <View style={styles.tutorFooter}>
               <View>
                 <Text style={styles.rateLabel}>RATE</Text>
                 <Text style={styles.rateValue}>
-                  LKR 2,500
-                  <Text style={styles.rateUnit}>/hr</Text>
+                  LKR 800
+                  <Text style={styles.rateUnit}>/per session</Text>
                 </Text>
               </View>
-              <TouchableOpacity style={styles.bookButton}>
+
+              <TouchableOpacity style={styles.bookButton} activeOpacity={0.8}>
                 <Text style={styles.bookButtonText}>Book</Text>
               </TouchableOpacity>
             </View>
@@ -190,6 +485,7 @@ export default function StudentHomeScreen() {
                 style={styles.tutorImage}
                 resizeMode="cover"
               />
+
               <View style={styles.ratingBadge}>
                 <FontAwesome name="star" size={10} color="#FFB800" />
                 <Text style={styles.ratingText}>5.0</Text>
@@ -201,16 +497,21 @@ export default function StudentHomeScreen() {
             </Text>
             <Text style={styles.tutorSubject}>Physics & Mechanics</Text>
             <Text style={styles.tutorSessions}>88+ sessions completed</Text>
+            <Text style={styles.tutorLocation}>
+              <Ionicons name="location-outline" size={12} color="#9CA3AF" />{" "}
+              Kandy
+            </Text>
 
             <View style={styles.tutorFooter}>
               <View>
                 <Text style={styles.rateLabel}>RATE</Text>
                 <Text style={styles.rateValue}>
-                  LKR 2,800
-                  <Text style={styles.rateUnit}>/hr</Text>
+                  LKR 900
+                  <Text style={styles.rateUnit}>/per session</Text>
                 </Text>
               </View>
-              <TouchableOpacity style={styles.bookButton}>
+
+              <TouchableOpacity style={styles.bookButton} activeOpacity={0.8}>
                 <Text style={styles.bookButtonText}>Book</Text>
               </TouchableOpacity>
             </View>
@@ -224,20 +525,22 @@ export default function StudentHomeScreen() {
               <View style={styles.offerTag}>
                 <Text style={styles.offerTagText}>SPECIAL REVISION OFFER</Text>
               </View>
+
               <Text style={styles.offerTitle}>
                 Boost Your A/L Exam Prep with 1-on-1 Mentorship
               </Text>
+
               <Text style={styles.offerSubtitle}>
                 Get 20% off your first 3 sessions with top ranked engineering
                 tutors.
               </Text>
-              <TouchableOpacity style={styles.claimButton}>
+
+              <TouchableOpacity style={styles.claimButton} activeOpacity={0.8}>
                 <Text style={styles.claimButtonText}>Claim 20% Off</Text>
                 <Feather name="arrow-right" size={14} color="#FF6B35" />
               </TouchableOpacity>
             </View>
 
-            {/* Lightning Icon Badge */}
             <View style={styles.lightningBadge}>
               <Ionicons name="flash-outline" size={24} color="#FFFFFF" />
             </View>
@@ -255,6 +558,7 @@ export default function StudentHomeScreen() {
                   color="#FF6B35"
                 />
               </View>
+
               <View>
                 <Text style={styles.goalTitle}>Weekly Study Goal</Text>
                 <Text style={styles.goalSubtitle}>
@@ -262,12 +566,12 @@ export default function StudentHomeScreen() {
                 </Text>
               </View>
             </View>
+
             <View style={styles.goalPercentBadge}>
               <Text style={styles.goalPercentText}>80%</Text>
             </View>
           </View>
 
-          {/* Progress Bar */}
           <View style={styles.progressBarBg}>
             <View style={styles.progressBarFill} />
           </View>
@@ -277,13 +581,13 @@ export default function StudentHomeScreen() {
             <Text style={styles.progressLabelRight}>Target: 10 hrs / week</Text>
           </View>
 
-          {/* Stats Row */}
           <View style={styles.statsRow}>
             <View style={styles.statBoxCompleted}>
               <View style={styles.statHeaderRow}>
                 <View style={styles.statDotCompleted} />
                 <Text style={styles.statLabel}>COMPLETED</Text>
               </View>
+
               <Text style={styles.statValue}>4 Sessions</Text>
             </View>
 
@@ -292,69 +596,75 @@ export default function StudentHomeScreen() {
                 <View style={styles.statDotUpcoming} />
                 <Text style={styles.statLabel}>UPCOMING</Text>
               </View>
+
               <Text style={styles.statValue}>2 Sessions</Text>
             </View>
           </View>
         </View>
 
-        {/* Today's Upcoming Class Banner */}
+        {/* Upcoming Class */}
         <View style={styles.classBanner}>
           <View style={styles.classBannerLeft}>
             <View style={styles.todayBadge}>
               <Text style={styles.todayBadgeText}>TODAY</Text>
             </View>
+
             <View style={styles.classInfo}>
               <Text style={styles.classTitle} numberOfLines={1}>
                 Physics: Electromagnetic Induction
               </Text>
+
               <Text style={styles.classSubtitle} numberOfLines={1}>
                 with Kavinda Perera • 05:30 PM
               </Text>
             </View>
           </View>
 
-          <TouchableOpacity style={styles.joinButton}>
+          <TouchableOpacity style={styles.joinButton} activeOpacity={0.8}>
             <Text style={styles.joinButtonText}>Join</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation Bar */}
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        {/* Active Home Tab */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
+        >
           <Ionicons name="home" size={20} color="#FF6B35" />
           <Text style={styles.navTextActive}>Home</Text>
           <View style={styles.navIndicator} />
         </TouchableOpacity>
 
-        {/* Focus */}
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => router.push("/stay-focus")}
+          onPress={() => router.push("/stay-focus" as any)}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
         >
           <Feather name="clock" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Focus</Text>
         </TouchableOpacity>
 
-        {/* Schedule */}
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => router.push("/schedule")}
+          onPress={() => router.push("/schedule" as any)}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
         >
           <Feather name="calendar" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Schedule</Text>
         </TouchableOpacity>
 
-        {/* Alerts */}
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => router.push("/alerts")}
+          onPress={() => router.push("/alerts" as any)}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
         >
           <View style={styles.alertsIconWrapper}>
             <Feather name="bell" size={20} color="#9CA3AF" />
             <View style={styles.alertDot} />
           </View>
+
           <Text style={styles.navTextInactive}>Alerts</Text>
         </TouchableOpacity>
       </View>
@@ -367,17 +677,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FAF8F5",
   },
-
-  // Top bar with back button
   topBar: {
     paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingTop: 14,
+    paddingBottom: 12,
   },
   backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
@@ -387,14 +695,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
-
   scrollContent: {
     paddingHorizontal: 18,
     paddingTop: 8,
-    paddingBottom: 110,
+    paddingBottom: 150,
   },
-
-  // Header
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -443,13 +748,11 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#FFFFFF",
   },
-
-  // Search & filter
   searchRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   searchBox: {
     flex: 1,
@@ -474,8 +777,8 @@ const styles = StyleSheet.create({
     color: "#374151",
   },
   filterButton: {
-    width: 48,
-    height: 48,
+    width: 52,
+    height: 52,
     backgroundColor: "#FF6B35",
     borderRadius: 16,
     alignItems: "center",
@@ -486,78 +789,202 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 1,
   },
-
-  // Categories
-  categoriesScroll: {
-    marginBottom: 20,
+  filterButtonActive: {
+    backgroundColor: "#D9532B",
   },
-  categoriesContent: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  categoryPill: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 999,
-    borderWidth: 1,
+  filterIndicator: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 7,
+    height: 7,
+    borderRadius: 4,
     backgroundColor: "#FFFFFF",
-    borderColor: "rgba(229, 231, 235, 0.8)",
   },
-  categoryPillSelected: {
+  activeFilterSummary: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFF7ED",
+    borderWidth: 1,
+    borderColor: "#FFE0D4",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    marginBottom: 16,
+  },
+  activeFilterSummaryText: {
+    flex: 1,
+    fontSize: 11,
+    color: "#9E4529",
+    fontWeight: "600",
+    marginRight: 8,
+  },
+  clearSummaryText: {
+    fontSize: 11,
+    color: "#FF6B35",
+    fontWeight: "800",
+  },
+  filterPanel: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "#F3F4F6",
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  filterHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 4,
+  },
+  closeFilterButton: {
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  filterTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#1E1E1E",
+  },
+  filterSectionTitle: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: "#1E1E1E",
+    marginTop: 16,
+    marginBottom: 9,
+  },
+  filterOptionsContent: {
+    paddingRight: 8,
+  },
+  filterChip: {
+    backgroundColor: "#F7F7F7",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 999,
+    paddingHorizontal: 13,
+    paddingVertical: 9,
+    marginRight: 8,
+  },
+  filterChipSelected: {
     backgroundColor: "#FF6B35",
     borderColor: "#FF6B35",
   },
-  categoryPillText: {
+  filterChipText: {
     fontSize: 12,
-    fontWeight: "800",
     color: "#374151",
+    fontWeight: "600",
   },
-  categoryPillTextSelected: {
+  filterChipTextSelected: {
+    color: "#FFFFFF",
+    fontWeight: "800",
+  },
+  priceTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  selectedPriceText: {
+    fontSize: 13,
+    color: "#FF6B35",
+    fontWeight: "800",
+  },
+  priceScrollContent: {
+    paddingVertical: 2,
+    paddingRight: 8,
+  },
+  priceOption: {
+    minWidth: 78,
+    alignItems: "center",
+    backgroundColor: "#F7F7F7",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 11,
+    marginRight: 8,
+  },
+  priceOptionSelected: {
+    backgroundColor: "#FF6B35",
+    borderColor: "#FF6B35",
+  },
+  priceOptionText: {
+    fontSize: 12,
+    color: "#374151",
+    fontWeight: "700",
+  },
+  priceOptionTextSelected: {
     color: "#FFFFFF",
   },
-
-  // Section headers
+  priceHelperText: {
+    fontSize: 10,
+    color: "#9CA3AF",
+    marginTop: 8,
+    lineHeight: 15,
+  },
+  filterActions: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 18,
+  },
+  clearButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    paddingVertical: 12,
+  },
+  clearButtonText: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: "#6B7280",
+  },
+  applyButton: {
+    flex: 1.4,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+    backgroundColor: "#FF6B35",
+    paddingVertical: 12,
+  },
+  applyButtonText: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: "#FFFFFF",
+  },
   sectionHeaderRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 12,
   },
-  sectionHeaderLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
   sectionTitle: {
     fontSize: 14,
     fontWeight: "800",
     color: "#1E1E1E",
   },
-  verifiedBadge: {
-    backgroundColor: "#FFF7ED",
-    borderWidth: 1,
-    borderColor: "#FFD6CC",
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 999,
-  },
-  verifiedBadgeText: {
-    fontSize: 10,
-    fontWeight: "800",
-    color: "#FF6B35",
-  },
   seeAllButton: {
     flexDirection: "row",
     alignItems: "center",
     gap: 2,
+    paddingVertical: 8,
+    paddingHorizontal: 6,
   },
   seeAllText: {
     fontSize: 12,
     fontWeight: "800",
     color: "#FF6B35",
   },
-
-  // Tutors carousel
   tutorsScroll: {
     marginBottom: 20,
   },
@@ -619,6 +1046,11 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "#9CA3AF",
     marginTop: 2,
+  },
+  tutorLocation: {
+    fontSize: 10,
+    color: "#9CA3AF",
+    marginTop: 3,
     marginBottom: 12,
   },
   tutorFooter: {
@@ -633,7 +1065,6 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: "800",
     color: "#9CA3AF",
-    textTransform: "uppercase",
   },
   rateValue: {
     fontSize: 12,
@@ -656,8 +1087,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#FFFFFF",
   },
-
-  // Offer banner
   offerBanner: {
     backgroundColor: "#FF7A45",
     borderRadius: 16,
@@ -691,7 +1120,6 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: "900",
     color: "#FFFFFF",
-    textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   offerTitle: {
@@ -730,8 +1158,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
-  // Goal card
   goalCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
@@ -855,7 +1281,6 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: "800",
     color: "#6B7280",
-    textTransform: "uppercase",
   },
   statValue: {
     fontSize: 12,
@@ -863,8 +1288,6 @@ const styles = StyleSheet.create({
     color: "#111827",
     marginLeft: 14,
   },
-
-  // Class banner
   classBanner: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
@@ -898,7 +1321,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "900",
     color: "#FF6B35",
-    textTransform: "uppercase",
   },
   classInfo: {
     flex: 1,
@@ -927,11 +1349,9 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#FF6B35",
   },
-
-  // Bottom nav
   bottomNav: {
     position: "absolute",
-    bottom: 0,
+    bottom: 10,
     left: 0,
     right: 0,
     backgroundColor: "#FFFFFF",
@@ -939,13 +1359,24 @@ const styles = StyleSheet.create({
     borderTopColor: "#F3F4F6",
     paddingVertical: 12,
     paddingHorizontal: 24,
-    paddingBottom: 18,
+    paddingBottom: 16,
+    minHeight: 72,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 4,
   },
   navItem: {
+    minWidth: 60,
+    minHeight: 54,
     alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 5,
   },
   navTextActive: {
     fontSize: 10,

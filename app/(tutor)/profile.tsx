@@ -1,20 +1,20 @@
 import {
-    Feather,
-    FontAwesome,
-    Ionicons,
-    MaterialCommunityIcons,
+  Feather,
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-    Image,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 type CustomToggleProps = {
@@ -218,7 +218,7 @@ export default function TutorProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Section 4: Support & Legal */}
+        {/* Section 4: Support & Legal (without Log Out) */}
         <View style={styles.sectionCard}>
           <Text style={styles.sectionTitle}>Support & Legal</Text>
 
@@ -230,43 +230,45 @@ export default function TutorProfileScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.settingIconBox}>
-                <Feather name="help-circle" size={18} color="#A34A28" />
+                <Feather name="help-circle" size={18} color="#A33A19" />
               </View>
               <Text style={styles.settingLabel}>Help Center</Text>
             </View>
             <Feather name="chevron-right" size={18} color="#9CA3AF" />
           </TouchableOpacity>
 
-          {/* Terms of Service */}
+          {/* Get Verified */}
           <TouchableOpacity
             activeOpacity={0.7}
-            style={[styles.settingRow, styles.settingBorder]}
+            style={styles.centeredSettingRow}
           >
             <View style={styles.settingLeft}>
               <View style={styles.settingIconBox}>
                 <Feather name="file-text" size={18} color="#A33A19" />
               </View>
-              <Text style={styles.settingLabel}>Terms of Service</Text>
-            </View>
-            <Feather name="chevron-right" size={18} color="#9CA3AF" />
-          </TouchableOpacity>
-
-          {/* Log Out */}
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.settingRow}
-            onPress={() => {
-              // Later: clear session and navigate to login
-            }}
-          >
-            <View style={styles.settingLeft}>
-              <View style={[styles.settingIconBox, styles.logoutIconBox]}>
-                <Feather name="log-out" size={18} color="#D9381E" />
-              </View>
-              <Text style={styles.logoutText}>Log Out</Text>
+              <Text style={styles.settingLabel}>Get Verified</Text>
             </View>
           </TouchableOpacity>
         </View>
+
+        {/* Log Out Button (outside Support & Legal box) */}
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.logoutRow}
+          onPress={() => {
+            // Later: clear session and navigate to login
+          }}
+        >
+          <View style={styles.settingLeft}>
+            <View style={[styles.settingIconBox, styles.logoutIconBox]}>
+              <Feather name="log-out" size={18} color="#D9381E" />
+            </View>
+            <Text style={styles.logoutText}>Log Out</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Extra spacing at bottom so logout button doesn't overlap nav */}
+        <View style={{ height: 20 }} />
       </ScrollView>
 
       {/* Bottom Navigation Bar (same as tutor home, no icon highlighted) */}
@@ -463,6 +465,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "800",
     color: "#D9381E",
+  },
+
+  // Log out row (outside the box)
+  centeredSettingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center", // centers the whole row
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#F3F4F6",
+  },
+  logoutRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 4,
   },
 
   // Toggle switch
