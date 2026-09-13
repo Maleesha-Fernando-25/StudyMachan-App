@@ -2,15 +2,15 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    Image,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 type DateOption = {
@@ -91,7 +91,7 @@ export default function BookKavindaSessionScreen() {
           />
 
           <View style={styles.tutorTextContainer}>
-            <Text style={styles.tutorName}>Kavinda Thennekoon</Text>
+            <Text style={styles.tutorName}>Kavinda Thennakoon</Text>
             <Text style={styles.tutorSubject}>Physics</Text>
           </View>
         </View>

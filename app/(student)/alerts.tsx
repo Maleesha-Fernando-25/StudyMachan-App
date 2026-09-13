@@ -1,17 +1,19 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-    Image,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
+type NotificationIcon = "calendar" | "award" | "info";
 
 type NotificationItem = {
   id: string;
@@ -19,7 +21,7 @@ type NotificationItem = {
   time: string;
   description: string;
   avatar?: string;
-  icon?: "calendar" | "award" | "info";
+  icon?: NotificationIcon;
   hasButton?: boolean;
   buttonText?: string;
   hasAccentBorder?: boolean;
@@ -35,7 +37,7 @@ export default function NotificationsScreen() {
       title: "Sarah J. sent you a message",
       time: "10:42 AM",
       description:
-        '"Hi there! Just checking if you had any questions about chapter 4...',
+        '"Hi there! Just checking if you had any questions about chapter 4..."',
       avatar:
         "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
       hasAccentBorder: true,
@@ -58,7 +60,7 @@ export default function NotificationsScreen() {
       title: "Weekly Goal Achieved! 🏆",
       time: "Yesterday",
       description:
-        "You've completed 5 hours of focused study time this week. Keep",
+        "You've completed 5 hours of focused study time this week. Keep going!",
       icon: "award",
       hasAccentBorder: false,
     },
@@ -67,36 +69,105 @@ export default function NotificationsScreen() {
       title: "New feature: Shared Whiteboard",
       time: "Yesterday",
       description:
-        "You can now collaborate in real-time with your tutors using our new...",
+        "You can now collaborate in real-time with your tutors using our new feature.",
       icon: "info",
       hasAccentBorder: false,
     },
   ];
 
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+
+  const filteredTodayNotifications = todayNotifications.filter((item) => {
+    if (!normalizedSearch) return true;
+
+    return (
+      item.title.toLowerCase().includes(normalizedSearch) ||
+      item.description.toLowerCase().includes(normalizedSearch)
+    );
+  });
+
+  const filteredYesterdayNotifications = yesterdayNotifications.filter(
+    (item) => {
+      if (!normalizedSearch) return true;
+
+      return (
+        item.title.toLowerCase().includes(normalizedSearch) ||
+        item.description.toLowerCase().includes(normalizedSearch)
+      );
+    },
+  );
+
+  const renderNotification = (item: NotificationItem) => (
+    <View
+      key={item.id}
+      style={[
+        styles.notificationRow,
+        item.hasAccentBorder && styles.notificationRowAccent,
+      ]}
+    >
+      {item.hasAccentBorder && <View style={styles.accentLine} />}
+
+      <View style={styles.avatarColumn}>
+        {item.avatar ? (
+          <Image source={{ uri: item.avatar }} style={styles.avatar} />
+        ) : (
+          <View style={styles.iconPlaceholder}>
+            <Feather name={item.icon || "info"} size={20} color="#7A7263" />
+          </View>
+        )}
+      </View>
+
+      <View style={styles.contentColumn}>
+        <View style={styles.titleTimeRow}>
+          <Text style={styles.notificationTitle} numberOfLines={2}>
+            {item.title}
+          </Text>
+
+          <Text style={styles.notificationTime}>{item.time}</Text>
+        </View>
+
+        <Text style={styles.notificationDescription} numberOfLines={3}>
+          {item.description}
+        </Text>
+
+        {item.hasButton && item.buttonText && (
+          <TouchableOpacity activeOpacity={0.85} style={styles.actionButton}>
+            <Text style={styles.actionButtonText}>{item.buttonText}</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
 
-      {/* Top Header Bar */}
+      {/* Header */}
       <View style={styles.headerBar}>
         <TouchableOpacity
-          style={styles.iconButton}
+          style={styles.headerButton}
           onPress={() => router.back()}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          activeOpacity={0.7}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
         >
-          <Feather name="arrow-left" size={22} color="#A33A19" />
+          <Feather name="arrow-left" size={24} color="#A33A19" />
         </TouchableOpacity>
+
         <Text style={styles.headerTitle}>Messages</Text>
+
+        <View style={styles.headerPlaceholder} />
       </View>
 
-      {/* Main Content */}
+      {/* Main content */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Search Bar */}
+        {/* Search */}
         <View style={styles.searchBar}>
           <Feather name="search" size={18} color="#9CA3AF" />
+
           <TextInput
             placeholder="Search messages..."
             placeholderTextColor="#9CA3AF"
@@ -106,142 +177,83 @@ export default function NotificationsScreen() {
           />
         </View>
 
-        {/* Today Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Today</Text>
+        {/* Today */}
+        {filteredTodayNotifications.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Today</Text>
 
-          <View style={styles.notificationsList}>
-            {todayNotifications.map((item) => (
-              <View
-                key={item.id}
-                style={[
-                  styles.notificationRow,
-                  item.hasAccentBorder && styles.notificationRowAccent,
-                ]}
-              >
-                {/* Left Active Orange Bar Accent */}
-                {item.hasAccentBorder && <View style={styles.accentLine} />}
-
-                {/* Left Icon/Avatar Column */}
-                <View style={styles.avatarColumn}>
-                  {item.avatar ? (
-                    <Image
-                      source={{ uri: item.avatar }}
-                      style={styles.avatar}
-                    />
-                  ) : (
-                    <View style={styles.iconPlaceholder}>
-                      <Feather
-                        name={item.icon || "info"}
-                        size={20}
-                        color="#7A7263"
-                      />
-                    </View>
-                  )}
-                </View>
-
-                {/* Message Content Column */}
-                <View style={styles.contentColumn}>
-                  <View style={styles.titleTimeRow}>
-                    <Text style={styles.notificationTitle} numberOfLines={1}>
-                      {item.title}
-                    </Text>
-                    <Text style={styles.notificationTime}>{item.time}</Text>
-                  </View>
-
-                  <Text
-                    style={styles.notificationDescription}
-                    numberOfLines={2}
-                  >
-                    {item.description}
-                  </Text>
-
-                  {/* Action Button */}
-                  {item.hasButton && item.buttonText && (
-                    <TouchableOpacity
-                      activeOpacity={0.85}
-                      style={styles.actionButton}
-                    >
-                      <Text style={styles.actionButtonText}>
-                        {item.buttonText}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            ))}
+            <View style={styles.notificationsList}>
+              {filteredTodayNotifications.map(renderNotification)}
+            </View>
           </View>
-        </View>
+        )}
 
-        {/* Yesterday Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Yesterday</Text>
+        {/* Yesterday */}
+        {filteredYesterdayNotifications.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Yesterday</Text>
 
-          <View style={styles.notificationsList}>
-            {yesterdayNotifications.map((item) => (
-              <View key={item.id} style={styles.notificationRow}>
-                {/* Left Icon Column */}
-                <View style={styles.avatarColumn}>
-                  <View style={styles.iconPlaceholder}>
-                    <Feather
-                      name={item.icon || "info"}
-                      size={20}
-                      color="#7A7263"
-                    />
-                  </View>
-                </View>
-
-                {/* Message Content Column */}
-                <View style={styles.contentColumn}>
-                  <View style={styles.titleTimeRow}>
-                    <Text style={styles.notificationTitle} numberOfLines={1}>
-                      {item.title}
-                    </Text>
-                    <Text style={styles.notificationTime}>{item.time}</Text>
-                  </View>
-
-                  <Text
-                    style={styles.notificationDescription}
-                    numberOfLines={2}
-                  >
-                    {item.description}
-                  </Text>
-                </View>
-              </View>
-            ))}
+            <View style={styles.notificationsList}>
+              {filteredYesterdayNotifications.map(renderNotification)}
+            </View>
           </View>
-        </View>
+        )}
+
+        {filteredTodayNotifications.length === 0 &&
+          filteredYesterdayNotifications.length === 0 && (
+            <View style={styles.emptyState}>
+              <Feather name="bell-off" size={28} color="#9CA3AF" />
+              <Text style={styles.emptyStateText}>No notifications found.</Text>
+            </View>
+          )}
       </ScrollView>
 
-      {/* Bottom Navigation Bar */}
+      {/* Bottom navigation matching student home */}
       <View style={styles.bottomNav}>
-        {/* Home */}
-        <TouchableOpacity style={styles.navItem}>
-          <View style={styles.navIconWrapper}>
-            <Ionicons name="home" size={20} color="#FF6B35" />
-            <View style={styles.navDot} />
-          </View>
-          <Text style={styles.navTextActive}>Home</Text>
+        {/* Home - not highlighted */}
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/student-home" as any)}
+          activeOpacity={0.8}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
+        >
+          <Ionicons name="home" size={20} color="#9CA3AF" />
+          <Text style={styles.navTextInactive}>Home</Text>
         </TouchableOpacity>
 
         {/* Focus */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/stay-focus" as any)}
+          activeOpacity={0.8}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
+        >
           <Feather name="clock" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Focus</Text>
         </TouchableOpacity>
 
         {/* Schedule */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/my-sessions" as any)}
+          activeOpacity={0.8}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
+        >
           <Feather name="calendar" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Schedule</Text>
         </TouchableOpacity>
 
-        {/* Alerts (Active) */}
-        <TouchableOpacity style={styles.navItem}>
-          <View style={styles.navIconWrapper}>
+        {/* Alerts - highlighted */}
+        <TouchableOpacity
+          style={styles.navItem}
+          activeOpacity={0.8}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
+        >
+          <View style={styles.alertsIconWrapper}>
             <Feather name="bell" size={20} color="#FF6B35" />
             <View style={styles.alertDotActive} />
           </View>
+
           <Text style={styles.navTextActive}>Alerts</Text>
         </TouchableOpacity>
       </View>
@@ -252,39 +264,52 @@ export default function NotificationsScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FAF8F5",
   },
 
-  // Header
+  // Header lowered and enlarged
   headerBar: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
+    justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 12,
+    paddingTop: 20,
+    paddingBottom: 16,
+    minHeight: 76,
     backgroundColor: "#FAF8F5",
   },
-  iconButton: {
-    width: 32,
-    height: 32,
+
+  headerButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 1,
   },
+
+  headerPlaceholder: {
+    width: 48,
+    height: 48,
+  },
+
   headerTitle: {
     fontSize: 20,
     fontWeight: "800",
     color: "#A33A19",
   },
 
-  // Scroll content
   scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 16,
-    paddingBottom: 100, // space for bottom nav
+    paddingBottom: 150,
   },
 
-  // Search bar
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -301,6 +326,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     marginBottom: 24,
   },
+
   searchInput: {
     flex: 1,
     marginLeft: 12,
@@ -309,21 +335,21 @@ const styles = StyleSheet.create({
     color: "#374151",
   },
 
-  // Sections
   section: {
     marginBottom: 24,
   },
+
   sectionTitle: {
     fontSize: 16,
     fontWeight: "800",
     color: "#374151",
     marginBottom: 12,
   },
+
   notificationsList: {
     gap: 16,
   },
 
-  // Notification row
   notificationRow: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -333,9 +359,11 @@ const styles = StyleSheet.create({
     borderBottomColor: "#F3F4F6",
     position: "relative",
   },
+
   notificationRowAccent: {
-    // extra style if needed in future
+    // Accent style is applied through accentLine.
   },
+
   accentLine: {
     position: "absolute",
     left: 0,
@@ -345,14 +373,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF7A45",
     borderRadius: 999,
   },
+
   avatarColumn: {
     marginRight: 12,
   },
+
   avatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
   },
+
   iconPlaceholder: {
     width: 48,
     height: 48,
@@ -361,14 +392,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
   contentColumn: {
     flex: 1,
   },
+
   titleTimeRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
   },
+
   notificationTitle: {
     fontSize: 14,
     fontWeight: "800",
@@ -376,17 +410,20 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 8,
   },
+
   notificationTime: {
     fontSize: 11,
     fontWeight: "600",
     color: "#9CA3AF",
   },
+
   notificationDescription: {
     fontSize: 12,
     color: "#6B7280",
-    lineHeight: 16,
+    lineHeight: 17,
     marginTop: 4,
   },
+
   actionButton: {
     backgroundColor: "#FF7A45",
     alignSelf: "flex-start",
@@ -400,58 +437,79 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
+
   actionButtonText: {
     fontSize: 12,
     fontWeight: "800",
     color: "#FFFFFF",
   },
 
-  // Bottom nav
+  emptyState: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 50,
+  },
+
+  emptyStateText: {
+    fontSize: 14,
+    color: "#7A7263",
+    marginTop: 10,
+    fontWeight: "600",
+  },
+
+  // Bottom navigation matching student home
   bottomNav: {
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 10,
+    minHeight: 76,
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
-    borderTopColor: "#EFECE6",
+    borderTopColor: "#F3F4F6",
+    paddingHorizontal: 20,
     paddingVertical: 10,
-    paddingHorizontal: 24,
-    paddingBottom: 18,
+    paddingBottom: 14,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 5,
   },
+
   navItem: {
+    minWidth: 68,
+    minHeight: 58,
     alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 5,
   },
-  navIconWrapper: {
-    position: "relative",
-  },
-  navDot: {
-    position: "absolute",
-    top: -4,
-    right: -4,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#FF6B35",
-  },
+
   navTextActive: {
     fontSize: 10,
     fontWeight: "800",
     color: "#FF6B35",
-    marginTop: 2,
+    marginTop: 3,
   },
+
   navTextInactive: {
     fontSize: 10,
     fontWeight: "600",
     color: "#9CA3AF",
-    marginTop: 2,
+    marginTop: 3,
   },
+
+  alertsIconWrapper: {
+    position: "relative",
+  },
+
   alertDotActive: {
     position: "absolute",
-    top: -2,
+    top: -3,
     right: -6,
     width: 8,
     height: 8,
