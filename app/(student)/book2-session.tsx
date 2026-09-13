@@ -20,6 +20,8 @@ type DateOption = {
   hasDot?: boolean;
 };
 
+type SessionMode = "Physical" | "Online" | "Hybrid";
+
 const DATE_OPTIONS: DateOption[] = [
   { day: "Sun", date: "11", disabled: true },
   { day: "Mon", date: "12", hasDot: true },
@@ -37,6 +39,8 @@ const TIME_SLOTS = [
   "03:30 PM",
 ];
 
+const SESSION_MODES: SessionMode[] = ["Physical", "Online", "Hybrid"];
+
 const TOPICS = ["Mechanics", "Heat", "Quantum Physics", "Force", "Electronics"];
 
 export default function BookKavindaSessionScreen() {
@@ -44,6 +48,7 @@ export default function BookKavindaSessionScreen() {
 
   const [selectedDate, setSelectedDate] = useState("12");
   const [selectedTime, setSelectedTime] = useState("10:30 AM");
+  const [selectedMode, setSelectedMode] = useState<SessionMode>("Online");
   const [selectedFocus, setSelectedFocus] = useState<string[]>(["Mechanics"]);
   const [notes, setNotes] = useState("");
 
@@ -56,7 +61,16 @@ export default function BookKavindaSessionScreen() {
   };
 
   const handleConfirmBooking = () => {
-    router.push("/payment-confirmed" as any);
+    router.push({
+      pathname: "/payment-confirmed" as any,
+      params: {
+        date: selectedDate,
+        time: selectedTime,
+        mode: selectedMode,
+        topics: selectedFocus.join(", "),
+        notes,
+      },
+    });
   };
 
   return (
@@ -186,6 +200,50 @@ export default function BookKavindaSessionScreen() {
           </View>
         </View>
 
+        {/* Session Mode */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Session Mode</Text>
+
+          <View style={styles.modeGrid}>
+            {SESSION_MODES.map((mode) => {
+              const isSelected = selectedMode === mode;
+
+              return (
+                <TouchableOpacity
+                  key={mode}
+                  activeOpacity={0.8}
+                  onPress={() => setSelectedMode(mode)}
+                  style={[
+                    styles.modeButton,
+                    isSelected && styles.modeButtonSelected,
+                  ]}
+                >
+                  <Feather
+                    name={
+                      mode === "Physical"
+                        ? "map-pin"
+                        : mode === "Online"
+                          ? "video"
+                          : "shuffle"
+                    }
+                    size={16}
+                    color={isSelected ? "#FFFFFF" : "#5C534B"}
+                  />
+
+                  <Text
+                    style={[
+                      styles.modeText,
+                      isSelected && styles.modeTextSelected,
+                    ]}
+                  >
+                    {mode}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
         {/* Subject and Focus */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Subject & Focus</Text>
@@ -250,6 +308,7 @@ export default function BookKavindaSessionScreen() {
           onPress={handleConfirmBooking}
         >
           <Text style={styles.confirmButtonText}>Confirm Booking</Text>
+
           <Feather name="arrow-right" size={18} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
@@ -281,7 +340,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 1,
@@ -301,7 +363,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 8,
-    paddingBottom: 170,
+    paddingBottom: 190,
   },
 
   tutorCard: {
@@ -313,7 +375,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EFE8DC",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
     shadowOpacity: 0.04,
     shadowRadius: 3,
     elevation: 1,
@@ -457,6 +522,41 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
 
+  modeGrid: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+
+  modeButton: {
+    flex: 1,
+    minHeight: 52,
+    borderRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#EFE8DC",
+    paddingHorizontal: 6,
+  },
+
+  modeButtonSelected: {
+    backgroundColor: "#FF7A45",
+    borderColor: "#FF7A45",
+  },
+
+  modeText: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: "#5C534B",
+  },
+
+  modeTextSelected: {
+    color: "#FFFFFF",
+  },
+
   topicList: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -522,7 +622,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: -3 },
+    shadowOffset: {
+      width: 0,
+      height: -3,
+    },
     shadowOpacity: 0.08,
     shadowRadius: 6,
     elevation: 5,
@@ -564,7 +667,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
     shadowColor: "#FF7A45",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
