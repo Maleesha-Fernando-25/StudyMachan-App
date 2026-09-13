@@ -66,8 +66,7 @@ const SAVED_TUTORS: Tutor[] = [
     availabilityType: "instant",
     tags: ["Chemistry (Organic/Inorganic)", "Speed Revision", "Past Papers"],
     price: "LKR 1,000",
-    avatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150",
   },
   {
     id: "4",
