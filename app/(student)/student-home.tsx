@@ -351,7 +351,9 @@ export default function StudentHomeScreen() {
 
             {/* Price */}
             <View style={styles.priceTitleRow}>
-              <Text style={styles.filterSectionTitle}>Maximum Price</Text>
+              <Text style={styles.filterSectionTitle}>
+                Maximum Price Per Session
+              </Text>
               <Text style={styles.selectedPriceText}>LKR {selectedPrice}</Text>
             </View>
 
@@ -437,9 +439,7 @@ export default function StudentHomeScreen() {
           <View style={styles.tutorCard}>
             <View style={styles.tutorImageWrapper}>
               <Image
-                source={{
-                  uri: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300",
-                }}
+                source={require("../../assets/images/tutors/sarah-perera.jpg")}
                 style={styles.tutorImage}
                 resizeMode="cover"
               />
@@ -457,49 +457,7 @@ export default function StudentHomeScreen() {
             <Text style={styles.tutorSessions}>140+ sessions completed</Text>
             <Text style={styles.tutorLocation}>
               <Ionicons name="location-outline" size={12} color="#9CA3AF" />{" "}
-              Colombo
-            </Text>
-
-            <View style={styles.tutorFooter}>
-              <View>
-                <Text style={styles.rateLabel}>RATE</Text>
-                <Text style={styles.rateValue}>
-                  LKR 800
-                  <Text style={styles.rateUnit}>/per session</Text>
-                </Text>
-              </View>
-
-              <TouchableOpacity style={styles.bookButton} activeOpacity={0.8}>
-                <Text style={styles.bookButtonText}>Book</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Tutor 2 */}
-          <View style={styles.tutorCard}>
-            <View style={styles.tutorImageWrapper}>
-              <Image
-                source={{
-                  uri: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300",
-                }}
-                style={styles.tutorImage}
-                resizeMode="cover"
-              />
-
-              <View style={styles.ratingBadge}>
-                <FontAwesome name="star" size={10} color="#FFB800" />
-                <Text style={styles.ratingText}>5.0</Text>
-              </View>
-            </View>
-
-            <Text style={styles.tutorName} numberOfLines={1}>
-              Kavinda Perera
-            </Text>
-            <Text style={styles.tutorSubject}>Physics & Mechanics</Text>
-            <Text style={styles.tutorSessions}>88+ sessions completed</Text>
-            <Text style={styles.tutorLocation}>
-              <Ionicons name="location-outline" size={12} color="#9CA3AF" />{" "}
-              Kandy
+              Jaffna
             </Text>
 
             <View style={styles.tutorFooter}>
@@ -511,7 +469,55 @@ export default function StudentHomeScreen() {
                 </Text>
               </View>
 
-              <TouchableOpacity style={styles.bookButton} activeOpacity={0.8}>
+              <TouchableOpacity
+                style={styles.bookButton}
+                activeOpacity={0.8}
+                onPress={() => router.push("/book1-session" as any)}
+              >
+                <Text style={styles.bookButtonText}>Book</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Tutor 2 */}
+          <View style={styles.tutorCard}>
+            <View style={styles.tutorImageWrapper}>
+              <Image
+                source={require("../../assets/images/tutors/kavinda-thennakoon.jpg")}
+                style={styles.tutorImage}
+                resizeMode="cover"
+              />
+
+              <View style={styles.ratingBadge}>
+                <FontAwesome name="star" size={10} color="#FFB800" />
+                <Text style={styles.ratingText}>5.0</Text>
+              </View>
+            </View>
+
+            <Text style={styles.tutorName} numberOfLines={1}>
+              Kavinda Thennekoon
+            </Text>
+            <Text style={styles.tutorSubject}>Physics</Text>
+            <Text style={styles.tutorSessions}>88+ sessions completed</Text>
+            <Text style={styles.tutorLocation}>
+              <Ionicons name="location-outline" size={12} color="#9CA3AF" />{" "}
+              Ampara
+            </Text>
+
+            <View style={styles.tutorFooter}>
+              <View>
+                <Text style={styles.rateLabel}>RATE</Text>
+                <Text style={styles.rateValue}>
+                  LKR 950
+                  <Text style={styles.rateUnit}>/per session</Text>
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                style={styles.bookButton}
+                activeOpacity={0.8}
+                onPress={() => router.push("/book2-session" as any)}
+              >
                 <Text style={styles.bookButtonText}>Book</Text>
               </TouchableOpacity>
             </View>
