@@ -38,7 +38,7 @@ export default function StudentProfileScreen() {
 
   const menuItems: MenuItem[] = [
     { id: "1", title: "My Sessions", icon: "calendar" },
-    { id: "2", title: "Payments", icon: "credit-card" },
+    { id: "2", title: "Payment History", icon: "credit-card" },
     { id: "3", title: "Saved Tutors", icon: "heart" },
     { id: "4", title: "Help Center", icon: "help-circle" },
     { id: "5", title: "Settings", icon: "settings" },
