@@ -27,7 +27,6 @@ type MenuItem = {
 
 export default function StudentProfileScreen() {
   const router = useRouter();
-
   const [activeMenuId, setActiveMenuId] = useState<string>("5");
 
   const stats = [
@@ -37,11 +36,31 @@ export default function StudentProfileScreen() {
   ];
 
   const menuItems: MenuItem[] = [
-    { id: "1", title: "My Sessions", icon: "calendar" },
-    { id: "2", title: "Payment History", icon: "credit-card" },
-    { id: "3", title: "Saved Tutors", icon: "heart" },
-    { id: "4", title: "Help Center", icon: "help-circle" },
-    { id: "5", title: "Settings", icon: "settings" },
+    {
+      id: "1",
+      title: "My Sessions",
+      icon: "calendar",
+    },
+    {
+      id: "2",
+      title: "Payment History",
+      icon: "credit-card",
+    },
+    {
+      id: "3",
+      title: "Saved Tutors",
+      icon: "heart",
+    },
+    {
+      id: "4",
+      title: "Help Center",
+      icon: "help-circle",
+    },
+    {
+      id: "5",
+      title: "Settings",
+      icon: "settings",
+    },
   ];
 
   const handleMenuPress = (id: string) => {
@@ -109,6 +128,7 @@ export default function StudentProfileScreen() {
               }}
               style={styles.profileImage}
             />
+
             <View style={styles.onlineDot} />
           </View>
 
@@ -130,7 +150,7 @@ export default function StudentProfileScreen() {
           ))}
         </View>
 
-        {/* Menu Items List */}
+        {/* Menu Items */}
         <View style={styles.menuList}>
           {menuItems.map((item) => {
             const isActive = activeMenuId === item.id;
@@ -212,7 +232,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
     shadowOpacity: 0.06,
     shadowRadius: 3,
     elevation: 1,
@@ -228,7 +251,6 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
 
-  // Profile
   profileHeader: {
     alignItems: "center",
     marginTop: 12,
@@ -286,7 +308,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
 
-  // Stats
   statsRow: {
     flexDirection: "row",
     gap: 12,
@@ -303,7 +324,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#F3F4F6",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 1,
@@ -322,7 +346,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  // Menu
   menuList: {
     paddingHorizontal: 20,
     gap: 8,
@@ -358,7 +381,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
 
-  // Logout
   divider: {
     height: 1,
     backgroundColor: "rgba(229, 231, 235, 0.75)",
