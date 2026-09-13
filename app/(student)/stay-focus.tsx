@@ -20,59 +20,67 @@ export default function StayFocusScreen() {
 
   // Timer state
   const [isPaused, setIsPaused] = useState(true);
-  const [secondsRemaining, setSecondsRemaining] = useState(25 * 60); // 25 minutes
+  const [secondsRemaining, setSecondsRemaining] = useState(25 * 60);
 
   // Duration settings
   const [durationMinutes, setDurationMinutes] = useState(25);
-  const INITIAL_SECONDS = durationMinutes * 60;
+  const initialSeconds = durationMinutes * 60;
 
-  // Modal state for setting time
+  // Modal state
   const [isDurationModalVisible, setDurationModalVisible] = useState(false);
   const [customMinutes, setCustomMinutes] = useState("");
 
   // Timer effect
   useEffect(() => {
-    if (isPaused || secondsRemaining <= 0) return;
+    if (isPaused || secondsRemaining <= 0) {
+      return;
+    }
 
     const interval = setInterval(() => {
-      setSecondsRemaining((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
+      setSecondsRemaining((previousSeconds) => {
+        if (previousSeconds <= 1) {
           return 0;
         }
-        return prev - 1;
+
+        return previousSeconds - 1;
       });
     }, 1000);
 
     return () => clearInterval(interval);
   }, [isPaused, secondsRemaining]);
 
-  // Format MM:SS
+  // Time formatting
   const minutes = Math.floor(secondsRemaining / 60);
   const seconds = secondsRemaining % 60;
+
   const formattedTime = `${String(minutes).padStart(2, "0")}:${String(
     seconds,
   ).padStart(2, "0")}`;
 
-  // SVG Circular Timer Dimensions
+  // SVG timer dimensions
   const size = 270;
   const strokeWidth = 16;
   const center = size / 2;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
-  // Progress ratio based on elapsed time
-  const progress = INITIAL_SECONDS > 0 ? secondsRemaining / INITIAL_SECONDS : 0;
+  const progress = initialSeconds > 0 ? secondsRemaining / initialSeconds : 0;
+
   const strokeDashoffset = circumference - progress * circumference;
 
-  // Handlers
   const handleReset = () => {
     setSecondsRemaining(durationMinutes * 60);
     setIsPaused(true);
   };
 
   const handlePlayPause = () => {
-    setIsPaused((prev) => !prev);
+    if (secondsRemaining <= 0) {
+      setSecondsRemaining(durationMinutes * 60);
+      setIsPaused(false);
+      return;
+    }
+
+    setIsPaused((previousValue) => !previousValue);
   };
 
   const openDurationModal = () => {
@@ -81,11 +89,14 @@ export default function StayFocusScreen() {
   };
 
   const applyCustomDuration = () => {
-    const mins = parseInt(customMinutes, 10);
-    if (!mins || mins <= 0) return;
+    const parsedMinutes = Number.parseInt(customMinutes, 10);
 
-    setDurationMinutes(mins);
-    setSecondsRemaining(mins * 60);
+    if (!Number.isFinite(parsedMinutes) || parsedMinutes <= 0) {
+      return;
+    }
+
+    setDurationMinutes(parsedMinutes);
+    setSecondsRemaining(parsedMinutes * 60);
     setIsPaused(true);
     setDurationModalVisible(false);
   };
@@ -94,56 +105,47 @@ export default function StayFocusScreen() {
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
 
-      {/* Main Container */}
       <View style={styles.container}>
-        {/* Top Header Bar */}
+        {/* Header */}
         <View style={styles.headerRow}>
           <TouchableOpacity
             style={styles.iconButton}
             onPress={() => router.back()}
+            activeOpacity={0.7}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
           >
-            <Feather name="arrow-left" size={22} color="#C85A32" />
+            <Feather name="arrow-left" size={23} color="#C85A32" />
           </TouchableOpacity>
 
           <Text style={styles.headerTitle}>Stay Focus</Text>
 
-          {/* Settings icon removed */}
+          {/* Placeholder keeps the title centered */}
           <View style={styles.iconButtonPlaceholder} />
         </View>
 
-        {/* Scrollable Content */}
+        {/* Scrollable content */}
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Title Row with Action Buttons */}
+          {/* Session title and friends button */}
           <View style={styles.titleRow}>
             <Text style={styles.sectionTitle}>Focus Session</Text>
 
             <View style={styles.actionButtonsRow}>
-              {/* Friends icon - navigate to Connect Friends */}
+              {/* Friends button */}
               <TouchableOpacity
                 style={styles.actionButton}
                 onPress={() => router.push("/connect-friends" as any)}
+                activeOpacity={0.8}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               >
-                <Feather name="users" size={18} color="#201E1D" />
-              </TouchableOpacity>
-
-              {/* Timer icon - open duration modal */}
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={openDurationModal}
-              >
-                <MaterialCommunityIcons
-                  name="timer-outline"
-                  size={18}
-                  color="#201E1D"
-                />
+                <Feather name="users" size={19} color="#201E1D" />
               </TouchableOpacity>
             </View>
           </View>
 
-          {/* Current Task Progress Card */}
+          {/* Current task card */}
           <View style={styles.taskCard}>
             <View style={styles.taskHeader}>
               <Image
@@ -152,28 +154,30 @@ export default function StayFocusScreen() {
                 }}
                 style={styles.tutorAvatar}
               />
+
               <View style={styles.taskInfo}>
                 <Text style={styles.taskTitle}>Calculus with Sarah J.</Text>
+
                 <View style={styles.timeRow}>
                   <Feather name="clock" size={12} color="#8D8680" />
                   <Text style={styles.timeText}>
                     Time Elapsed:{" "}
-                    {formatElapsed(durationMinutes * 60 - secondsRemaining)}
+                    {formatElapsed(initialSeconds - secondsRemaining)}
                   </Text>
                 </View>
               </View>
             </View>
 
-            {/* Session Mini Progress Line */}
+            {/* Mini progress */}
             <View style={styles.miniProgressBg}>
               <View
                 style={[
                   styles.miniProgressFill,
                   {
                     width: `${
-                      durationMinutes * 60 > 0
-                        ? ((durationMinutes * 60 - secondsRemaining) /
-                            (durationMinutes * 60)) *
+                      initialSeconds > 0
+                        ? ((initialSeconds - secondsRemaining) /
+                            initialSeconds) *
                           100
                         : 0
                     }%`,
@@ -183,10 +187,9 @@ export default function StayFocusScreen() {
             </View>
           </View>
 
-          {/* Center Timer Circle */}
+          {/* Timer circle */}
           <View style={styles.timerContainer}>
             <Svg width={size} height={size}>
-              {/* Background Circular Track */}
               <Circle
                 stroke="#EFECE6"
                 fill="none"
@@ -195,7 +198,7 @@ export default function StayFocusScreen() {
                 r={radius}
                 strokeWidth={strokeWidth}
               />
-              {/* Active Orange Progress Arc */}
+
               <Circle
                 stroke="#FF6B35"
                 fill="none"
@@ -210,42 +213,44 @@ export default function StayFocusScreen() {
               />
             </Svg>
 
-            {/* Inner Timer View */}
             <View style={styles.timerInner}>
               <Text style={styles.timerText}>{formattedTime}</Text>
+
               <Text style={styles.timerStatusText}>
                 {isPaused ? "PAUSED" : "RUNNING"}
               </Text>
             </View>
           </View>
 
-          {/* Action Control Buttons */}
+          {/* Timer controls */}
           <View style={styles.controlsRow}>
-            {/* Reset Button (Cross) */}
             <TouchableOpacity
               style={styles.controlButton}
               onPress={handleReset}
+              activeOpacity={0.8}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Feather name="x" size={22} color="#201E1D" />
             </TouchableOpacity>
 
-            {/* Play / Pause Primary Button */}
             <TouchableOpacity
               onPress={handlePlayPause}
               style={[styles.playButton, styles.shadowOrange]}
+              activeOpacity={0.85}
             >
               <Ionicons
                 name={isPaused ? "play" : "pause"}
                 size={32}
                 color="#FFFFFF"
-                style={isPaused ? { marginLeft: 4 } : undefined}
+                style={isPaused ? styles.playIcon : undefined}
               />
             </TouchableOpacity>
 
-            {/* Set Duration Button */}
             <TouchableOpacity
               style={styles.controlButton}
               onPress={openDurationModal}
+              activeOpacity={0.8}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <MaterialCommunityIcons
                 name="timer-outline"
@@ -255,45 +260,61 @@ export default function StayFocusScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Extra spacing at bottom so controls don't overlap nav */}
-          <View style={{ height: 40 }} />
+          <View style={styles.extraBottomSpace} />
         </ScrollView>
       </View>
 
-      {/* Bottom Navigation Bar (always at bottom of screen) */}
+      {/* Raised bottom navigation */}
       <View style={styles.bottomNav}>
-        {/* Home */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/student-home" as any)}
+          activeOpacity={0.8}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
+        >
           <Ionicons name="home" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Home</Text>
         </TouchableOpacity>
 
-        {/* Focus (Active) */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          activeOpacity={0.8}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
+        >
           <View style={styles.navIconWrapper}>
             <Feather name="clock" size={20} color="#FF6B35" />
             <View style={styles.navDot} />
           </View>
+
           <Text style={styles.navTextActive}>Focus</Text>
         </TouchableOpacity>
 
-        {/* Schedule */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/my-sessions" as any)}
+          activeOpacity={0.8}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
+        >
           <Feather name="calendar" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Schedule</Text>
         </TouchableOpacity>
 
-        {/* Alerts */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/alerts" as any)}
+          activeOpacity={0.8}
+          hitSlop={{ top: 8, bottom: 8, left: 10, right: 10 }}
+        >
           <View style={styles.alertsIconWrapper}>
             <Feather name="bell" size={20} color="#9CA3AF" />
             <View style={styles.alertDot} />
           </View>
+
           <Text style={styles.navTextInactive}>Alerts</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Duration Selection Modal */}
+      {/* Duration modal */}
       <Modal
         visible={isDurationModalVisible}
         transparent
@@ -304,22 +325,22 @@ export default function StayFocusScreen() {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Set Focus Duration</Text>
 
-            <Text style={styles.modalSubtitle}>
-              Enter duration in minutes (e.g., 25 for 25 mins 0 secs).
-            </Text>
+            <Text style={styles.modalSubtitle}>Enter duration in minutes.</Text>
 
             <View style={styles.customRow}>
               <TextInput
                 style={styles.customInput}
-                placeholder="Custom (min)"
+                placeholder="Custom minutes"
                 placeholderTextColor="#9CA3AF"
                 keyboardType="number-pad"
                 value={customMinutes}
                 onChangeText={setCustomMinutes}
               />
+
               <TouchableOpacity
                 style={styles.applyButton}
                 onPress={applyCustomDuration}
+                activeOpacity={0.85}
               >
                 <Text style={styles.applyButtonText}>Apply</Text>
               </TouchableOpacity>
@@ -328,6 +349,7 @@ export default function StayFocusScreen() {
             <TouchableOpacity
               style={styles.closeModalButton}
               onPress={() => setDurationModalVisible(false)}
+              activeOpacity={0.8}
             >
               <Text style={styles.closeModalText}>Cancel</Text>
             </TouchableOpacity>
@@ -338,11 +360,15 @@ export default function StayFocusScreen() {
   );
 }
 
-// Helper: format elapsed seconds as MM:SS
 function formatElapsed(elapsedSeconds: number) {
-  const m = Math.floor(elapsedSeconds / 60);
-  const s = elapsedSeconds % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  const safeSeconds = Math.max(0, elapsedSeconds);
+  const minutes = Math.floor(safeSeconds / 60);
+  const seconds = safeSeconds % 60;
+
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+    2,
+    "0",
+  )}`;
 }
 
 const styles = StyleSheet.create({
@@ -350,67 +376,78 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FAF8F5",
   },
+
   container: {
     flex: 1,
   },
+
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 12,
+    paddingTop: 18,
+    paddingBottom: 16,
+    minHeight: 76,
   },
+
   iconButton: {
-    width: 40,
-    height: 40,
+    width: 48,
+    height: 48,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 20,
+    borderRadius: 24,
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 1,
   },
+
   iconButtonPlaceholder: {
-    width: 40,
-    height: 40,
+    width: 48,
+    height: 48,
   },
+
   headerTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "800",
     color: "#C85A32",
   },
 
-  // Scrollable content
   scrollContent: {
     paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingBottom: 150,
   },
 
-  // Title row
   titleRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 20,
   },
+
   sectionTitle: {
     fontSize: 22,
     fontWeight: "800",
     color: "#201E1D",
   },
+
   actionButtonsRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
   },
+
   actionButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: "#F2ECE6",
     alignItems: "center",
     justifyContent: "center",
   },
 
-  // Task card
   taskCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
@@ -424,36 +461,43 @@ const styles = StyleSheet.create({
     elevation: 1,
     marginBottom: 30,
   },
+
   taskHeader: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
     marginBottom: 12,
   },
+
   tutorAvatar: {
     width: 44,
     height: 44,
     borderRadius: 22,
   },
+
   taskInfo: {
     flex: 1,
+    marginLeft: 12,
   },
+
   taskTitle: {
     fontSize: 14,
     fontWeight: "800",
     color: "#201E1D",
   },
+
   timeRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    marginTop: 2,
+    marginTop: 3,
   },
+
   timeText: {
     fontSize: 12,
     fontWeight: "600",
     color: "#8D8680",
+    marginLeft: 4,
   },
+
   miniProgressBg: {
     width: "100%",
     height: 6,
@@ -461,18 +505,19 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
   },
+
   miniProgressFill: {
     height: "100%",
     backgroundColor: "#FF6B35",
     borderRadius: 999,
   },
 
-  // Timer circle
   timerContainer: {
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 10,
   },
+
   timerInner: {
     position: "absolute",
     width: 208,
@@ -489,22 +534,22 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
+
   timerText: {
     fontSize: 36,
     fontWeight: "900",
     color: "#201E1D",
     letterSpacing: -1,
   },
+
   timerStatusText: {
     fontSize: 11,
     fontWeight: "800",
     color: "#8D8680",
     letterSpacing: 2,
     marginTop: 4,
-    textTransform: "uppercase",
   },
 
-  // Controls
   controlsRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -513,6 +558,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
+
   controlButton: {
     width: 56,
     height: 56,
@@ -528,6 +574,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
+
   playButton: {
     width: 80,
     height: 80,
@@ -536,6 +583,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
+  playIcon: {
+    marginLeft: 4,
+  },
+
   shadowOrange: {
     shadowColor: "#FF6B35",
     shadowOffset: { width: 0, height: 2 },
@@ -544,28 +596,45 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
-  // Bottom nav (fixed at bottom of screen)
+  extraBottomSpace: {
+    height: 40,
+  },
+
   bottomNav: {
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 10,
+    minHeight: 76,
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
     borderTopColor: "#EFECE6",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    paddingBottom: 22,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    paddingBottom: 14,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 5,
   },
+
   navItem: {
+    minWidth: 68,
+    minHeight: 58,
     alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 5,
   },
+
   navIconWrapper: {
     position: "relative",
   },
+
   navDot: {
     position: "absolute",
     top: -4,
@@ -575,21 +644,25 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "#FF6B35",
   },
+
   navTextActive: {
     fontSize: 10,
     fontWeight: "800",
     color: "#FF6B35",
-    marginTop: 2,
+    marginTop: 3,
   },
+
   navTextInactive: {
     fontSize: 10,
     fontWeight: "600",
     color: "#9CA3AF",
-    marginTop: 2,
+    marginTop: 3,
   },
+
   alertsIconWrapper: {
     position: "relative",
   },
+
   alertDot: {
     position: "absolute",
     top: -2,
@@ -602,7 +675,6 @@ const styles = StyleSheet.create({
     borderColor: "#FFFFFF",
   },
 
-  // Modal
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -610,18 +682,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 24,
   },
+
   modalContent: {
+    width: "100%",
+    maxWidth: 320,
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 20,
-    width: "100%",
-    maxWidth: 320,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
+
   modalTitle: {
     fontSize: 16,
     fontWeight: "800",
@@ -629,6 +703,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textAlign: "center",
   },
+
   modalSubtitle: {
     fontSize: 12,
     fontWeight: "500",
@@ -637,12 +712,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 16,
   },
+
   customRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
     marginBottom: 10,
   },
+
   customInput: {
     flex: 1,
     height: 44,
@@ -653,6 +730,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#201E1D",
   },
+
   applyButton: {
     backgroundColor: "#FF6B35",
     borderRadius: 12,
@@ -661,16 +739,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
   applyButtonText: {
     fontSize: 14,
     fontWeight: "700",
     color: "#FFFFFF",
   },
+
   closeModalButton: {
     marginTop: 4,
     paddingVertical: 10,
     alignItems: "center",
   },
+
   closeModalText: {
     fontSize: 14,
     fontWeight: "600",
