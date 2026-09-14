@@ -207,7 +207,7 @@ export default function TutorDashboardScreen() {
             </View>
 
             <TouchableOpacity style={styles.seeAllButton}>
-              <Text style={styles.seeAllText}>Full Calendar</Text>
+              <Text style={styles.seeAllText}>View Schedule</Text>
               <Feather name="chevron-right" size={14} color="#FF6B35" />
             </TouchableOpacity>
           </View>
