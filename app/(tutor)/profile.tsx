@@ -244,17 +244,18 @@ export default function TutorProfileScreen() {
           </TouchableOpacity>
 
           {/* Get Verified */}
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.centeredSettingRow}
-          >
-            <View style={styles.settingLeft}>
-              <View style={styles.settingIconBox}>
-                <Feather name="file-text" size={18} color="#A33A19" />
-              </View>
-              <Text style={styles.settingLabel}>Get Verified</Text>
-            </View>
-          </TouchableOpacity>
+         <TouchableOpacity
+  activeOpacity={0.7}
+  style={styles.centeredSettingRow}
+  onPress={() => router.push("/verification")}
+>
+  <View style={styles.settingLeft}>
+    <View style={styles.settingIconBox}>
+      <Feather name="file-text" size={18} color="#A33A19" />
+    </View>
+    <Text style={styles.settingLabel}>Get Verified</Text>
+  </View>
+</TouchableOpacity>
         </View>
 
         {/* Log Out Button – centered */}
