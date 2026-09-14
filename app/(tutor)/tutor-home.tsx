@@ -404,10 +404,13 @@ export default function TutorDashboardScreen() {
           <Text style={styles.navTextInactive}>Earnings</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navItem}>
-          <FontAwesome name="star" size={16} color="#9CA3AF" />
-          <Text style={styles.navTextInactive}>Reviews</Text>
-        </TouchableOpacity>
+        <TouchableOpacity
+  style={styles.navItem}
+  onPress={() => router.push("/reviews")}
+>
+  <FontAwesome name="star" size={16} color="#9CA3AF" />
+  <Text style={styles.navTextInactive}>Reviews</Text>
+</TouchableOpacity>
 
         <TouchableOpacity
           style={styles.navItem}
