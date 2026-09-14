@@ -141,15 +141,14 @@ export default function StudentReviewsScreen() {
           </View>
           <View style={styles.keywordsWrap}>
             {[
-              { text: '"Clear explanations"', count: '84' },
-              { text: '"Reaction mechanisms"', count: '52' },
-              { text: '"Punctual"', count: '41' },
-              { text: '"Friendly demeanour"', count: '38' },
-              { text: '"Detailed notes"', count: '29' },
+              { text: '"Clear explanations"' },
+              { text: '"Reaction mechanisms"' },
+              { text: '"Punctual"' },
+              { text: '"Friendly demeanour"' },
+              { text: '"Detailed notes"' },
             ].map((kw, index) => (
               <View key={index} style={styles.keywordPill}>
                 <Text style={styles.keywordText}>{kw.text}</Text>
-                <Text style={styles.keywordCount}> ({kw.count})</Text>
               </View>
             ))}
           </View>
@@ -175,26 +174,7 @@ export default function StudentReviewsScreen() {
               />
             </TouchableOpacity>
           </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.filtersScroll}
-          >
-            <TouchableOpacity
-              style={[styles.filterChip, styles.filterChipActive]}
-            >
-              <Text style={styles.filterChipTextActive}>All (128)</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.filterChip}>
-              <Text style={styles.filterChipText}>5 Stars (112)</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.filterChip}>
-              <Text style={styles.filterChipText}>4 Stars (12)</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.filterChip}>
-              <Text style={styles.filterChipText}>With Comm...</Text>
-            </TouchableOpacity>
-          </ScrollView>
+          {/* Filter chips removed */}
         </View>
 
         {/* REVIEWS LIST */}
@@ -218,7 +198,11 @@ export default function StudentReviewsScreen() {
             </View>
           </View>
           <View style={styles.reviewMetaRow}>
-            <MaterialCommunityIcons name="check-circle" size={14} color="#C84C1C" />
+            <MaterialCommunityIcons
+              name="check-circle"
+              size={14}
+              color="#C84C1C"
+            />
             <Text style={styles.reviewMetaText}> Yesterday • 1-on-1</Text>
           </View>
 
@@ -628,11 +612,6 @@ const styles = StyleSheet.create({
   keywordText: {
     fontSize: 13,
     color: '#333',
-    fontWeight: '500',
-  },
-  keywordCount: {
-    fontSize: 13,
-    color: '#C84C1C',
     fontWeight: '500',
   },
   filtersSection: {
