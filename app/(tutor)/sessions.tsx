@@ -592,11 +592,11 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#6D3F2E',
+    color: '#FF6B35',
   },
   headerSubtitle: {
     fontSize: 11,
-    color: '#E86E3A',
+    color: '#000000',
     marginTop: 2,
   },
   headerRightPlaceholder: {
