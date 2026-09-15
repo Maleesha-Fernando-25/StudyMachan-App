@@ -196,21 +196,22 @@ export default function TutorProfileScreen() {
 
           {/* Manage Bank Account */}
           <TouchableOpacity
-            activeOpacity={0.7}
-            style={[styles.settingRow, styles.settingBorder]}
-          >
-            <View style={styles.settingLeft}>
-              <View style={styles.settingIconBox}>
-                <MaterialCommunityIcons
-                  name="bank-outline"
-                  size={18}
-                  color="#A33A19"
-                />
-              </View>
-              <Text style={styles.settingLabel}>Manage Bank Account</Text>
-            </View>
-            <Feather name="chevron-right" size={18} color="#9CA3AF" />
-          </TouchableOpacity>
+  activeOpacity={0.7}
+  style={[styles.settingRow, styles.settingBorder]}
+  onPress={() => router.push("/managebankaccounts")}
+>
+  <View style={styles.settingLeft}>
+    <View style={styles.settingIconBox}>
+      <MaterialCommunityIcons
+        name="bank-outline"
+        size={18}
+        color="#A33A19"
+      />
+    </View>
+    <Text style={styles.settingLabel}>Manage Bank Account</Text>
+  </View>
+  <Feather name="chevron-right" size={18} color="#9CA3AF" />
+</TouchableOpacity>
 
           {/* Payout History */}
           <TouchableOpacity activeOpacity={0.7} style={styles.settingRow}>
