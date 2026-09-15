@@ -2,6 +2,7 @@ import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
+  Alert,
   Image,
   SafeAreaView,
   StatusBar,
@@ -14,6 +15,20 @@ import { saveUserRole } from "../../lib/storage/roleStorage";
 
 export default function SignUpLandingScreen() {
   const router = useRouter();
+
+  const selectRole = async (role: "student" | "tutor") => {
+    try {
+      await saveUserRole(role);
+      router.replace("/login");
+    } catch (error) {
+      Alert.alert(
+        "Could not continue",
+        error instanceof Error
+          ? error.message
+          : "Please try selecting your role again.",
+      );
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -37,10 +52,7 @@ export default function SignUpLandingScreen() {
           <TouchableOpacity
             style={styles.primaryButton}
             activeOpacity={0.8}
-            onPress={async () => {
-              await saveUserRole("tutor");
-              router.push("/login");
-            }}
+            onPress={() => selectRole("tutor")}
           >
             <MaterialCommunityIcons
               name="account-group-outline"
@@ -48,17 +60,14 @@ export default function SignUpLandingScreen() {
               color="#FFFFFF"
               style={styles.buttonIcon}
             />
-            <Text style={styles.buttonText}>I'm a Tutor</Text>
+            <Text style={styles.buttonText}>I&apos;m a Tutor</Text>
           </TouchableOpacity>
 
           {/* I'm a Student */}
           <TouchableOpacity
             style={styles.primaryButton}
             activeOpacity={0.8}
-            onPress={async () => {
-              await saveUserRole("student");
-              router.push("/login");
-            }}
+            onPress={() => selectRole("student")}
           >
             <FontAwesome5
               name="user-graduate"
@@ -66,7 +75,7 @@ export default function SignUpLandingScreen() {
               color="#FFFFFF"
               style={styles.buttonIcon}
             />
-            <Text style={styles.buttonText}>I'm a Student</Text>
+            <Text style={styles.buttonText}>I&apos;m a Student</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -113,11 +122,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#FF7A45",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 2,
+    boxShadow: "0px 2px 4px rgba(255,122,69,0.15)",
   },
   buttonIcon: {
     marginRight: 10,

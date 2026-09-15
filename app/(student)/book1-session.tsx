@@ -345,14 +345,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.05)",
   },
 
   headerPlaceholder: {
@@ -380,14 +373,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#EFE8DC",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
     marginBottom: 24,
   },
 
@@ -627,14 +613,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -3,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 5,
+    boxShadow: "0px -3px 6px rgba(0,0,0,0.08)",
   },
 
   totalRow: {
@@ -672,14 +651,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    shadowColor: "#FF7A45",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 2,
+    boxShadow: "0px 2px 4px rgba(255,122,69,0.2)",
   },
 
   confirmButtonText: {

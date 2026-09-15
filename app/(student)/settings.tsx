@@ -368,11 +368,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.05)",
   },
 
   headerButtonPlaceholder: {
@@ -401,11 +397,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderWidth: 1,
     borderColor: "#EFE8DC",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
     marginBottom: 22,
   },
 
@@ -472,11 +464,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EFE8DC",
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
   },
 
   settingsRow: {
@@ -569,11 +557,7 @@ const styles = StyleSheet.create({
   toggleThumbInactive: {
     backgroundColor: "#FFFFFF",
     alignSelf: "flex-start",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.12,
-    shadowRadius: 2,
-    elevation: 1,
+    boxShadow: "0px 1px 2px rgba(0,0,0,0.12)",
   },
 
   modalOverlay: {

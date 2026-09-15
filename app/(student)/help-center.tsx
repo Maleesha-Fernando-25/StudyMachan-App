@@ -209,11 +209,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.05)",
   },
 
   headerButtonPlaceholder: {
@@ -273,11 +269,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "#EFE8DC",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
   },
 
   topicIconCircle: {
@@ -308,11 +300,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EFE8DC",
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
   },
 
   faqQuestionButton: {
@@ -353,11 +341,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#EFE8DC",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
   },
 
   contactTitle: {
@@ -411,11 +395,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    shadowColor: "#FF7A45",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 2,
+    boxShadow: "0px 2px 4px rgba(255,122,69,0.2)",
   },
 
   supportButtonText: {

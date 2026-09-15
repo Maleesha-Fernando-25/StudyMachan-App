@@ -69,7 +69,7 @@ export default function TutorProfileScreen() {
           <Feather name="arrow-left" size={22} color="#FF6B35" />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Tutor's Profile</Text>
+        <Text style={styles.headerTitle}>Tutor&apos;s Profile</Text>
 
         {/* Placeholder to keep title centered */}
         <View style={styles.backButtonPlaceholder} />
@@ -359,11 +359,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#F3F4F6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
   },
   profileImage: {
     width: 80,
@@ -403,11 +399,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#F3F4F6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
     overflow: "hidden",
   },
   sectionTitle: {

@@ -2,8 +2,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type UserRole = "student" | "tutor";
 
-const USER_ROLE_KEY = "user_role";
-
 const ROLE_KEY = "@studymachan:user_role";
 
 export async function saveUserRole(role: "student" | "tutor") {

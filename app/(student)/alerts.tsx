@@ -286,11 +286,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.06)",
   },
 
   headerPlaceholder: {
@@ -319,11 +315,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderWidth: 1,
     borderColor: "rgba(229, 231, 235, 0.8)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
     marginBottom: 24,
   },
 
@@ -431,11 +423,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 12,
     marginTop: 12,
-    shadowColor: "#FF7A45",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(255,122,69,0.2)",
   },
 
   actionButtonText: {
@@ -473,11 +461,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 5,
-    elevation: 5,
+    boxShadow: "0px -2px 5px rgba(0,0,0,0.08)",
   },
 
   navItem: {

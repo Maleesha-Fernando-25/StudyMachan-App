@@ -194,7 +194,7 @@ export default function TutorDashboardScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View style={styles.sectionHeaderLeft}>
-              <Text style={styles.sectionLabel}>TODAY'S SCHEDULE</Text>
+              <Text style={styles.sectionLabel}>TODAY&apos;S SCHEDULE</Text>
               <Text style={styles.sessionsLeftText}>3 sessions left</Text>
             </View>
             <TouchableOpacity style={styles.seeAllButton}>
@@ -427,11 +427,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.06)",
   },
 
   scrollContent: {
@@ -497,11 +493,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderColor: "#F3F4F6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
     marginBottom: 16,
   },
   profileRow: {
@@ -594,11 +586,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: 1,
     borderColor: "#F3F4F6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
   },
   metricHeader: {
     flexDirection: "row",
@@ -717,11 +705,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF7A45",
     borderRadius: 16,
     padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
+    boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
     overflow: "hidden",
   },
   ongoingTopRow: {
@@ -811,11 +795,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
+    boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
   },
   joinClassButtonText: {
     fontSize: 12,
@@ -833,11 +813,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderWidth: 1,
     borderColor: "#F3F4F6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
     marginBottom: 12,
   },
   scheduleLeft: {
@@ -956,11 +932,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderWidth: 1,
     borderColor: "#F3F4F6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
   },
   instantLeft: {
     flexDirection: "row",
@@ -1000,11 +972,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: 1,
     borderColor: "#F3F4F6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
   },
   studentCardTop: {
     flexDirection: "row",

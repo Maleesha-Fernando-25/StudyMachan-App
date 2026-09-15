@@ -398,11 +398,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 24,
     backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.06)",
   },
 
   iconButtonPlaceholder: {
@@ -454,11 +450,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderColor: "#EFECE6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
     marginBottom: 30,
   },
 
@@ -528,11 +520,7 @@ const styles = StyleSheet.create({
     borderColor: "#EFECE6",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
   },
 
   timerText: {
@@ -568,11 +556,7 @@ const styles = StyleSheet.create({
     borderColor: "#EFECE6",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
   },
 
   playButton: {
@@ -589,11 +573,7 @@ const styles = StyleSheet.create({
   },
 
   shadowOrange: {
-    shadowColor: "#FF6B35",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 3,
+    boxShadow: "0px 2px 6px rgba(255,107,53,0.25)",
   },
 
   extraBottomSpace: {
@@ -615,11 +595,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 5,
-    elevation: 5,
+    boxShadow: "0px -2px 5px rgba(0,0,0,0.08)",
   },
 
   navItem: {
@@ -689,11 +665,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
+    boxShadow: "0px 2px 8px rgba(0,0,0,0.2)",
   },
 
   modalTitle: {

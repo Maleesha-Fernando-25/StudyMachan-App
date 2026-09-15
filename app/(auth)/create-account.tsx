@@ -19,7 +19,7 @@ import {
 } from "react-native";
 import AppButton from "../../components/common/AppButton";
 import { BACKEND_URL } from "../../constants/api/api";
-import { registerUser } from "../../supabase/authService";
+import { createBackendProfile, registerUser } from "../../supabase/authService";
 
 export default function CreateAccountScreen() {
   const router = useRouter();
@@ -109,7 +109,7 @@ export default function CreateAccountScreen() {
     }
 
     try {
-      await registerUser(
+      const authData = await registerUser(
         fullName.trim(),
         email.trim(),
         password,
@@ -118,6 +118,19 @@ export default function CreateAccountScreen() {
         dateOfBirthString,
         gender,
       );
+
+      if (authData.session?.access_token && authData.user) {
+        await createBackendProfile(authData.session.access_token, {
+          id: authData.user.id,
+          role: selectedRole,
+          fullName: fullName.trim(),
+          username: username.trim(),
+          email: email.trim(),
+          dateOfBirth: dateOfBirthString,
+          gender,
+          address: address.trim(),
+        });
+      }
 
       Alert.alert(
         "Account created",
@@ -520,6 +533,9 @@ async function createTutorProfile(
   return data;
 }
 
+void createStudentProfile;
+void createTutorProfile;
+
 //styles
 const styles = StyleSheet.create({
   safe: {
@@ -547,11 +563,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.05)",
   },
   header: {
     alignItems: "center",
@@ -693,11 +705,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     width: "100%",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
+    boxShadow: "0px 2px 8px rgba(0,0,0,0.2)",
   },
   modalTitle: {
     fontSize: 16,

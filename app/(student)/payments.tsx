@@ -179,11 +179,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.05)",
   },
 
   headerButtonPlaceholder: {
@@ -225,11 +221,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6B35",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#FF6B35",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.22,
-    shadowRadius: 5,
-    elevation: 2,
+    boxShadow: "0px 2px 5px rgba(255,107,53,0.22)",
   },
 
   successTitle: {

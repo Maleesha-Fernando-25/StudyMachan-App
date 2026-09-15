@@ -21,17 +21,21 @@ import { loginUser, signInWithGoogle } from "../../supabase/authService";
 export default function LoginScreen() {
   const router = useRouter();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleLogin = async () => {
-    if (!username.trim()) {
+    if (!email.trim()) {
       Alert.alert(
         "Missing credentials",
-        "Please enter your email or username.",
+        "Please enter the email address you registered with.",
       );
+      return;
+    }
+    if (!email.includes("@")) {
+      Alert.alert("Invalid email", "Please enter a valid email address.");
       return;
     }
     if (!password) {
@@ -42,7 +46,7 @@ export default function LoginScreen() {
     setIsLoggingIn(true);
 
     try {
-      const { user, profile } = await loginUser(username.trim(), password);
+      const { user, profile } = await loginUser(email, password);
 
       const role =
         profile?.role ||
@@ -120,18 +124,18 @@ export default function LoginScreen() {
 
           {/* Login Card */}
           <View style={styles.card}>
-            {/* Username */}
+            {/* Email */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Username</Text>
+              <Text style={styles.label}>Email</Text>
 
               <View style={styles.inputRow}>
                 <Feather name="user" size={18} color="#7DA2A9" />
 
                 <TextInput
-                  placeholder="Enter your username"
+                  placeholder="Enter your email"
                   placeholderTextColor="#9CA3AF"
-                  value={username}
-                  onChangeText={setUsername}
+                  value={email}
+                  onChangeText={setEmail}
                   style={styles.input}
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -206,7 +210,9 @@ export default function LoginScreen() {
 
             {/* Create Account Navigation */}
             <View style={styles.footerRow}>
-              <Text style={styles.footerText}>Don't have an account? </Text>
+              <Text style={styles.footerText}>
+                Don&apos;t have an account?{" "}
+              </Text>
 
               <TouchableOpacity
                 onPress={() => router.push("/create-account")}
@@ -262,11 +268,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     padding: 8,
     borderRadius: 16,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.07,
-    shadowRadius: 3,
-    elevation: 1,
+    boxShadow: "0px 1px 3px rgba(0,0,0,0.07)",
     marginBottom: 8,
   },
   logo: {
@@ -284,11 +286,7 @@ const styles = StyleSheet.create({
     padding: 24,
     width: "100%",
     maxWidth: 360,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 2,
+    boxShadow: "0px 2px 6px rgba(0,0,0,0.08)",
     borderWidth: 1,
     borderColor: "#E5E7EB",
   },
@@ -336,16 +334,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 8,
     marginBottom: 20,
-    shadowColor: "#FF7A45",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 2,
+    boxShadow: "0px 2px 4px rgba(255,122,69,0.2)",
   },
   loginButtonDisabled: {
     backgroundColor: "#D1D5DB",
-    shadowOpacity: 0,
-    elevation: 0,
+    boxShadow: "none",
   },
   loginButtonText: {
     color: "#FFFFFF",

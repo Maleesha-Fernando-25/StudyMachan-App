@@ -13,6 +13,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import {
+  resendVerificationEmail,
+  verifyEmailOtp,
+} from "../../supabase/authService";
 
 export default function VerifyEmailScreen() {
   const router = useRouter();
@@ -21,6 +25,8 @@ export default function VerifyEmailScreen() {
   const role = (params.role as "student" | "tutor") || "student";
 
   const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const inputs = useRef<(TextInput | null)[]>([]);
 
   const handleCodeChange = (text: string, index: number) => {
@@ -50,20 +56,24 @@ export default function VerifyEmailScreen() {
       return;
     }
 
+    if (!email) {
+      Alert.alert(
+        "Missing email",
+        "Email address is required for verification.",
+      );
+      return;
+    }
+
     const otp = code.join("");
+    setIsVerifying(true);
 
     try {
-      // TODO: Replace with real backend call when ready
-      // await verifyOtpApi({ email, otp });
-
-      // Simulate backend success for now
-      await new Promise((res) => setTimeout(res, 600));
+      await verifyEmailOtp(email, otp);
 
       Alert.alert("Verification successful", "Your email has been verified.", [
         {
           text: "OK",
           onPress: () => {
-            // Navigate based on role selected at create-account
             if (role === "tutor") {
               router.replace("/tutor-home" as any);
             } else {
@@ -74,6 +84,31 @@ export default function VerifyEmailScreen() {
       ]);
     } catch (err: any) {
       Alert.alert("Verification failed", err?.message || "Please try again.");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    if (!email) {
+      Alert.alert("Missing email", "Email address is required to resend code.");
+      return;
+    }
+
+    setIsResending(true);
+    try {
+      await resendVerificationEmail(email);
+      Alert.alert(
+        "Code Sent",
+        `A new 6-digit verification code has been sent to ${email}.`,
+      );
+    } catch (err: any) {
+      Alert.alert(
+        "Resend failed",
+        err?.message || "Failed to resend code. Please try again.",
+      );
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -100,7 +135,7 @@ export default function VerifyEmailScreen() {
           <View style={styles.card}>
             <Text style={styles.title}>Verify your account</Text>
             <Text style={styles.subtitle}>
-              We've sent a 6-digit code to your email.
+              We&apos;ve sent a 6-digit code to your email.
             </Text>
 
             <View style={styles.otpRow}>
@@ -132,33 +167,38 @@ export default function VerifyEmailScreen() {
             </View>
 
             <TouchableOpacity
-              activeOpacity={isCodeComplete ? 0.8 : 0.5}
+              activeOpacity={isCodeComplete && !isVerifying ? 0.8 : 0.5}
               style={[
                 styles.verifyButton,
                 {
-                  backgroundColor: isCodeComplete ? "#FF7A45" : "#CCCCCC",
+                  backgroundColor:
+                    isCodeComplete && !isVerifying ? "#FF7A45" : "#CCCCCC",
                 },
               ]}
               onPress={handleVerify}
-              disabled={!isCodeComplete}
+              disabled={!isCodeComplete || isVerifying}
             >
               <Text
                 style={[
                   styles.verifyButtonText,
                   {
-                    color: isCodeComplete ? "#FFFFFF" : "#888888",
+                    color:
+                      isCodeComplete && !isVerifying ? "#FFFFFF" : "#888888",
                   },
                 ]}
               >
-                Verify
+                {isVerifying ? "Verifying..." : "Verify"}
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.actionLink}
-              onPress={() => Alert.alert("Resend", "Resend code (demo)")}
+              onPress={handleResendCode}
+              disabled={isResending}
             >
-              <Text style={styles.resendText}>Resend Code</Text>
+              <Text style={styles.resendText}>
+                {isResending ? "Sending..." : "Resend Code"}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -213,11 +253,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 40,
     paddingBottom: 40,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 2,
+    boxShadow: "0px 2px 6px rgba(0,0,0,0.06)",
     borderWidth: 1,
     borderColor: "#E5E7EB",
   },
@@ -258,11 +294,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
-    shadowColor: "#FF7A45",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 2,
+    boxShadow: "0px 2px 4px rgba(255,122,69,0.2)",
   },
   verifyButtonText: {
     fontSize: 16,
