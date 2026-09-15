@@ -206,10 +206,13 @@ export default function TutorDashboardScreen() {
               <Text style={styles.sessionsLeftText}>2 sessions left</Text>
             </View>
 
-            <TouchableOpacity style={styles.seeAllButton}>
-              <Text style={styles.seeAllText}>View Schedule</Text>
-              <Feather name="chevron-right" size={14} color="#FF6B35" />
-            </TouchableOpacity>
+            <TouchableOpacity
+  style={styles.seeAllButton}
+  onPress={() => router.push("/view-schedule")}
+>
+  <Text style={styles.seeAllText}>View Schedule</Text>
+  <Feather name="chevron-right" size={14} color="#FF6B35" />
+</TouchableOpacity>
           </View>
 
           <View style={styles.scheduleCard}>
