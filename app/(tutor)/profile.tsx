@@ -214,15 +214,20 @@ export default function TutorProfileScreen() {
 </TouchableOpacity>
 
           {/* Payout History */}
-          <TouchableOpacity activeOpacity={0.7} style={styles.settingRow}>
-            <View style={styles.settingLeft}>
-              <View style={styles.settingIconBox}>
-                <Feather name="clock" size={18} color="#A33A19" />
-              </View>
-              <Text style={styles.settingLabel}>Payout History</Text>
-            </View>
-            <Feather name="chevron-right" size={18} color="#9CA3AF" />
-          </TouchableOpacity>
+         <TouchableOpacity
+  activeOpacity={0.7}
+  style={styles.settingRow}
+  onPress={() => router.push("/payout-history")}
+>
+  <View style={styles.settingLeft}>
+    <View style={styles.settingIconBox}>
+      <Feather name="clock" size={18} color="#A33A19" />
+    </View>
+    <Text style={styles.settingLabel}>Payout History</Text>
+  </View>
+
+  <Feather name="chevron-right" size={18} color="#9CA3AF" />
+</TouchableOpacity>
         </View>
 
         {/* Section 4: Support & Legal (without Log Out) */}
