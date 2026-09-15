@@ -59,20 +59,26 @@ export default function TutorProfileScreen() {
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
 
-      {/* Top Header Bar */}
-      <View style={styles.headerRow}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Feather name="arrow-left" size={22} color="#FF6B35" />
-        </TouchableOpacity>
+      {/* Top Header Bar – moved lower */}
+      <View style={styles.topBar}>
+        <View style={styles.headerRow}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Feather name="arrow-left" size={22} color="#FF6B35" />
+          </TouchableOpacity>
 
+<<<<<<< HEAD
         <Text style={styles.headerTitle}>Tutor&apos;s Profile</Text>
+=======
+          <Text style={styles.headerTitle}>Tutor’s Profile</Text>
+>>>>>>> 037abe99b9fb0a6d45cceadc5a368a3bb577800c
 
-        {/* Placeholder to keep title centered */}
-        <View style={styles.backButtonPlaceholder} />
+          {/* Placeholder to keep title centered */}
+          <View style={styles.backButtonPlaceholder} />
+        </View>
       </View>
 
       <ScrollView
@@ -83,14 +89,18 @@ export default function TutorProfileScreen() {
         <View style={styles.profileCard}>
           <Image
             source={{
-              uri: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300",
+              uri: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300",
             }}
             style={styles.profileImage}
           />
-          <Text style={styles.profileName}>Aris Thorne</Text>
-          <Text style={styles.profileRole}>Mathematics Tutor</Text>
+          <Text style={styles.profileName}>Matheesha Fernando</Text>
+          <Text style={styles.profileRole}>A/L Chemistry Tutor</Text>
 
-          <TouchableOpacity activeOpacity={0.8} style={styles.editButton}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.editButton}
+            onPress={() => router.push("/create-account")}
+          >
             <Text style={styles.editButtonText}>Edit Profile</Text>
           </TouchableOpacity>
         </View>
@@ -175,7 +185,7 @@ export default function TutorProfileScreen() {
               <View style={styles.settingIconBox}>
                 <Feather name="bell" size={18} color="#A33A19" />
               </View>
-              <Text style={styles.settingLabel}>Push Notifications</Text>
+              <Text style={styles.settingLabel}> Notifications</Text>
             </View>
             <CustomToggle
               value={pushNotifications}
@@ -190,32 +200,38 @@ export default function TutorProfileScreen() {
 
           {/* Manage Bank Account */}
           <TouchableOpacity
-            activeOpacity={0.7}
-            style={[styles.settingRow, styles.settingBorder]}
-          >
-            <View style={styles.settingLeft}>
-              <View style={styles.settingIconBox}>
-                <MaterialCommunityIcons
-                  name="bank-outline"
-                  size={18}
-                  color="#A33A19"
-                />
-              </View>
-              <Text style={styles.settingLabel}>Manage Bank Account</Text>
-            </View>
-            <Feather name="chevron-right" size={18} color="#9CA3AF" />
-          </TouchableOpacity>
+  activeOpacity={0.7}
+  style={[styles.settingRow, styles.settingBorder]}
+  onPress={() => router.push("/managebankaccounts")}
+>
+  <View style={styles.settingLeft}>
+    <View style={styles.settingIconBox}>
+      <MaterialCommunityIcons
+        name="bank-outline"
+        size={18}
+        color="#A33A19"
+      />
+    </View>
+    <Text style={styles.settingLabel}>Manage Bank Account</Text>
+  </View>
+  <Feather name="chevron-right" size={18} color="#9CA3AF" />
+</TouchableOpacity>
 
           {/* Payout History */}
-          <TouchableOpacity activeOpacity={0.7} style={styles.settingRow}>
-            <View style={styles.settingLeft}>
-              <View style={styles.settingIconBox}>
-                <Feather name="clock" size={18} color="#A33A19" />
-              </View>
-              <Text style={styles.settingLabel}>Payout History</Text>
-            </View>
-            <Feather name="chevron-right" size={18} color="#9CA3AF" />
-          </TouchableOpacity>
+         <TouchableOpacity
+  activeOpacity={0.7}
+  style={styles.settingRow}
+  onPress={() => router.push("/payout-history")}
+>
+  <View style={styles.settingLeft}>
+    <View style={styles.settingIconBox}>
+      <Feather name="clock" size={18} color="#A33A19" />
+    </View>
+    <Text style={styles.settingLabel}>Payout History</Text>
+  </View>
+
+  <Feather name="chevron-right" size={18} color="#9CA3AF" />
+</TouchableOpacity>
         </View>
 
         {/* Section 4: Support & Legal (without Log Out) */}
@@ -238,20 +254,21 @@ export default function TutorProfileScreen() {
           </TouchableOpacity>
 
           {/* Get Verified */}
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.centeredSettingRow}
-          >
-            <View style={styles.settingLeft}>
-              <View style={styles.settingIconBox}>
-                <Feather name="file-text" size={18} color="#A33A19" />
-              </View>
-              <Text style={styles.settingLabel}>Get Verified</Text>
-            </View>
-          </TouchableOpacity>
+         <TouchableOpacity
+  activeOpacity={0.7}
+  style={styles.centeredSettingRow}
+  onPress={() => router.push("/verification")}
+>
+  <View style={styles.settingLeft}>
+    <View style={styles.settingIconBox}>
+      <Feather name="file-text" size={18} color="#A33A19" />
+    </View>
+    <Text style={styles.settingLabel}>Get Verified</Text>
+  </View>
+</TouchableOpacity>
         </View>
 
-        {/* Log Out Button (outside Support & Legal box) */}
+        {/* Log Out Button – centered */}
         <TouchableOpacity
           activeOpacity={0.7}
           style={styles.logoutRow}
@@ -259,7 +276,7 @@ export default function TutorProfileScreen() {
             // Later: clear session and navigate to login
           }}
         >
-          <View style={styles.settingLeft}>
+          <View style={styles.logoutInner}>
             <View style={[styles.settingIconBox, styles.logoutIconBox]}>
               <Feather name="log-out" size={18} color="#D9381E" />
             </View>
@@ -271,22 +288,31 @@ export default function TutorProfileScreen() {
         <View style={{ height: 20 }} />
       </ScrollView>
 
-      {/* Bottom Navigation Bar (same as tutor home, no icon highlighted) */}
+      {/* Bottom Navigation Bar – raised and more clickable */}
       <View style={styles.bottomNav}>
         {/* Home */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/tutor-home")}
+        >
           <Ionicons name="home" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Home</Text>
         </TouchableOpacity>
 
         {/* My Schedule */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/sessions")}
+        >
           <Feather name="calendar" size={18} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>My Schedule</Text>
         </TouchableOpacity>
 
         {/* Earnings */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/earnings")}
+        >
           <MaterialCommunityIcons
             name="wallet-outline"
             size={18}
@@ -296,13 +322,19 @@ export default function TutorProfileScreen() {
         </TouchableOpacity>
 
         {/* Reviews */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/reviews")}
+        >
           <FontAwesome name="star" size={16} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Reviews</Text>
         </TouchableOpacity>
 
         {/* Notifications */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/messages")}
+        >
           <Feather name="bell" size={18} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Notifications</Text>
         </TouchableOpacity>
@@ -317,28 +349,36 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAF8F5",
   },
 
-  // Header
+  // Top bar – lowered for visibility
+  topBar: {
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 14,
+  },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 12,
-    backgroundColor: "#FAF8F5",
   },
   backButton: {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 1,
   },
   backButtonPlaceholder: {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "800",
     color: "#FF6B35",
   },
@@ -347,7 +387,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: 110,
+    paddingBottom: 130, // more space for raised nav
     gap: 16,
   },
 
@@ -459,22 +499,28 @@ const styles = StyleSheet.create({
     color: "#D9381E",
   },
 
-  // Log out row (outside the box)
   centeredSettingRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center", // centers the whole row
+    justifyContent: "center",
     paddingVertical: 16,
     paddingHorizontal: 16,
     borderTopWidth: 1,
     borderTopColor: "#F3F4F6",
   },
+
+  // Log out row – centered
   logoutRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 12,
+    justifyContent: "center",
+    paddingVertical: 16,
     paddingHorizontal: 4,
+  },
+  logoutInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
   },
 
   // Toggle switch
@@ -514,7 +560,7 @@ const styles = StyleSheet.create({
     borderColor: "#FFFFFF",
   },
 
-  // Bottom nav (same as tutor home, no icon highlighted)
+  // Bottom nav – raised and more clickable
   bottomNav: {
     position: "absolute",
     left: 0,
@@ -523,9 +569,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
     borderTopColor: "#F3F4F6",
-    paddingVertical: 12,
+    paddingVertical: 18,   // increased from 14
     paddingHorizontal: 12,
-    paddingBottom: 16,
+    paddingBottom: 26,     // increased from 22
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -535,15 +581,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   navTextActive: {
-    fontSize: 9,
+    fontSize: 11,          // slightly larger
     fontWeight: "700",
     color: "#FF6B35",
-    marginTop: 2,
+    marginTop: 6,          // more space
   },
   navTextInactive: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: "600",
     color: "#9CA3AF",
-    marginTop: 2,
+    marginTop: 6,
   },
 });

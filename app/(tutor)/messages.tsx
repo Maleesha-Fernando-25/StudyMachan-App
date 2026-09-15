@@ -1,21 +1,21 @@
 import {
-    Feather,
-    FontAwesome,
-    Ionicons,
-    MaterialCommunityIcons,
+  Feather,
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-    Image,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 type MessageItem = {
@@ -37,7 +37,7 @@ export default function MessagesScreen() {
   const messages: MessageItem[] = [
     {
       id: "1",
-      name: "Sarah Jenkins",
+      name: "Mihansa Herath",
       time: "2m ago",
       timeColor: "#FF6B35",
       message: "That sounds great! I'll see you at 3 PM for our math session.",
@@ -48,7 +48,7 @@ export default function MessagesScreen() {
     },
     {
       id: "2",
-      name: "David Chen",
+      name: "Dhananjaya Perera",
       time: "1h ago",
       timeColor: "#FF6B35",
       message: "Can we review chapter 4 before the quiz?",
@@ -59,7 +59,7 @@ export default function MessagesScreen() {
     },
     {
       id: "3",
-      name: "Dr. Emily Rogers",
+      name: "Sehara Silva",
       time: "Yesterday",
       timeColor: "#9CA3AF",
       message:
@@ -71,7 +71,7 @@ export default function MessagesScreen() {
     },
     {
       id: "4",
-      name: "Michael Torres",
+      name: "Rangana Herath",
       time: "Mon",
       timeColor: "#9CA3AF",
       message: "Got it, thanks! The physics formulas make much more sense now.",
@@ -82,8 +82,8 @@ export default function MessagesScreen() {
     },
     {
       id: "5",
-      name: "Alicia Johnson",
-      time: "Oct 12",
+      name: "Remaliya Senanayake",
+      time: "Aug 12",
       timeColor: "#9CA3AF",
       message: "Could we reschedule our session to Thursday?",
       initials: "AJ",
@@ -96,20 +96,22 @@ export default function MessagesScreen() {
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
 
-      {/* Top Header Bar */}
-      <View style={styles.headerRow}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Feather name="arrow-left" size={22} color="#FF6B35" />
-        </TouchableOpacity>
+      {/* Top Header Bar – moved lower */}
+      <View style={styles.topBar}>
+        <View style={styles.headerRow}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Feather name="arrow-left" size={22} color="#FF6B35" />
+          </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Messages</Text>
+          <Text style={styles.headerTitle}>Messages</Text>
 
-        {/* Placeholder to keep title centered */}
-        <View style={styles.backButtonPlaceholder} />
+          {/* Placeholder to keep title centered */}
+          <View style={styles.backButtonPlaceholder} />
+        </View>
       </View>
 
       {/* Main Container */}
@@ -158,7 +160,9 @@ export default function MessagesScreen() {
               <View style={styles.messageContent}>
                 <View style={styles.messageHeader}>
                   <Text style={styles.messageName}>{item.name}</Text>
-                  <Text style={[styles.messageTime, { color: item.timeColor }]}>
+                  <Text
+                    style={[styles.messageTime, { color: item.timeColor }]}
+                  >
                     {item.time}
                   </Text>
                 </View>
@@ -171,22 +175,31 @@ export default function MessagesScreen() {
         </ScrollView>
       </View>
 
-      {/* Bottom Navigation Bar (same as tutor home, Notifications highlighted) */}
+      {/* Bottom Navigation Bar – raised and more clickable */}
       <View style={styles.bottomNav}>
         {/* Home */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/tutor-home")}
+        >
           <Ionicons name="home" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Home</Text>
         </TouchableOpacity>
 
         {/* My Schedule */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/sessions")}
+        >
           <Feather name="calendar" size={18} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>My Schedule</Text>
         </TouchableOpacity>
 
         {/* Earnings */}
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => router.push("/earnings")}
+        >
           <MaterialCommunityIcons
             name="wallet-outline"
             size={18}
@@ -218,28 +231,36 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBF2E9",
   },
 
-  // Header
+  // Top bar – lowered for visibility
+  topBar: {
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 14,
+  },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 8,
-    backgroundColor: "#FAF8F5",
   },
   backButton: {
-    width: 32,
-    height: 32,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 1,
   },
   backButtonPlaceholder: {
-    width: 32,
-    height: 32,
+    width: 40,
+    height: 40,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "800",
     color: "#FF6B35",
   },
@@ -248,7 +269,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingTop: 8,
   },
 
   // Search bar
@@ -274,7 +295,7 @@ const styles = StyleSheet.create({
 
   // Messages list
   messagesList: {
-    paddingBottom: 100,
+    paddingBottom: 130, // more space for raised nav
     gap: 12,
   },
   messageCard: {
@@ -354,7 +375,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
 
-  // Bottom nav (same as tutor home)
+  // Bottom nav – raised and more clickable
   bottomNav: {
     position: "absolute",
     left: 0,
@@ -363,9 +384,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
     borderTopColor: "#F3F4F6",
-    paddingVertical: 12,
+    paddingVertical: 18,   // increased from 12
     paddingHorizontal: 12,
-    paddingBottom: 16,
+    paddingBottom: 26,     // increased from 16
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -375,22 +396,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   navTextActive: {
-    fontSize: 9,
+    fontSize: 11,          // slightly larger
     fontWeight: "700",
     color: "#FF6B35",
-    marginTop: 2,
+    marginTop: 6,          // more space
   },
   navTextInactive: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: "600",
     color: "#9CA3AF",
-    marginTop: 2,
+    marginTop: 6,
   },
   navIndicator: {
     width: 4,
     height: 4,
     borderRadius: 2,
     backgroundColor: "#FF6B35",
-    marginTop: 2,
+    marginTop: 6,
   },
 });

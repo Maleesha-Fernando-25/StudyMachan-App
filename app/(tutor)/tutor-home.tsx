@@ -5,7 +5,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Image,
   SafeAreaView,
@@ -49,9 +49,10 @@ export default function TutorDashboardScreen() {
               style={styles.logoImageSmall}
               resizeMode="contain"
             />
+
             <View>
               <Text style={styles.appName}>StudyMachan</Text>
-              <Text style={styles.welcomeText}>Welcome back, Kavinda 👋</Text>
+              <Text style={styles.welcomeText}>Welcome, Matheesha 👋</Text>
             </View>
           </View>
 
@@ -66,6 +67,7 @@ export default function TutorDashboardScreen() {
               }}
               style={styles.avatar}
             />
+
             <View style={styles.onlineDotContainer}>
               <View style={styles.onlineDot} />
             </View>
@@ -76,18 +78,19 @@ export default function TutorDashboardScreen() {
         <View style={styles.profileCard}>
           <View style={styles.profileRow}>
             <View style={styles.profileLeft}>
-              <View style={styles.avatarInitialBox}>
-                <Text style={styles.avatarInitialText}>KP</Text>
-              </View>
               <View>
                 <View style={styles.nameRow}>
-                  <Text style={styles.tutorName}>Kavinda Perera</Text>
+                  <Text style={styles.tutorName}>Matheesha Fernando</Text>
+
                   <View style={styles.verifiedBadgeSmall}>
-                    <Text style={styles.verifiedBadgeText}>Verified Tutor</Text>
+                    <Text style={styles.verifiedBadgeText}>
+                      Verified Tutor
+                    </Text>
                   </View>
                 </View>
+
                 <Text style={styles.tutorSubjectSmall}>
-                  A/L Physics & Mechanics
+                  A/L Chemistry
                 </Text>
               </View>
             </View>
@@ -97,6 +100,7 @@ export default function TutorDashboardScreen() {
                 <FontAwesome name="star" size={11} color="#FFB800" />
                 <Text style={styles.ratingValueSmall}>4.95</Text>
               </View>
+
               <Text style={styles.reviewsText}>142 reviews</Text>
             </View>
           </View>
@@ -104,33 +108,33 @@ export default function TutorDashboardScreen() {
 
         {/* Quick Metrics Row */}
         <View style={styles.metricsRow}>
-          {/* Earnings */}
           <View style={styles.metricCard}>
             <View style={styles.metricHeader}>
               <Text style={styles.metricLabel}>Earnings</Text>
               <View style={styles.metricDotEarn} />
             </View>
-            <Text style={styles.metricValue}>LKR 48.5k</Text>
+
+            <Text style={styles.metricValue}>LKR 5000</Text>
             <Text style={styles.metricSubEarn}>This week</Text>
           </View>
 
-          {/* Sessions */}
           <View style={styles.metricCard}>
             <View style={styles.metricHeader}>
               <Text style={styles.metricLabel}>Sessions</Text>
               <View style={styles.metricDotSessions} />
             </View>
+
             <Text style={styles.metricValue}>18 Done</Text>
             <Text style={styles.metricSubGray}>3 remaining</Text>
           </View>
 
-          {/* Feedback */}
           <View style={styles.metricCard}>
             <View style={styles.metricHeader}>
               <Text style={styles.metricLabel}>Feedback</Text>
               <FontAwesome name="star" size={10} color="#FFB800" />
             </View>
-            <Text style={styles.metricValue}>99%</Text>
+
+            <Text style={styles.metricValue}>75%</Text>
             <Text style={styles.metricSubGray}>Satisfaction</Text>
           </View>
         </View>
@@ -140,27 +144,29 @@ export default function TutorDashboardScreen() {
           <View style={styles.sectionHeader}>
             <View style={styles.sectionHeaderLeft}>
               <Text style={styles.sectionLabel}>ONGOING SESSION</Text>
+
               <View style={styles.liveBadge}>
                 <View style={styles.liveDot} />
                 <Text style={styles.liveText}>LIVE NOW</Text>
               </View>
             </View>
-            <Text style={styles.endsInText}>Ends in 25m</Text>
           </View>
 
           <View style={styles.ongoingCard}>
             <View style={styles.ongoingTopRow}>
               <View style={styles.ongoingTag}>
-                <Text style={styles.ongoingTagText}>2025 A/L Intensive</Text>
+                <Text style={styles.ongoingTagText}>2027 A/L Intensive</Text>
               </View>
+
               <View style={styles.lightningBadgeSmall}>
                 <Ionicons name="flash-outline" size={18} color="#FFFFFF" />
               </View>
             </View>
 
             <Text style={styles.ongoingTitle}>
-              Applied Physics: Induction & Force
+              Chemistry: Organic Reaction Mechanisms
             </Text>
+
             <Text style={styles.ongoingSubtitle}>
               Theory & Past Paper Problem Solving
             </Text>
@@ -174,8 +180,10 @@ export default function TutorDashboardScreen() {
                     }}
                     style={styles.studentAvatar}
                   />
+
                   <View style={styles.studentOnlineDot} />
                 </View>
+
                 <View>
                   <Text style={styles.studentName}>Ravindu Senanayake</Text>
                   <Text style={styles.sessionTime}>04:30 PM – 06:00 PM</Text>
@@ -194,26 +202,36 @@ export default function TutorDashboardScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View style={styles.sectionHeaderLeft}>
+<<<<<<< HEAD
               <Text style={styles.sectionLabel}>TODAY&apos;S SCHEDULE</Text>
               <Text style={styles.sessionsLeftText}>3 sessions left</Text>
+=======
+              <Text style={styles.sectionLabel}>TODAY'S SCHEDULE</Text>
+              <Text style={styles.sessionsLeftText}>2 sessions left</Text>
+>>>>>>> 037abe99b9fb0a6d45cceadc5a368a3bb577800c
             </View>
-            <TouchableOpacity style={styles.seeAllButton}>
-              <Text style={styles.seeAllText}>Full Calendar</Text>
-              <Feather name="chevron-right" size={14} color="#FF6B35" />
-            </TouchableOpacity>
+
+            <TouchableOpacity
+  style={styles.seeAllButton}
+  onPress={() => router.push("/view-schedule")}
+>
+  <Text style={styles.seeAllText}>View Schedule</Text>
+  <Feather name="chevron-right" size={14} color="#FF6B35" />
+</TouchableOpacity>
           </View>
 
-          {/* Schedule Item 1 */}
           <View style={styles.scheduleCard}>
             <View style={styles.scheduleLeft}>
               <View style={styles.timeBoxOrange}>
                 <Text style={styles.timeAmPm}>PM</Text>
                 <Text style={styles.timeValue}>06:30</Text>
               </View>
+
               <View style={styles.scheduleInfo}>
                 <Text style={styles.scheduleTitle} numberOfLines={1}>
-                  Physics: Electromagnetic Induction
+                  Chemistry: Inorganic Nomenclature & Reactions
                 </Text>
+
                 <Text style={styles.scheduleSubtitle} numberOfLines={1}>
                   Student: Nethmi Silva •{" "}
                   <Text style={styles.startsInText}>Starts in 45m</Text>
@@ -226,22 +244,24 @@ export default function TutorDashboardScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Schedule Item 2 */}
           <View style={styles.scheduleCard}>
             <View style={styles.scheduleLeft}>
               <View style={styles.timeBoxGray}>
                 <Text style={styles.timeAmPmGray}>PM</Text>
                 <Text style={styles.timeValueGray}>08:00</Text>
               </View>
+
               <View style={styles.scheduleInfo}>
                 <View style={styles.groupTitleRow}>
                   <Text style={styles.scheduleTitle} numberOfLines={1}>
-                    Mechanics Problem Set
+                    Chemistry: Industrial Applications of Organic Chemistry
                   </Text>
+
                   <View style={styles.groupBadge}>
                     <Text style={styles.groupBadgeText}>Group</Text>
                   </View>
                 </View>
+
                 <Text style={styles.scheduleSubtitle} numberOfLines={1}>
                   3 Students enrolled • 1.5 hrs
                 </Text>
@@ -253,10 +273,10 @@ export default function TutorDashboardScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Instant Doubt Support Toggle */}
           <View style={styles.instantCard}>
             <View style={styles.instantLeft}>
               <View style={styles.instantDot} />
+
               <View style={styles.instantInfo}>
                 <Text style={styles.instantTitle}>Instant Doubt Support</Text>
                 <Text style={styles.instantSubtitle}>
@@ -264,6 +284,7 @@ export default function TutorDashboardScreen() {
                 </Text>
               </View>
             </View>
+
             <Switch
               value={instantSupport}
               onValueChange={setInstantSupport}
@@ -282,14 +303,17 @@ export default function TutorDashboardScreen() {
                 Regularly mentored pupils
               </Text>
             </View>
-            <TouchableOpacity style={styles.seeAllButton}>
-              <Text style={styles.seeAllText}>View All (24)</Text>
-              <Feather name="chevron-right" size={14} color="#FF6B35" />
-            </TouchableOpacity>
+
+            <TouchableOpacity
+  style={styles.seeAllButton}
+  onPress={() => router.push("/my-students")}
+>
+  <Text style={styles.seeAllText}>View All (5)</Text>
+  <Feather name="chevron-right" size={14} color="#FF6B35" />
+</TouchableOpacity>
           </View>
 
           <View style={styles.studentsRow}>
-            {/* Student 1 */}
             <View style={styles.studentCard}>
               <View style={styles.studentCardTop}>
                 <Image
@@ -298,20 +322,23 @@ export default function TutorDashboardScreen() {
                   }}
                   style={styles.studentAvatarCard}
                 />
+
                 <View style={styles.yearBadge}>
-                  <Text style={styles.yearBadgeText}>2025 A/L</Text>
+                  <Text style={styles.yearBadgeText}>2027 A/L</Text>
                 </View>
               </View>
 
               <Text style={styles.studentNameCard} numberOfLines={1}>
-                Dilshan Fernando
+                Dilshan Pathirana
               </Text>
+
               <Text style={styles.studentSessionsText}>
                 8 Sessions completed
               </Text>
 
               <View style={styles.studentCardFooter}>
-                <Text style={styles.gradeText}>Grade: A* target</Text>
+                <Text style={styles.gradeText}>Active</Text>
+
                 <TouchableOpacity>
                   <Ionicons
                     name="chatbubble-outline"
@@ -322,7 +349,6 @@ export default function TutorDashboardScreen() {
               </View>
             </View>
 
-            {/* Student 2 */}
             <View style={styles.studentCard}>
               <View style={styles.studentCardTop}>
                 <Image
@@ -331,6 +357,7 @@ export default function TutorDashboardScreen() {
                   }}
                   style={styles.studentAvatarCard}
                 />
+
                 <View style={styles.yearBadge}>
                   <Text style={styles.yearBadgeText}>2026 A/L</Text>
                 </View>
@@ -339,12 +366,14 @@ export default function TutorDashboardScreen() {
               <Text style={styles.studentNameCard} numberOfLines={1}>
                 Amaya Perera
               </Text>
+
               <Text style={styles.studentSessionsText}>
                 12 Sessions completed
               </Text>
 
               <View style={styles.studentCardFooter}>
-                <Text style={styles.gradeText}>Active Mentee</Text>
+                <Text style={styles.gradeText}>Active</Text>
+
                 <TouchableOpacity>
                   <Ionicons
                     name="chatbubble-outline"
@@ -360,14 +389,12 @@ export default function TutorDashboardScreen() {
 
       {/* Bottom Navigation Bar */}
       <View style={styles.bottomNav}>
-        {/* Home (Active) */}
         <TouchableOpacity style={styles.navItem}>
           <Ionicons name="home" size={20} color="#FF6B35" />
           <Text style={styles.navTextActive}>Home</Text>
           <View style={styles.navIndicator} />
         </TouchableOpacity>
 
-        {/* My Schedule */}
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => router.push("/sessions")}
@@ -376,7 +403,6 @@ export default function TutorDashboardScreen() {
           <Text style={styles.navTextInactive}>My Schedule</Text>
         </TouchableOpacity>
 
-        {/* Earnings */}
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => router.push("/earnings")}
@@ -389,13 +415,14 @@ export default function TutorDashboardScreen() {
           <Text style={styles.navTextInactive}>Earnings</Text>
         </TouchableOpacity>
 
-        {/* Reviews */}
-        <TouchableOpacity style={styles.navItem}>
-          <FontAwesome name="star" size={16} color="#9CA3AF" />
-          <Text style={styles.navTextInactive}>Reviews</Text>
-        </TouchableOpacity>
+        <TouchableOpacity
+  style={styles.navItem}
+  onPress={() => router.push("/reviews")}
+>
+  <FontAwesome name="star" size={16} color="#9CA3AF" />
+  <Text style={styles.navTextInactive}>Reviews</Text>
+</TouchableOpacity>
 
-        {/* Notifications */}
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => router.push("/messages")}
@@ -414,16 +441,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAF8F5",
   },
 
-  // Top bar with back button
   topBar: {
     paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingTop: 18,
+    paddingBottom: 10,
   },
   backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
@@ -433,10 +459,9 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 18,
     paddingTop: 8,
-    paddingBottom: 110,
+    paddingBottom: 120, // slightly more space so nav doesn’t cover content
   },
 
-  // Header
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -486,7 +511,6 @@ const styles = StyleSheet.create({
     height: 40,
   },
 
-  // Profile card
   profileCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
@@ -502,26 +526,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   profileLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  avatarInitialBox: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "#FFEAE0",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatarInitialText: {
-    fontSize: 16,
-    fontWeight: "800",
-    color: "#FF6B35",
+    flex: 1,
+    paddingRight: 10,
   },
   nameRow: {
     flexDirection: "row",
     alignItems: "center",
+    flexWrap: "wrap",
     gap: 8,
   },
   tutorName: {
@@ -546,7 +557,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#6B7280",
     fontWeight: "500",
-    marginTop: 2,
+    marginTop: 4,
   },
   ratingBlock: {
     alignItems: "flex-end",
@@ -573,7 +584,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  // Metrics row
   metricsRow: {
     flexDirection: "row",
     gap: 10,
@@ -629,7 +639,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-  // Section generic
   section: {
     marginBottom: 24,
   },
@@ -657,7 +666,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginTop: 2,
   },
-
   sessionsLeftText: {
     fontSize: 11,
     color: "#9CA3AF",
@@ -674,7 +682,6 @@ const styles = StyleSheet.create({
     color: "#FF6B35",
   },
 
-  // Ongoing session
   liveBadge: {
     flexDirection: "row",
     alignItems: "center",
@@ -803,7 +810,6 @@ const styles = StyleSheet.create({
     color: "#FF6B35",
   },
 
-  // Schedule cards
   scheduleCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
@@ -922,7 +928,6 @@ const styles = StyleSheet.create({
     color: "#4B5563",
   },
 
-  // Instant support toggle
   instantCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
@@ -960,7 +965,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-  // Students section
   studentsRow: {
     flexDirection: "row",
     gap: 12,
@@ -1023,7 +1027,6 @@ const styles = StyleSheet.create({
     color: "#059669",
   },
 
-  // Bottom nav (5 items)
   bottomNav: {
     position: "absolute",
     bottom: 0,
@@ -1032,9 +1035,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
     borderTopColor: "#F3F4F6",
-    paddingVertical: 10,
+    paddingVertical: 14,      // increased from 10 → more vertical space
     paddingHorizontal: 12,
-    paddingBottom: 16,
+    paddingBottom: 22,        // increased from 16 → pushes items up a bit
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -1044,22 +1047,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   navTextActive: {
-    fontSize: 9,
+    fontSize: 10,             // slightly larger text
     fontWeight: "700",
     color: "#FF6B35",
-    marginTop: 2,
+    marginTop: 4,             // more space between icon and text
   },
   navTextInactive: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: "600",
     color: "#9CA3AF",
-    marginTop: 2,
+    marginTop: 4,
   },
   navIndicator: {
     width: 4,
     height: 4,
     borderRadius: 2,
     backgroundColor: "#FF6B35",
-    marginTop: 2,
+    marginTop: 4,
   },
 });
