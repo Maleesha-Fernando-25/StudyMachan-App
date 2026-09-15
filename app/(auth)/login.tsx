@@ -1,6 +1,6 @@
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   Image,
@@ -16,9 +16,7 @@ import {
   View,
 } from "react-native";
 import { getUserRole } from "../../lib/storage/roleStorage";
-
-// Replace with your actual login function
-// import { loginUser } from "../../supabase/authService";
+import { loginUser, signInWithGoogle } from "../../supabase/authService";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -30,7 +28,10 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!username.trim()) {
-      Alert.alert("Missing username", "Please enter your username.");
+      Alert.alert(
+        "Missing credentials",
+        "Please enter your email or username.",
+      );
       return;
     }
     if (!password) {
@@ -41,37 +42,50 @@ export default function LoginScreen() {
     setIsLoggingIn(true);
 
     try {
-      // Replace with your real auth call
-      // const user = await loginUser(username.trim(), password);
+      const { user, profile } = await loginUser(username.trim(), password);
 
-      // For demo, simulate a successful login:
-      await new Promise((res) => setTimeout(res, 600));
+      const role =
+        profile?.role ||
+        (await getUserRole()) ||
+        user?.user_metadata?.role ||
+        "student";
 
-      // Read the role that was saved at signup landing (used only for login path)
-      const role = await getUserRole(); // "student" | "tutor" | null
-
-      if (!role) {
-        Alert.alert(
-          "Role not found",
-          "Please go back and choose Student or Tutor again.",
-          [
-            {
-              text: "OK",
-              onPress: () => router.replace("/signup" as any),
-            },
-          ],
-        );
-        return;
-      }
-
-      // Navigate based on role (for existing users)
       if (role === "tutor") {
         router.replace("/tutor-home" as any);
       } else {
         router.replace("/student-home" as any);
       }
     } catch (err: any) {
-      Alert.alert("Login failed", err?.message || "Please try again.");
+      Alert.alert(
+        "Login failed",
+        err?.message || "Please check your credentials and try again.",
+      );
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoggingIn(true);
+    try {
+      const session = await signInWithGoogle();
+      if (session) {
+        const role =
+          (await getUserRole()) ||
+          session.user?.user_metadata?.role ||
+          "student";
+
+        if (role === "tutor") {
+          router.replace("/tutor-home" as any);
+        } else {
+          router.replace("/student-home" as any);
+        }
+      }
+    } catch (err: any) {
+      Alert.alert(
+        "Google login failed",
+        err?.message || "Could not sign in with Google.",
+      );
     } finally {
       setIsLoggingIn(false);
     }
@@ -202,20 +216,17 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </View>
 
-            {/* Google Login Placeholder */}
+            {/* Google Login Button */}
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.googleButton}
-              onPress={() =>
-                Alert.alert(
-                  "Google login",
-                  "Google authentication will be connected later.",
-                )
-              }
+              onPress={handleGoogleLogin}
               disabled={isLoggingIn}
             >
               <AntDesign name="google" size={18} color="#EA4335" />
-              <Text style={styles.googleButtonText}>Continue with Google</Text>
+              <Text style={styles.googleButtonText}>
+                {isLoggingIn ? "Connecting..." : "Continue with Google"}
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

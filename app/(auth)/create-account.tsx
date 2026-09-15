@@ -18,6 +18,7 @@ import {
   View,
 } from "react-native";
 import AppButton from "../../components/common/AppButton";
+import { BACKEND_URL } from "../../constants/api/api";
 import { registerUser } from "../../supabase/authService";
 
 export default function CreateAccountScreen() {
@@ -450,6 +451,76 @@ export default function CreateAccountScreen() {
   );
 }
 
+//Saving a Student Profile (POST /students/)
+
+async function createStudentProfile(
+  userId: string,
+  token: string,
+  formData: any,
+) {
+  const response = await fetch(`${BACKEND_URL}/students/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // Send the secret login key
+    },
+    body: JSON.stringify({
+      id: userId,
+      full_name: formData.fullName,
+      username: formData.username,
+      email: formData.email,
+      date_of_birth: formData.dateOfBirth,
+      gender: formData.gender,
+      address: formData.address,
+      subjects_of_interest: ["Maths", "Science"], // Optional
+    }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || "Failed to create student profile");
+  }
+  return data;
+}
+
+//Saving a Tutor Profile (POST /tutors/)
+
+async function createTutorProfile(
+  userId: string,
+  token: string,
+  formData: any,
+) {
+  const response = await fetch(`${BACKEND_URL}/tutors/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // Send the secret login key
+    },
+    body: JSON.stringify({
+      id: userId,
+      full_name: formData.fullName,
+      username: formData.username,
+      email: formData.email,
+      date_of_birth: formData.dateOfBirth,
+      gender: formData.gender,
+      address: formData.address,
+      bio: "Hello, I teach Mathematics!",
+      subjects: ["Combined Maths", "Pure Maths"],
+      hourly_rate: 1500,
+      education: "University of Colombo Alumni",
+      district: "Colombo",
+      teaching_mode: "Both",
+    }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || "Failed to create tutor profile");
+  }
+  return data;
+}
+
+//styles
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
