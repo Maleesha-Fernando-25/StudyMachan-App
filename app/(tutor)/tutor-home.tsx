@@ -296,10 +296,13 @@ export default function TutorDashboardScreen() {
               </Text>
             </View>
 
-            <TouchableOpacity style={styles.seeAllButton}>
-              <Text style={styles.seeAllText}>View All (5)</Text>
-              <Feather name="chevron-right" size={14} color="#FF6B35" />
-            </TouchableOpacity>
+            <TouchableOpacity
+  style={styles.seeAllButton}
+  onPress={() => router.push("/my-students")}
+>
+  <Text style={styles.seeAllText}>View All (5)</Text>
+  <Feather name="chevron-right" size={14} color="#FF6B35" />
+</TouchableOpacity>
           </View>
 
           <View style={styles.studentsRow}>
