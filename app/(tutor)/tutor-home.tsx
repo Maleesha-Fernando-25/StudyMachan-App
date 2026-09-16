@@ -202,13 +202,8 @@ export default function TutorDashboardScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View style={styles.sectionHeaderLeft}>
-<<<<<<< HEAD
               <Text style={styles.sectionLabel}>TODAY&apos;S SCHEDULE</Text>
               <Text style={styles.sessionsLeftText}>3 sessions left</Text>
-=======
-              <Text style={styles.sectionLabel}>TODAY'S SCHEDULE</Text>
-              <Text style={styles.sessionsLeftText}>2 sessions left</Text>
->>>>>>> 037abe99b9fb0a6d45cceadc5a368a3bb577800c
             </View>
 
             <TouchableOpacity
