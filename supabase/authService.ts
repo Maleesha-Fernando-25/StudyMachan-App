@@ -1,10 +1,5 @@
-import * as Linking from "expo-linking";
-import * as WebBrowser from "expo-web-browser";
 import { BACKEND_URL } from "../constants/api/api";
-import { saveUserRole } from "../lib/storage/roleStorage";
 import { supabase } from "./supabaseClient";
-
-WebBrowser.maybeCompleteAuthSession();
 
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
@@ -171,74 +166,4 @@ export async function resendVerificationEmail(email: string) {
   }
 
   return data;
-}
-
-export async function signInWithGoogle(role?: "student" | "tutor") {
-  if (role) {
-    await saveUserRole(role);
-  }
-
-  const redirectUrl = Linking.createURL("login");
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: redirectUrl,
-      skipBrowserRedirect: true,
-    },
-  });
-
-  if (error) {
-    throw error;
-  }
-
-  if (!data?.url) {
-    return null;
-  }
-
-  const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-  if (result.type !== "success" || !result.url) {
-    return null;
-  }
-
-  const url = new URL(result.url);
-  const params = new URLSearchParams(
-    url.hash ? url.hash.substring(1) : url.search,
-  );
-  const accessToken = params.get("access_token");
-  const refreshToken = params.get("refresh_token");
-
-  if (accessToken && refreshToken) {
-    const { data: sessionData, error: setSessionError } =
-      await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
-    if (setSessionError) {
-      throw setSessionError;
-    }
-    if (sessionData.session && role) {
-      const { error: metadataError } = await supabase.auth.updateUser({
-        data: { role },
-      });
-      if (metadataError) {
-        throw metadataError;
-      }
-    }
-    return sessionData.session;
-  }
-
-  const { data: sessionData, error: sessionError } =
-    await supabase.auth.getSession();
-  if (sessionError) {
-    throw sessionError;
-  }
-  if (sessionData.session && role) {
-    const { error: metadataError } = await supabase.auth.updateUser({
-      data: { role },
-    });
-    if (metadataError) {
-      throw metadataError;
-    }
-  }
-  return sessionData.session;
 }

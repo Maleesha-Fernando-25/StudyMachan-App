@@ -1,4 +1,4 @@
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -16,7 +16,7 @@ import {
   View,
 } from "react-native";
 import { getUserRole } from "../../lib/storage/roleStorage";
-import { loginUser, signInWithGoogle } from "../../supabase/authService";
+import { loginUser } from "../../supabase/authService";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -63,32 +63,6 @@ export default function LoginScreen() {
       Alert.alert(
         "Login failed",
         err?.message || "Please check your credentials and try again.",
-      );
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    setIsLoggingIn(true);
-    try {
-      const session = await signInWithGoogle();
-      if (session) {
-        const role =
-          (await getUserRole()) ||
-          session.user?.user_metadata?.role ||
-          "student";
-
-        if (role === "tutor") {
-          router.replace("/tutor-home" as any);
-        } else {
-          router.replace("/student-home" as any);
-        }
-      }
-    } catch (err: any) {
-      Alert.alert(
-        "Google login failed",
-        err?.message || "Could not sign in with Google.",
       );
     } finally {
       setIsLoggingIn(false);
@@ -221,19 +195,6 @@ export default function LoginScreen() {
                 <Text style={styles.signUpText}>Sign Up</Text>
               </TouchableOpacity>
             </View>
-
-            {/* Google Login Button */}
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.googleButton}
-              onPress={handleGoogleLogin}
-              disabled={isLoggingIn}
-            >
-              <AntDesign name="google" size={18} color="#EA4335" />
-              <Text style={styles.googleButtonText}>
-                {isLoggingIn ? "Connecting..." : "Continue with Google"}
-              </Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -361,21 +322,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
     color: "#B85C38",
-  },
-  googleButton: {
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    height: 48,
-    borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  googleButtonText: {
-    color: "#1F2937",
-    fontSize: 14,
-    fontWeight: "700",
-    marginLeft: 10,
   },
 });
