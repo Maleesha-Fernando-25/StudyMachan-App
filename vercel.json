@@ -1,5 +1,7 @@
 {
   "buildCommand": "npm run build:web",
   "outputDirectory": "dist",
-  "installCommand": "npm ci"
+  "installCommand": "npm ci",
+  "cleanUrls": true,
+  "trailingSlash": false
 }
