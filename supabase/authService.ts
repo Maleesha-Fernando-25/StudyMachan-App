@@ -141,115 +141,29 @@ export async function createBackendProfile(
   return responseBody;
 }
 
-export async function sendBackendOtp(email: string, password?: string) {
-  const normalizedEmail = normalizeEmail(email);
-  const response = await fetch(`${BACKEND_URL}/auth/send-otp`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: normalizedEmail,
-      password: password || "tempPassword123",
-    }),
-  });
-
-  const data = await response.json().catch(() => null);
-  if (!response.ok) {
-    throw new Error(
-      data?.detail || "Failed to send verification code. Please try again.",
-    );
-  }
-
-  return data;
-}
-
-export async function verifyBackendOtp(email: string, otpCode: string) {
-  const normalizedEmail = normalizeEmail(email);
-  const response = await fetch(`${BACKEND_URL}/auth/verify-otp`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: normalizedEmail,
-      otp_code: otpCode.trim(),
-    }),
-  });
-
-  const data = await response.json().catch(() => null);
-  if (!response.ok) {
-    throw new Error(data?.detail || "Invalid verification code.");
-  }
-
-  return data;
-}
-
 export async function verifyEmailOtp(email: string, token: string) {
-  const normalizedEmail = normalizeEmail(email);
-  const trimmedToken = token.trim();
-
-  let backendError: Error | null = null;
-  try {
-    const backendResult = await verifyBackendOtp(normalizedEmail, trimmedToken);
-    // Also attempt native Supabase verification if applicable
-    await supabase.auth
-      .verifyOtp({
-        email: normalizedEmail,
-        token: trimmedToken,
-        type: "signup",
-      })
-      .catch(() => null);
-
-    return backendResult;
-  } catch (err: any) {
-    backendError = err;
-  }
-
-  // Fallback to Supabase Auth OTP verification if backend call failed
-  try {
-    const { data, error } = await supabase.auth.verifyOtp({
-      email: normalizedEmail,
-      token: trimmedToken,
-      type: "signup",
-    });
-    if (error) {
-      throw error;
-    }
-    return data;
-  } catch (supaErr: any) {
-    throw backendError || supaErr;
-  }
-}
-
-export async function resendVerificationEmail(email: string, password?: string) {
-  const normalizedEmail = normalizeEmail(email);
-
-  let backendError: Error | null = null;
-  try {
-    const backendResult = await sendBackendOtp(normalizedEmail, password);
-    supabase.auth
-      .resend({
-        type: "signup",
-        email: normalizedEmail,
-      })
-      .catch(() => null);
-
-    return backendResult;
-  } catch (err: any) {
-    backendError = err;
-  }
-
-  // Fallback to Supabase Auth resend
-  const { data, error } = await supabase.auth.resend({
+  const { data, error } = await supabase.auth.verifyOtp({
+    email: normalizeEmail(email),
+    token,
     type: "signup",
-    email: normalizedEmail,
   });
 
   if (error) {
-    throw backendError || error;
+    throw error;
   }
 
   return data;
 }
 
+export async function resendVerificationEmail(email: string) {
+  const { data, error } = await supabase.auth.resend({
+    type: "signup",
+    email: normalizeEmail(email),
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}

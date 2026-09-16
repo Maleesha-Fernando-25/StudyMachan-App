@@ -1,15 +1,19 @@
-import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+    Feather,
+    Ionicons,
+    MaterialCommunityIcons
+} from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import {
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Image,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 export default function MyStudentsScreen() {
@@ -159,7 +163,9 @@ export default function MyStudentsScreen() {
               </Text>
             </View>
 
-            <View style={[styles.infoRow, { marginTop: 6 }]}>
+            <View
+              style={[styles.infoRow, { marginTop: 6 }]}
+            >
               <MaterialCommunityIcons
                 name="calendar-sync"
                 size={14}
@@ -205,7 +211,9 @@ export default function MyStudentsScreen() {
               <View style={styles.nameRow}>
                 <Text style={styles.studentName}>Alex Rivers</Text>
                 <View style={styles.tagGrey}>
-                  <Text style={styles.tagGreyText}>2025 A/L • Target: A</Text>
+                  <Text style={styles.tagGreyText}>
+                    2025 A/L • Target: A
+                  </Text>
                 </View>
               </View>
               <Text style={styles.studentTopic} numberOfLines={2}>
@@ -233,11 +241,13 @@ export default function MyStudentsScreen() {
               />
               <Text style={styles.infoTextGrey} numberOfLines={1}>
                 <Text style={styles.infoTextBold}>Last:</Text> 3 days ago •
-                Hess's Law & Born-Haber Cycl Hess&apos;s Law & Born-Haber Cycl
+                Hess's Law & Born-Haber Cycl
               </Text>
             </View>
 
-            <View style={[styles.infoRow, { marginTop: 6 }]}>
+            <View
+              style={[styles.infoRow, { marginTop: 6 }]}
+            >
               <Feather
                 name="users"
                 size={14}
@@ -276,11 +286,11 @@ export default function MyStudentsScreen() {
         <View style={styles.studentCard}>
           <View style={styles.studentHeader}>
             <Image
-              source={{
-                uri: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
-              }}
-              style={styles.avatar}
-            />
+  source={{
+    uri: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+  }}
+  style={styles.avatar}
+/>
             <View style={styles.studentInfo}>
               <View style={styles.nameRow}>
                 <Text style={styles.studentName}>Dilshan Pathirana</Text>
@@ -346,12 +356,12 @@ export default function MyStudentsScreen() {
         {/* Student 4: Amaya Perera */}
         <View style={styles.studentCard}>
           <View style={styles.studentHeader}>
-            <Image
-              source={{
-                uri: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100",
-              }}
-              style={styles.avatar}
-            />
+           <Image
+  source={{
+    uri: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100",
+  }}
+  style={styles.avatar}
+/>
             <View style={styles.studentInfo}>
               <View style={styles.nameRow}>
                 <Text style={styles.studentName}>Amaya Perera</Text>
@@ -436,7 +446,12 @@ export default function MyStudentsScreen() {
 
           <View style={styles.progressHeader}>
             <Text style={styles.sessionsText}>6 Sessions Completed</Text>
-            <Text style={[styles.progressPercentText, { color: "#C84C1C" }]}>
+            <Text
+              style={[
+                styles.progressPercentText,
+                { color: "#C84C1C" },
+              ]}
+            >
               48% Syllabus
             </Text>
           </View>
@@ -470,8 +485,14 @@ export default function MyStudentsScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.btnSecondaryOrange}>
-              <Ionicons name="flash-outline" size={14} color="#1A1A1A" />
-              <Text style={styles.btnSecondaryOrangeText}>Assign Activity</Text>
+              <Ionicons
+                name="flash-outline"
+                size={14}
+                color="#1A1A1A"
+              />
+              <Text style={styles.btnSecondaryOrangeText}>
+                Assign Activity
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.btnIconOnly}>
