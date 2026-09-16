@@ -20,6 +20,11 @@ import {
 import AppButton from "../../components/common/AppButton";
 import { BACKEND_URL } from "../../constants/api/api";
 import { createBackendProfile, registerUser } from "../../supabase/authService";
+import {
+  createBackendProfile,
+  registerUser,
+  sendBackendOtp,
+} from "../../supabase/authService";
 
 export default function CreateAccountScreen() {
   const router = useRouter();
@@ -33,6 +38,7 @@ export default function CreateAccountScreen() {
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [address, setAddress] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Date Picker State
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
@@ -108,6 +114,8 @@ export default function CreateAccountScreen() {
       dateOfBirthString = `${year}-${month}-${day}`;
     }
 
+    setIsSubmitting(true);
+
     try {
       const authData = await registerUser(
         fullName.trim(),
@@ -130,14 +138,29 @@ export default function CreateAccountScreen() {
           gender,
           address: address.trim(),
         });
+        }).catch(() => null);
+      }
+
+      // Send the 6-digit OTP verification code through the backend
+      let otpSent = false;
+      try {
+        await sendBackendOtp(email.trim(), password);
+        otpSent = true;
+      } catch (otpError: any) {
+        console.warn("Backend OTP send warning:", otpError?.message);
       }
 
       Alert.alert(
         "Account created",
         "Your StudyMachan account was created successfully.",
+        "Verification Code Sent",
+        otpSent
+          ? `We have sent a 6-digit verification code to ${email.trim()}. Please enter the code to verify your email.`
+          : `Account created. Please check your email (${email.trim()}) for your verification code.`,
         [
           {
             text: "OK",
+            text: "Enter Code",
             onPress: () =>
               router.replace({
                 pathname: "/verify_email" as any,
@@ -151,6 +174,8 @@ export default function CreateAccountScreen() {
       );
     } catch (error: any) {
       Alert.alert("Sign up failed", error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -422,8 +447,10 @@ export default function CreateAccountScreen() {
             {/* Submit Button */}
             <AppButton
               title="Create Account"
+              title={isSubmitting ? "Sending verification code..." : "Create Account"}
               onPress={handleCreateAccount}
               disabled={!isTermsAccepted}
+              disabled={!isTermsAccepted || isSubmitting}
             />
           </View>
         </ScrollView>

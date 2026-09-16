@@ -1,20 +1,20 @@
 import {
-    Feather,
-    FontAwesome,
-    Ionicons,
-    MaterialCommunityIcons,
-} from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+  Feather,
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import {
-    Image,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function StudentReviewsScreen() {
   const router = useRouter();
@@ -69,7 +69,7 @@ export default function StudentReviewsScreen() {
                 ))}
               </View>
               <Text style={styles.reviewsCountText}>
-                128 Verified Reviews •{' '}
+                128 Verified Reviews •{" "}
                 <Text style={styles.positiveText}>98% Positive</Text>
               </Text>
             </View>
@@ -77,11 +77,11 @@ export default function StudentReviewsScreen() {
             {/* Right: Bars */}
             <View style={styles.ratingBarsContainer}>
               {[
-                { star: 5, pct: '88%', width: '88%', color: '#FA8055' },
-                { star: 4, pct: '9%', width: '20%', color: '#FA8055' },
-                { star: 3, pct: '2%', width: '8%', color: '#D1D5DB' },
-                { star: 2, pct: '1%', width: '4%', color: '#D1D5DB' },
-                { star: 1, pct: '0%', width: '0%', color: '#D1D5DB' },
+                { star: 5, pct: "88%", width: "88%", color: "#FA8055" },
+                { star: 4, pct: "9%", width: "20%", color: "#FA8055" },
+                { star: 3, pct: "2%", width: "8%", color: "#D1D5DB" },
+                { star: 2, pct: "1%", width: "4%", color: "#D1D5DB" },
+                { star: 1, pct: "0%", width: "0%", color: "#D1D5DB" },
               ].map((item) => (
                 <View key={item.star} style={styles.barRow}>
                   <Text style={styles.barStarText}>{item.star}</Text>
@@ -95,7 +95,10 @@ export default function StudentReviewsScreen() {
                     <View
                       style={[
                         styles.barFill,
-                        { width: item.width, backgroundColor: item.color } as any,
+                        {
+                          width: item.width,
+                          backgroundColor: item.color,
+                        } as any,
                       ]}
                     />
                   </View>
@@ -184,7 +187,7 @@ export default function StudentReviewsScreen() {
           <View style={styles.reviewHeader}>
             <Image
               source={{
-                uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop',
+                uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
               }}
               style={styles.avatarImage}
             />
@@ -234,7 +237,7 @@ export default function StudentReviewsScreen() {
         <View style={styles.reviewCard}>
           <View style={styles.reviewHeader}>
             <View
-              style={[styles.avatarInitials, { backgroundColor: '#F0E2D3' }]}
+              style={[styles.avatarInitials, { backgroundColor: "#F0E2D3" }]}
             >
               <Text style={styles.avatarInitialsText}>AR</Text>
             </View>
@@ -250,7 +253,9 @@ export default function StudentReviewsScreen() {
             </View>
           </View>
           <View style={styles.reviewMetaRowNoIcon}>
-            <Text style={styles.reviewMetaText}>3 days ago • Group Revision</Text>
+            <Text style={styles.reviewMetaText}>
+              3 days ago • Group Revision
+            </Text>
           </View>
 
           <View style={styles.topicBox}>
@@ -276,7 +281,9 @@ export default function StudentReviewsScreen() {
             </View>
             <Text style={styles.replyText}>
               “Thank you Alex! Keep practicing those Hess's Law and Gibbs free
-              energy equations. You're making rapid progress.”
+              energy equations. You're making rapid progress.” “Thank you Alex!
+              Keep practicing those Hess&apos;s Law and Gibbs free energy
+              equations. You&apos;re making rapid progress.”
             </Text>
           </View>
         </View>
@@ -285,7 +292,7 @@ export default function StudentReviewsScreen() {
         <View style={styles.reviewCard}>
           <View style={styles.reviewHeader}>
             <View
-              style={[styles.avatarInitials, { backgroundColor: '#EAE1D5' }]}
+              style={[styles.avatarInitials, { backgroundColor: "#EAE1D5" }]}
             >
               <Text style={styles.avatarInitialsText}>KR</Text>
             </View>
@@ -298,9 +305,7 @@ export default function StudentReviewsScreen() {
             <View style={styles.ratingTopRightAlt}>
               <FontAwesome name="star" size={14} color="#C84C1C" />
               <Text style={styles.ratingTopRightText}>4.8</Text>
-              <Text style={styles.ratingDateRight}>
-                Oct 18,{'\n'}2025
-              </Text>
+              <Text style={styles.ratingDateRight}>Oct 18,{"\n"}2025</Text>
             </View>
           </View>
 
@@ -328,15 +333,13 @@ export default function StudentReviewsScreen() {
         <View style={styles.reviewCard}>
           <View style={styles.reviewHeader}>
             <View
-              style={[styles.avatarInitials, { backgroundColor: '#FAD4CB' }]}
+              style={[styles.avatarInitials, { backgroundColor: "#FAD4CB" }]}
             >
               <Text style={styles.avatarInitialsText}>TH</Text>
             </View>
             <View style={styles.reviewerInfo}>
               <Text style={styles.reviewerName}>Thisara Fernando</Text>
-              <Text style={styles.reviewerSubjectDark}>
-                Chemistry Revision
-              </Text>
+              <Text style={styles.reviewerSubjectDark}>Chemistry Revision</Text>
             </View>
             <View style={styles.ratingTopRightAlt}>
               <FontAwesome name="star" size={14} color="#C84C1C" />
@@ -370,7 +373,7 @@ export default function StudentReviewsScreen() {
         {/* Home */}
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => router.push('/tutor-home')}
+          onPress={() => router.push("/tutor-home")}
         >
           <Ionicons name="home" size={20} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Home</Text>
@@ -379,7 +382,7 @@ export default function StudentReviewsScreen() {
         {/* My Schedule */}
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => router.push('/sessions')}
+          onPress={() => router.push("/sessions")}
         >
           <Feather name="calendar" size={18} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>My Schedule</Text>
@@ -388,7 +391,7 @@ export default function StudentReviewsScreen() {
         {/* Earnings */}
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => router.push('/earnings')}
+          onPress={() => router.push("/earnings")}
         >
           <MaterialCommunityIcons
             name="wallet-outline"
@@ -408,7 +411,7 @@ export default function StudentReviewsScreen() {
         {/* Notifications */}
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => router.push('/messages')}
+          onPress={() => router.push("/messages")}
         >
           <Feather name="bell" size={18} color="#9CA3AF" />
           <Text style={styles.navTextInactive}>Notifications</Text>
@@ -421,7 +424,7 @@ export default function StudentReviewsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: "#F9F9F9",
   },
 
   // Top bar with back arrow – lowered for visibility
@@ -431,18 +434,18 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
   },
   headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   backButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.06,
     shadowRadius: 3,
@@ -454,8 +457,8 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 16,
-    fontWeight: '800',
-color: '#FF6B35',
+    fontWeight: "800",
+    color: "#FF6B35",
   },
 
   scrollContainer: {
@@ -464,42 +467,42 @@ color: '#FF6B35',
   },
   pageSubtitle: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 16,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#EFEFEF',
+    borderColor: "#EFEFEF",
     marginBottom: 16,
   },
   ratingTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 16,
   },
   ratingScoreContainer: {
     flex: 1,
   },
   scoreRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
+    flexDirection: "row",
+    alignItems: "baseline",
   },
   bigScore: {
     fontSize: 36,
-    fontWeight: '800',
-    color: '#1A1A1A',
+    fontWeight: "800",
+    color: "#1A1A1A",
   },
   outOfScore: {
     fontSize: 14,
-    color: '#666',
-    fontWeight: '500',
+    color: "#666",
+    fontWeight: "500",
     marginLeft: 4,
   },
   starsRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 4,
     marginBottom: 8,
   },
@@ -508,26 +511,26 @@ color: '#FF6B35',
   },
   reviewsCountText: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
   },
   positiveText: {
-    color: '#C84C1C',
-    fontWeight: '600',
+    color: "#C84C1C",
+    fontWeight: "600",
   },
   ratingBarsContainer: {
     flex: 0.8,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   barRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 4,
   },
   barStarText: {
     fontSize: 12,
-    color: '#333',
+    color: "#333",
     width: 10,
-    textAlign: 'right',
+    textAlign: "right",
   },
   smallStarIcon: {
     marginLeft: 2,
@@ -536,31 +539,31 @@ color: '#FF6B35',
   barTrack: {
     flex: 1,
     height: 6,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: "#F0F0F0",
     borderRadius: 3,
     marginRight: 8,
   },
   barFill: {
-    height: '100%',
+    height: "100%",
     borderRadius: 3,
   },
   barPctText: {
     fontSize: 11,
-    color: '#666',
+    color: "#666",
     width: 28,
-    textAlign: 'right',
+    textAlign: "right",
   },
   badgesRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
+    borderTopColor: "#F0F0F0",
     paddingTop: 12,
   },
   badgePill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FDF4F1',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FDF4F1",
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 16,
@@ -568,41 +571,41 @@ color: '#FF6B35',
   },
   badgeText: {
     fontSize: 12,
-    color: '#8D5644',
+    color: "#8D5644",
     marginLeft: 6,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   keywordsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   keywordsTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   cardTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1A1A1A',
+    fontWeight: "600",
+    color: "#1A1A1A",
     marginLeft: 6,
   },
   autoExtractedText: {
     fontSize: 12,
-    color: '#C84C1C',
-    fontWeight: '500',
+    color: "#C84C1C",
+    fontWeight: "500",
   },
   keywordsWrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   keywordPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F9F9F9',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F9F9F9",
     borderWidth: 1,
-    borderColor: '#EAEAEA',
+    borderColor: "#EAEAEA",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
@@ -611,75 +614,75 @@ color: '#FF6B35',
   },
   keywordText: {
     fontSize: 13,
-    color: '#333',
-    fontWeight: '500',
+    color: "#333",
+    fontWeight: "500",
   },
   filtersSection: {
     marginBottom: 16,
   },
   filtersHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1A1A1A',
+    fontWeight: "600",
+    color: "#1A1A1A",
   },
   sortDropdown: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: '#EAEAEA',
+    borderColor: "#EAEAEA",
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 8,
   },
   sortText: {
     fontSize: 13,
-    color: '#333',
-    fontWeight: '500',
+    color: "#333",
+    fontWeight: "500",
   },
   filtersScroll: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   filterChip: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: '#EAEAEA',
+    borderColor: "#EAEAEA",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
     marginRight: 8,
   },
   filterChipActive: {
-    backgroundColor: '#FA8055',
-    borderColor: '#FA8055',
+    backgroundColor: "#FA8055",
+    borderColor: "#FA8055",
   },
   filterChipText: {
     fontSize: 13,
-    color: '#333',
-    fontWeight: '500',
+    color: "#333",
+    fontWeight: "500",
   },
   filterChipTextActive: {
     fontSize: 13,
-    color: '#FFFFFF',
-    fontWeight: '600',
+    color: "#FFFFFF",
+    fontWeight: "600",
   },
   reviewCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#EFEFEF',
+    borderColor: "#EFEFEF",
     marginBottom: 12,
   },
   reviewHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     marginBottom: 4,
   },
   avatarImage: {
@@ -692,57 +695,57 @@ color: '#FF6B35',
     width: 40,
     height: 40,
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 12,
   },
   avatarInitialsText: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#333',
+    fontWeight: "700",
+    color: "#333",
   },
   reviewerInfo: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   reviewerName: {
     fontSize: 15,
-    fontWeight: '600',
-    color: '#1A1A1A',
+    fontWeight: "600",
+    color: "#1A1A1A",
     marginBottom: 2,
   },
   reviewerSubject: {
     fontSize: 12,
-    color: '#C84C1C',
-    fontWeight: '500',
+    color: "#C84C1C",
+    fontWeight: "500",
   },
   reviewerSubjectDark: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     paddingRight: 20,
   },
   ratingTopRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   ratingTopRightAlt: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   ratingTopRightText: {
     fontSize: 14,
-    fontWeight: '700',
-    color: '#1A1A1A',
+    fontWeight: "700",
+    color: "#1A1A1A",
     marginLeft: 4,
   },
   ratingDateRight: {
     fontSize: 11,
-    color: '#888',
-    textAlign: 'right',
+    color: "#888",
+    textAlign: "right",
     marginTop: 4,
   },
   reviewMetaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginLeft: 52,
     marginBottom: 12,
   },
@@ -752,10 +755,10 @@ color: '#FF6B35',
   },
   reviewMetaText: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
   },
   topicBox: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
@@ -763,106 +766,106 @@ color: '#FF6B35',
   },
   topicText: {
     fontSize: 12,
-    color: '#444',
-    fontWeight: '500',
+    color: "#444",
+    fontWeight: "500",
   },
   reviewBodyText: {
     fontSize: 14,
-    color: '#333',
+    color: "#333",
     lineHeight: 22,
     marginBottom: 16,
   },
   reviewFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 6,
   },
   actionButtonText: {
     fontSize: 12,
-    color: '#555',
+    color: "#555",
     marginLeft: 6,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   thankedPill: {
-    backgroundColor: '#F9F0F0',
+    backgroundColor: "#F9F0F0",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 6,
   },
   thankedText: {
     fontSize: 12,
-    color: '#A04040',
-    fontWeight: '600',
+    color: "#A04040",
+    fontWeight: "600",
   },
   replyBox: {
-    backgroundColor: '#FDF9F3',
+    backgroundColor: "#FDF9F3",
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#F5EBE1',
+    borderColor: "#F5EBE1",
   },
   replyHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 4,
   },
   replyTitle: {
     fontSize: 13,
-    fontWeight: '700',
-    color: '#1A1A1A',
+    fontWeight: "700",
+    color: "#1A1A1A",
     marginLeft: 6,
   },
   replyText: {
     fontSize: 13,
-    color: '#555',
+    color: "#555",
     lineHeight: 20,
   },
 
   // Bottom nav – same as tutor home
   bottomNav: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
-    borderTopColor: '#EAEAEA',
+    borderTopColor: "#EAEAEA",
     paddingVertical: 14,
     paddingHorizontal: 12,
     paddingBottom: 22,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   navItem: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
   },
   navTextActive: {
     fontSize: 10,
-    fontWeight: '700',
-    color: '#FF6B35',
+    fontWeight: "700",
+    color: "#FF6B35",
     marginTop: 4,
   },
   navTextInactive: {
     fontSize: 10,
-    fontWeight: '600',
-    color: '#9CA3AF',
+    fontWeight: "600",
+    color: "#9CA3AF",
     marginTop: 4,
   },
   navIndicator: {
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#FF6B35',
+    backgroundColor: "#FF6B35",
     marginTop: 4,
   },
 });

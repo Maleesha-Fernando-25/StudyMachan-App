@@ -136,6 +136,9 @@ export default function VerifyEmailScreen() {
             <Text style={styles.title}>Verify your account</Text>
             <Text style={styles.subtitle}>
               We&apos;ve sent a 6-digit code to your email.
+              {email
+                ? `We've sent a 6-digit code to ${email}.`
+                : "We've sent a 6-digit code to your email."}
             </Text>
 
             <View style={styles.otpRow}>
