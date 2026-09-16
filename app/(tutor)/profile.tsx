@@ -70,11 +70,7 @@ export default function TutorProfileScreen() {
             <Feather name="arrow-left" size={22} color="#FF6B35" />
           </TouchableOpacity>
 
-<<<<<<< HEAD
-        <Text style={styles.headerTitle}>Tutor&apos;s Profile</Text>
-=======
-          <Text style={styles.headerTitle}>Tutor’s Profile</Text>
->>>>>>> 037abe99b9fb0a6d45cceadc5a368a3bb577800c
+          <Text style={styles.headerTitle}>Tutor&apos;s Profile</Text>
 
           {/* Placeholder to keep title centered */}
           <View style={styles.backButtonPlaceholder} />

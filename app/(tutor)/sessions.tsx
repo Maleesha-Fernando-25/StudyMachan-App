@@ -494,7 +494,7 @@ export default function TeachingScheduleScreen() {
             <Feather name="clock" size={20} color="#FFF" />
           </View>
           <View style={styles.summaryDetails}>
-            <Text style={styles.summaryTitle}>Today's Teaching Hours</Text>
+            <Text style={styles.summaryTitle}>Today&apos;s Teaching Hours</Text>
             <Text style={styles.summarySub}>
               02:00 PM – 09:30 PM • 3 Slots Booked
             </Text>
@@ -573,7 +573,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   backButton: {
-<<<<<<< HEAD
     width: 36,
     height: 36,
     alignItems: "center",
@@ -697,28 +696,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     boxShadow: "0px 1px 3px rgba(255,122,69,0.2)",
-=======
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 3,
-    elevation: 1,
->>>>>>> 037abe99b9fb0a6d45cceadc5a368a3bb577800c
   },
   headerTextContainer: {
     flex: 1,
     alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#FF6B35',
   },
   headerSubtitle: {
     fontSize: 11,
@@ -925,14 +906,6 @@ const styles = StyleSheet.create({
   },
   confirmedText: {
     color: '#888',
-  },
-  sessionCard: {
-    backgroundColor: '#FFF',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#EFEFEF',
   },
   cardHeader: {
     flexDirection: 'row',

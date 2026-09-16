@@ -253,14 +253,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-<<<<<<< HEAD
     borderColor: "rgba(243, 244, 246, 0.8)",
     boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
     marginBottom: 12,
-=======
-    borderColor: '#EAEAEA',
-    marginBottom: 16,
->>>>>>> 037abe99b9fb0a6d45cceadc5a368a3bb577800c
   },
   balanceLabel: {
     fontSize: 12,
@@ -277,16 +272,11 @@ const styles = StyleSheet.create({
   },
   withdrawButton: {
     backgroundColor: '#FA8055',
-    borderRadius: 8,
     paddingVertical: 14,
-<<<<<<< HEAD
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
     boxShadow: "0px 1px 3px rgba(255,122,69,0.2)",
-=======
-    alignItems: 'center',
->>>>>>> 037abe99b9fb0a6d45cceadc5a368a3bb577800c
   },
   withdrawButtonText: {
     color: '#FFFFFF',
@@ -300,17 +290,12 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-<<<<<<< HEAD
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
     borderColor: "rgba(243, 244, 246, 0.8)",
     boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
-=======
-    marginBottom: 0,
-    marginRight: 8,
->>>>>>> 037abe99b9fb0a6d45cceadc5a368a3bb577800c
   },
   statIconBox: {
     width: 36,
@@ -328,7 +313,6 @@ const styles = StyleSheet.create({
   },
   statAmount: {
     fontSize: 16,
-<<<<<<< HEAD
     fontWeight: "900",
     color: "#2A231D",
   },
@@ -342,10 +326,6 @@ const styles = StyleSheet.create({
     borderColor: "rgba(243, 244, 246, 0.8)",
     boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
     marginBottom: 16,
-=======
-    fontWeight: '600',
-    color: '#1A1A1A',
->>>>>>> 037abe99b9fb0a6d45cceadc5a368a3bb577800c
   },
   chartTitle: {
     fontSize: 16,
@@ -411,12 +391,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     borderWidth: 1,
-<<<<<<< HEAD
     borderColor: "rgba(243, 244, 246, 0.8)",
     boxShadow: "0px 1px 3px rgba(0,0,0,0.04)",
-=======
-    borderColor: '#EAEAEA',
->>>>>>> 037abe99b9fb0a6d45cceadc5a368a3bb577800c
   },
   transactionItem: {
     flexDirection: 'row',

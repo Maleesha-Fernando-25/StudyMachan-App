@@ -6,6 +6,7 @@ This document explains what every file in our app does. It is written so simply 
 
 - **`package.json` and `package-lock.json`**: These files now have one clean list of Expo packages, so the app can read its instructions and start without seeing leftover merge-conflict marks.
 - **Expo package versions**: The main Expo package and Expo Router now use the same SDK family, so they can find each other's tools and start the app together.
+- **Tutor screens**: Tutor profile, earnings, and sessions no longer contain unfinished merge notes, so the app can turn their screens into Android code.
 
 ## 🚪 Auth (Logging In & Signing Up)
 
