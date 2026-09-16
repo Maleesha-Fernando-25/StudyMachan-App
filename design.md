@@ -2,6 +2,11 @@
 
 This document explains what every file in our app does. It is written so simply that even a 5-year-old could understand it! We will update this file every time we add or change something big.
 
+## 🧹 Project Setup
+
+- **`package.json` and `package-lock.json`**: These files now have one clean list of Expo packages, so the app can read its instructions and start without seeing leftover merge-conflict marks.
+- **Expo package versions**: The main Expo package and Expo Router now use the same SDK family, so they can find each other's tools and start the app together.
+
 ## 🚪 Auth (Logging In & Signing Up)
 
 These files are the "front door" of our app. You have to pass through here to get inside!
