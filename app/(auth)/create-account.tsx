@@ -120,16 +120,36 @@ export default function CreateAccountScreen() {
       );
 
       if (authData.session?.access_token && authData.user) {
-        await createBackendProfile(authData.session.access_token, {
-          id: authData.user.id,
-          role: selectedRole,
-          fullName: fullName.trim(),
-          username: username.trim(),
-          email: email.trim(),
-          dateOfBirth: dateOfBirthString,
-          gender,
-          address: address.trim(),
-        });
+        await createBackendProfile(
+          authData.session.access_token,
+          {
+            id: authData.user.id,
+            role: selectedRole,
+            fullName: fullName.trim(),
+            username: username.trim(),
+            email: email.trim(),
+            dateOfBirth: dateOfBirthString,
+            gender,
+            address: address.trim(),
+          },
+        );
+
+        Alert.alert(
+          "Account created",
+          "Your StudyMachan account was created successfully.",
+          [
+            {
+              text: "OK",
+              onPress: () =>
+                router.replace(
+                  selectedRole === "tutor"
+                    ? ("/tutor-home" as any)
+                    : ("/student-home" as any),
+                ),
+            },
+          ],
+        );
+        return;
       }
 
       Alert.alert(

@@ -20,6 +20,7 @@ These files are the "front door" of our app. You have to pass through here to ge
 
 - **Login email rule**: The login box asks for the same email used during sign-up because Supabase password login uses email, not username.
 - **`app/(auth)/verify_email.tsx`**: The page where you prove your email is really yours by typing in a secret 6-digit code we sent to your mailbox, or asking us to resend a new code.
+- **Signup success path**: When the backend gives back the new profile, students go to the student home and tutors go to the tutor home. If email checking is still needed, the app shows the code page first.
 
 ## 🎒 Student Area
 

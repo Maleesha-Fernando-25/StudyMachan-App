@@ -196,38 +196,38 @@ export default function TutorProfileScreen() {
 
           {/* Manage Bank Account */}
           <TouchableOpacity
-  activeOpacity={0.7}
-  style={[styles.settingRow, styles.settingBorder]}
-  onPress={() => router.push("/managebankaccounts")}
->
-  <View style={styles.settingLeft}>
-    <View style={styles.settingIconBox}>
-      <MaterialCommunityIcons
-        name="bank-outline"
-        size={18}
-        color="#A33A19"
-      />
-    </View>
-    <Text style={styles.settingLabel}>Manage Bank Account</Text>
-  </View>
-  <Feather name="chevron-right" size={18} color="#9CA3AF" />
-</TouchableOpacity>
+            activeOpacity={0.7}
+            style={[styles.settingRow, styles.settingBorder]}
+            onPress={() => router.push("/managebankaccounts")}
+          >
+            <View style={styles.settingLeft}>
+              <View style={styles.settingIconBox}>
+                <MaterialCommunityIcons
+                  name="bank-outline"
+                  size={18}
+                  color="#A33A19"
+                />
+              </View>
+              <Text style={styles.settingLabel}>Manage Bank Account</Text>
+            </View>
+            <Feather name="chevron-right" size={18} color="#9CA3AF" />
+          </TouchableOpacity>
 
           {/* Payout History */}
-         <TouchableOpacity
-  activeOpacity={0.7}
-  style={styles.settingRow}
-  onPress={() => router.push("/payout-history")}
->
-  <View style={styles.settingLeft}>
-    <View style={styles.settingIconBox}>
-      <Feather name="clock" size={18} color="#A33A19" />
-    </View>
-    <Text style={styles.settingLabel}>Payout History</Text>
-  </View>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.settingRow}
+            onPress={() => router.push("/payout-history")}
+          >
+            <View style={styles.settingLeft}>
+              <View style={styles.settingIconBox}>
+                <Feather name="clock" size={18} color="#A33A19" />
+              </View>
+              <Text style={styles.settingLabel}>Payout History</Text>
+            </View>
 
-  <Feather name="chevron-right" size={18} color="#9CA3AF" />
-</TouchableOpacity>
+            <Feather name="chevron-right" size={18} color="#9CA3AF" />
+          </TouchableOpacity>
         </View>
 
         {/* Section 4: Support & Legal (without Log Out) */}
@@ -250,18 +250,18 @@ export default function TutorProfileScreen() {
           </TouchableOpacity>
 
           {/* Get Verified */}
-         <TouchableOpacity
-  activeOpacity={0.7}
-  style={styles.centeredSettingRow}
-  onPress={() => router.push("/verification")}
->
-  <View style={styles.settingLeft}>
-    <View style={styles.settingIconBox}>
-      <Feather name="file-text" size={18} color="#A33A19" />
-    </View>
-    <Text style={styles.settingLabel}>Get Verified</Text>
-  </View>
-</TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.centeredSettingRow}
+            onPress={() => router.push("/verification")}
+          >
+            <View style={styles.settingLeft}>
+              <View style={styles.settingIconBox}>
+                <Feather name="file-text" size={18} color="#A33A19" />
+              </View>
+              <Text style={styles.settingLabel}>Get Verified</Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Log Out Button – centered */}
@@ -565,9 +565,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
     borderTopColor: "#F3F4F6",
-    paddingVertical: 18,   // increased from 14
+    paddingVertical: 18, // increased from 14
     paddingHorizontal: 12,
-    paddingBottom: 26,     // increased from 22
+    paddingBottom: 26, // increased from 22
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -577,10 +577,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   navTextActive: {
-    fontSize: 11,          // slightly larger
+    fontSize: 11, // slightly larger
     fontWeight: "700",
     color: "#FF6B35",
-    marginTop: 6,          // more space
+    marginTop: 6, // more space
   },
   navTextInactive: {
     fontSize: 11,
