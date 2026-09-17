@@ -1,6 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useProfile } from "@/hooks/useProfile";
+import { logoutUser } from "@/supabase/authService";
 import {
   Image,
   SafeAreaView,
@@ -27,6 +29,7 @@ type MenuItem = {
 
 export default function StudentProfileScreen() {
   const router = useRouter();
+  const { profile } = useProfile();
   const [activeMenuId, setActiveMenuId] = useState<string>("5");
 
   const stats = [
@@ -92,9 +95,9 @@ export default function StudentProfileScreen() {
     }
   };
 
-  const handleLogout = () => {
-    // Later: clear Supabase / AsyncStorage session here.
-    router.replace("/login" as any);
+  const handleLogout = async () => {
+    await logoutUser().catch(() => undefined);
+    router.replace("/login");
   };
 
   return (
@@ -124,7 +127,9 @@ export default function StudentProfileScreen() {
           <View style={styles.profileImageWrapper}>
             <Image
               source={{
-                uri: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300",
+                uri:
+                  profile?.avatar_url ??
+                  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300",
               }}
               style={styles.profileImage}
             />
@@ -132,7 +137,7 @@ export default function StudentProfileScreen() {
             <View style={styles.onlineDot} />
           </View>
 
-          <Text style={styles.name}>Ravindu Munasinghe</Text>
+          <Text style={styles.name}>{profile?.full_name ?? ""}</Text>
           <Text style={styles.roleText}>Student</Text>
 
           <View style={styles.premiumBadge}>

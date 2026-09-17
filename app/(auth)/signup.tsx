@@ -2,7 +2,6 @@ import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-  Alert,
   Image,
   SafeAreaView,
   StatusBar,
@@ -11,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { showMessage } from "../../lib/notify";
 import { saveUserRole } from "../../lib/storage/roleStorage";
 
 export default function SignUpLandingScreen() {
@@ -21,7 +21,7 @@ export default function SignUpLandingScreen() {
       await saveUserRole(role);
       router.replace("/login");
     } catch (error) {
-      Alert.alert(
+      showMessage(
         "Could not continue",
         error instanceof Error
           ? error.message

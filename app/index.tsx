@@ -1,6 +1,8 @@
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { fetchMyProfile } from "@/supabase/authService";
+import { supabase } from "@/supabase/supabaseClient";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -83,8 +85,20 @@ export default function AnimatedSplashScreen() {
       }),
     );
 
-    // Keep the completed transition visible, then open signup.
-    const navigationTimer = setTimeout(() => {
+    // Keep the completed transition visible, then open the right screen:
+    // an already signed-in person goes straight to their home, everyone else to signup.
+    const navigationTimer = setTimeout(async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+        if (token) {
+          const me = await fetchMyProfile(token);
+          router.replace(me.role === "tutor" ? "/tutor-home" : "/student-home");
+          return;
+        }
+      } catch {
+        // No usable session or profile: fall through to signup.
+      }
       router.replace("/signup");
     }, 5000);
 
@@ -162,7 +176,7 @@ const styles = StyleSheet.create({
   },
 
   whiteBackground: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: "#FFFFFF",
   },
 

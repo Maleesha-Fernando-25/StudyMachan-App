@@ -6,6 +6,8 @@ import {
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useProfile } from "@/hooks/useProfile";
+import { logoutUser } from "@/supabase/authService";
 import {
   Image,
   SafeAreaView,
@@ -48,6 +50,7 @@ const CustomToggle = ({ value, onValueChange }: CustomToggleProps) => (
 
 export default function TutorProfileScreen() {
   const router = useRouter();
+  const { profile } = useProfile();
 
   const [instantBooking, setInstantBooking] = useState(true);
   const [groupSessions, setGroupSessions] = useState(false);
@@ -85,11 +88,13 @@ export default function TutorProfileScreen() {
         <View style={styles.profileCard}>
           <Image
             source={{
-              uri: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300",
+              uri:
+                profile?.avatar_url ??
+                "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300",
             }}
             style={styles.profileImage}
           />
-          <Text style={styles.profileName}>Matheesha Fernando</Text>
+          <Text style={styles.profileName}>{profile?.full_name ?? ""}</Text>
           <Text style={styles.profileRole}>A/L Chemistry Tutor</Text>
 
           <TouchableOpacity
@@ -238,7 +243,7 @@ export default function TutorProfileScreen() {
           <TouchableOpacity
             activeOpacity={0.7}
             style={[styles.settingRow, styles.settingBorder]}
-            onPress={() => router.push("/help-center" as any)}
+            onPress={() => router.push("/tutor-help-center")}
           >
             <View style={styles.settingLeft}>
               <View style={styles.settingIconBox}>
@@ -268,8 +273,9 @@ export default function TutorProfileScreen() {
         <TouchableOpacity
           activeOpacity={0.7}
           style={styles.logoutRow}
-          onPress={() => {
-            // Later: clear session and navigate to login
+          onPress={async () => {
+            await logoutUser().catch(() => undefined);
+            router.replace("/login");
           }}
         >
           <View style={styles.logoutInner}>

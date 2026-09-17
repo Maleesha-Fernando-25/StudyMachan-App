@@ -1,9 +1,8 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Alert,
   Image,
   KeyboardAvoidingView,
   Modal,
@@ -18,8 +17,20 @@ import {
   View,
 } from "react-native";
 import AppButton from "../../components/common/AppButton";
-import { BACKEND_URL } from "../../constants/api/api";
-import { createBackendProfile, registerUser } from "../../supabase/authService";
+import { getUserRole } from "../../lib/storage/roleStorage";
+import { registerUser } from "../../supabase/authService";
+
+const toIsoDate = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+const ageInYears = (birthday: Date) => {
+  const today = new Date();
+  const hadBirthday =
+    today.getMonth() > birthday.getMonth() ||
+    (today.getMonth() === birthday.getMonth() &&
+      today.getDate() >= birthday.getDate());
+  return today.getFullYear() - birthday.getFullYear() - (hadBirthday ? 0 : 1);
+};
 
 export default function CreateAccountScreen() {
   const router = useRouter();
@@ -33,6 +44,7 @@ export default function CreateAccountScreen() {
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [address, setAddress] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Date Picker State
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
@@ -46,6 +58,11 @@ export default function CreateAccountScreen() {
   const [selectedRole, setSelectedRole] = useState<"student" | "tutor">(
     "student",
   );
+
+  // Pre-select the chip with the choice made on the landing page (user can still change it).
+  useEffect(() => {
+    getUserRole().then((role) => role && setSelectedRole(role));
+  }, []);
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || dateOfBirth;
@@ -61,116 +78,53 @@ export default function CreateAccountScreen() {
   };
 
   const handleCreateAccount = async () => {
+    // Every problem is shown inline: Alert.alert is a no-op on web.
     setErrorMessage("");
 
-    if (!fullName.trim()) {
-      Alert.alert("Missing name", "Please enter your full name.");
-      return;
-    }
-    if (!username.trim()) {
-      Alert.alert("Missing username", "Please enter a username.");
-      return;
-    }
-    if (!email.trim() || !email.includes("@")) {
-      Alert.alert("Invalid email", "Please enter a valid email address.");
-      return;
-    }
-    if (password.length < 8) {
-      Alert.alert("Weak password", "Password must be at least 8 characters.");
-      return;
-    }
+    if (!fullName.trim()) return setErrorMessage("Please enter your full name.");
+    if (username.trim().length < 3)
+      return setErrorMessage("Username must be at least 3 characters.");
+    if (!email.trim() || !email.includes("@"))
+      return setErrorMessage("Please enter a valid email address.");
+    if (password.length < 8)
+      return setErrorMessage("Password must be at least 8 characters.");
+    if (!dateOfBirth || !gender || !address.trim())
+      return setErrorMessage("Please enter the required details.");
+    if (address.trim().length < 5)
+      return setErrorMessage("Address must be at least 5 characters.");
+    if (!isTermsAccepted)
+      return setErrorMessage("You must accept the Terms & Conditions.");
 
-    if (!dateOfBirth || !gender || !address.trim()) {
-      setErrorMessage("Please enter requiered details");
-      return;
-    }
+    const dateOfBirthString = toIsoDate(dateOfBirth);
+    if (selectedRole === "tutor" && ageInYears(dateOfBirth) < 18)
+      return setErrorMessage("Tutors must be at least 18 years old.");
 
-    if (!isTermsAccepted) {
-      Alert.alert(
-        "Terms not accepted",
-        "You must accept the Terms & Conditions.",
-      );
-      return;
-    }
-
-    if (selectedRole !== "student" && selectedRole !== "tutor") {
-      Alert.alert("Role missing", "Please choose Student or Tutor.");
-      return;
-    }
-
-    let dateOfBirthString = "";
-
-    if (dateOfBirth) {
-      const year = dateOfBirth.getFullYear();
-      const month = String(dateOfBirth.getMonth() + 1).padStart(2, "0");
-      const day = String(dateOfBirth.getDate()).padStart(2, "0");
-
-      dateOfBirthString = `${year}-${month}-${day}`;
-    }
-
+    setIsSubmitting(true);
     try {
-      const authData = await registerUser(
-        fullName.trim(),
-        email.trim(),
+      const result = await registerUser({
+        email: email.trim(),
         password,
-        selectedRole,
-        username.trim(),
-        dateOfBirthString,
+        role: selectedRole,
+        full_name: fullName.trim(),
+        username: username.trim(),
+        date_of_birth: dateOfBirthString,
         gender,
-      );
+        address: address.trim(),
+      });
 
-      if (authData.session?.access_token && authData.user) {
-        await createBackendProfile(
-          authData.session.access_token,
-          {
-            id: authData.user.id,
-            role: selectedRole,
-            fullName: fullName.trim(),
-            username: username.trim(),
-            email: email.trim(),
-            dateOfBirth: dateOfBirthString,
-            gender,
-            address: address.trim(),
-          },
-        );
-
-        Alert.alert(
-          "Account created",
-          "Your StudyMachan account was created successfully.",
-          [
-            {
-              text: "OK",
-              onPress: () =>
-                router.replace(
-                  selectedRole === "tutor"
-                    ? ("/tutor-home" as any)
-                    : ("/student-home" as any),
-                ),
-            },
-          ],
-        );
-        return;
+      // Never navigate from inside an alert callback: go straight there.
+      if (result.needs_email_confirmation) {
+        router.replace({
+          pathname: "/verify_email",
+          params: { email: email.trim() },
+        });
+      } else {
+        router.replace("/login");
       }
-
-      Alert.alert(
-        "Account created",
-        "Your StudyMachan account was created successfully.",
-        [
-          {
-            text: "OK",
-            onPress: () =>
-              router.replace({
-                pathname: "/verify_email" as any,
-                params: {
-                  email: email.trim(),
-                  role: selectedRole,
-                },
-              }),
-          },
-        ],
-      );
     } catch (error: any) {
-      Alert.alert("Sign up failed", error.message);
+      setErrorMessage(error?.message || "Sign up failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -270,6 +224,25 @@ export default function CreateAccountScreen() {
             {/* Birthday Picker */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Birthday</Text>
+              {Platform.OS === "web" ? (
+                // The native DateTimePicker has no web implementation; use the browser's own date input.
+                <View style={styles.inputRow}>
+                  <Feather name="calendar" size={18} color="#8A7F78" />
+                  <input
+                    type="date"
+                    max={toIsoDate(new Date())}
+                    value={dateOfBirth ? toIsoDate(dateOfBirth) : ""}
+                    onChange={(e) =>
+                      setDateOfBirth(
+                        e.target.value
+                          ? new Date(`${e.target.value}T00:00:00`)
+                          : null,
+                      )
+                    }
+                    style={webDateInputStyle}
+                  />
+                </View>
+              ) : (
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => setShowDatePicker(true)}
@@ -295,8 +268,9 @@ export default function CreateAccountScreen() {
                     : "mm/dd/yyyy"}
                 </Text>
               </TouchableOpacity>
+              )}
 
-              {showDatePicker && (
+              {Platform.OS !== "web" && showDatePicker && (
                 <DateTimePicker
                   value={dateOfBirth || new Date()}
                   mode="date"
@@ -441,7 +415,7 @@ export default function CreateAccountScreen() {
 
             {/* Submit Button */}
             <AppButton
-              title="Create Account"
+              title={isSubmitting ? "Creating account..." : "Create Account"}
               onPress={handleCreateAccount}
               disabled={!isTermsAccepted}
             />
@@ -484,77 +458,17 @@ export default function CreateAccountScreen() {
   );
 }
 
-//Saving a Student Profile (POST /students/)
-
-async function createStudentProfile(
-  userId: string,
-  token: string,
-  formData: any,
-) {
-  const response = await fetch(`${BACKEND_URL}/students/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // Send the secret login key
-    },
-    body: JSON.stringify({
-      id: userId,
-      full_name: formData.fullName,
-      username: formData.username,
-      email: formData.email,
-      date_of_birth: formData.dateOfBirth,
-      gender: formData.gender,
-      address: formData.address,
-      subjects_of_interest: ["Maths", "Science"], // Optional
-    }),
-  });
-
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.detail || "Failed to create student profile");
-  }
-  return data;
-}
-
-//Saving a Tutor Profile (POST /tutors/)
-
-async function createTutorProfile(
-  userId: string,
-  token: string,
-  formData: any,
-) {
-  const response = await fetch(`${BACKEND_URL}/tutors/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // Send the secret login key
-    },
-    body: JSON.stringify({
-      id: userId,
-      full_name: formData.fullName,
-      username: formData.username,
-      email: formData.email,
-      date_of_birth: formData.dateOfBirth,
-      gender: formData.gender,
-      address: formData.address,
-      bio: "Hello, I teach Mathematics!",
-      subjects: ["Combined Maths", "Pure Maths"],
-      hourly_rate: 1500,
-      education: "University of Colombo Alumni",
-      district: "Colombo",
-      teaching_mode: "Both",
-    }),
-  });
-
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.detail || "Failed to create tutor profile");
-  }
-  return data;
-}
-
-void createStudentProfile;
-void createTutorProfile;
+// Plain CSS for the web-only <input type="date">, matching styles.input.
+const webDateInputStyle = {
+  flex: 1,
+  marginLeft: 10,
+  fontSize: 14,
+  color: "#1F2937",
+  border: "none",
+  outline: "none",
+  background: "transparent",
+  fontFamily: "inherit",
+} as const;
 
 //styles
 const styles = StyleSheet.create({

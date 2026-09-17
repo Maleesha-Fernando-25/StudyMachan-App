@@ -2,7 +2,6 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -15,8 +14,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { getUserRole } from "../../lib/storage/roleStorage";
-import { loginUser } from "../../supabase/authService";
+import { showMessage } from "../../lib/notify";
+import {
+  AuthError,
+  loginUser,
+  logoutUser,
+  resendVerificationEmail,
+} from "../../supabase/authService";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -27,43 +31,37 @@ export default function LoginScreen() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleLogin = async () => {
-    if (!email.trim()) {
-      Alert.alert(
-        "Missing credentials",
-        "Please enter the email address you registered with.",
-      );
-      return;
-    }
-    if (!email.includes("@")) {
-      Alert.alert("Invalid email", "Please enter a valid email address.");
+    if (!email.trim() || !email.includes("@")) {
+      showMessage("Invalid email", "Please enter the email address you registered with.");
       return;
     }
     if (!password) {
-      Alert.alert("Missing password", "Please enter your password.");
+      showMessage("Missing password", "Please enter your password.");
       return;
     }
 
     setIsLoggingIn(true);
-
     try {
-      const { user, profile } = await loginUser(email, password);
-
-      const role =
-        profile?.role ||
-        (await getUserRole()) ||
-        user?.user_metadata?.role ||
-        "student";
-
-      if (role === "tutor") {
-        router.replace("/tutor-home" as any);
-      } else {
-        router.replace("/student-home" as any);
-      }
+      // The backend decides the role from the students/tutors tables.
+      const { profile } = await loginUser(email, password);
+      router.replace(profile.role === "tutor" ? "/tutor-home" : "/student-home");
     } catch (err: any) {
-      Alert.alert(
-        "Login failed",
-        err?.message || "Please check your credentials and try again.",
-      );
+      if (err instanceof AuthError && err.code === "email_not_confirmed") {
+        // Supabase rate-limits resends; still move on to the code screen.
+        await resendVerificationEmail(email).catch(() => undefined);
+        router.replace({ pathname: "/verify_email", params: { email: email.trim() } });
+        return;
+      }
+      if (err instanceof AuthError && err.status === 404) {
+        // Auth account exists but no students/tutors row (old signup path). Don't leave a half session behind.
+        await logoutUser().catch(() => undefined);
+        showMessage(
+          "No profile found",
+          "This account has no student or tutor profile. Please sign up again.",
+        );
+        return;
+      }
+      showMessage("Login failed", err?.message || "Please check your credentials and try again.");
     } finally {
       setIsLoggingIn(false);
     }
@@ -122,7 +120,7 @@ export default function LoginScreen() {
             <TouchableOpacity
               style={styles.forgot}
               onPress={() =>
-                Alert.alert(
+                showMessage(
                   "Forgot password",
                   "The forgot-password feature will be added later.",
                 )

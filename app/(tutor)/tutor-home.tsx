@@ -6,6 +6,7 @@ import {
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useProfile } from "@/hooks/useProfile";
 import {
   Image,
   SafeAreaView,
@@ -20,6 +21,7 @@ import {
 
 export default function TutorDashboardScreen() {
   const router = useRouter();
+  const { profile } = useProfile();
   const [instantSupport, setInstantSupport] = useState(true);
 
   return (
@@ -52,18 +54,22 @@ export default function TutorDashboardScreen() {
 
             <View>
               <Text style={styles.appName}>StudyMachan</Text>
-              <Text style={styles.welcomeText}>Welcome, Matheesha 👋</Text>
+              <Text style={styles.welcomeText}>
+                Welcome, {profile?.full_name?.split(" ")[0] ?? "there"} 👋
+              </Text>
             </View>
           </View>
 
           <TouchableOpacity
             style={styles.avatarButton}
-            onPress={() => router.push("/profile" as any)}
+            onPress={() => router.push("/tutor-profile")}
             activeOpacity={0.8}
           >
             <Image
               source={{
-                uri: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100",
+                uri:
+                  profile?.avatar_url ??
+                  "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100",
               }}
               style={styles.avatar}
             />
@@ -80,7 +86,7 @@ export default function TutorDashboardScreen() {
             <View style={styles.profileLeft}>
               <View>
                 <View style={styles.nameRow}>
-                  <Text style={styles.tutorName}>Matheesha Fernando</Text>
+                  <Text style={styles.tutorName}>{profile?.full_name ?? ""}</Text>
 
                   <View style={styles.verifiedBadgeSmall}>
                     <Text style={styles.verifiedBadgeText}>
