@@ -6,6 +6,7 @@ import {
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useProfile } from "@/hooks/useProfile";
 import {
   Image,
   SafeAreaView,
@@ -88,6 +89,7 @@ const PRICE_OPTIONS = [500, 600, 700, 800, 900, 1000];
 
 export default function StudentHomeScreen() {
   const router = useRouter();
+  const { profile } = useProfile();
 
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -166,7 +168,9 @@ export default function StudentHomeScreen() {
 
             <View>
               <Text style={styles.appName}>StudyMachan</Text>
-              <Text style={styles.welcomeText}>Welcome, Ravindu 👋</Text>
+              <Text style={styles.welcomeText}>
+                Welcome, {profile?.full_name?.split(" ")[0] ?? "there"} 👋
+              </Text>
             </View>
           </View>
 
@@ -178,7 +182,9 @@ export default function StudentHomeScreen() {
           >
             <Image
               source={{
-                uri: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+                uri:
+                  profile?.avatar_url ??
+                  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
               }}
               style={styles.avatar}
             />

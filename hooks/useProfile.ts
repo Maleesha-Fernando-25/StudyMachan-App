@@ -1,18 +1,8 @@
-import { BACKEND_URL } from "@/constants/api/api";
+import { fetchMyProfile, UserProfile } from "@/supabase/authService";
 import { supabase } from "@/supabase/supabaseClient";
 import { useEffect, useState } from "react";
 
-export interface UserProfile {
-  id: string;
-  role: "student" | "tutor";
-  full_name: string;
-  username: string;
-  email: string;
-  date_of_birth: string | null;
-  gender: string | null;
-  address: string | null;
-  avatar_url: string | null;
-}
+export type { UserProfile };
 
 export function useProfile() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -20,37 +10,28 @@ export function useProfile() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchProfile() {
-      try {
-        setLoading(true);
-        const { data: sessionData } = await supabase.auth.getSession();
-        const token = sessionData.session?.access_token;
+    let cancelled = false;
 
+    async function load() {
+      try {
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
         if (!token) {
           throw new Error("Not authenticated");
         }
-
-        const res = await fetch(`${BACKEND_URL}/profiles/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!res.ok) {
-          throw new Error(`Failed to load profile (${res.status})`);
-        }
-
-        const data: UserProfile = await res.json();
-        setProfile(data);
+        const me = await fetchMyProfile(token);
+        if (!cancelled) setProfile(me);
       } catch (err: any) {
-        setError(err.message || "Error fetching profile");
+        if (!cancelled) setError(err?.message || "Error fetching profile");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
-    fetchProfile();
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { profile, loading, error };

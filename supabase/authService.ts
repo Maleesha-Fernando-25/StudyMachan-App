@@ -1,144 +1,140 @@
 import { BACKEND_URL } from "../constants/api/api";
+import { clearUserRole } from "../lib/storage/roleStorage";
 import { supabase } from "./supabaseClient";
+
+export type UserRole = "student" | "tutor";
+
+export interface UserProfile {
+  id: string;
+  role: UserRole;
+  full_name: string;
+  username: string;
+  email: string;
+  date_of_birth: string | null;
+  gender: string | null;
+  address: string | null;
+  avatar_url: string | null;
+}
+
+export interface SignupFields {
+  email: string;
+  password: string;
+  role: UserRole;
+  full_name: string;
+  username: string;
+  date_of_birth: string; // YYYY-MM-DD
+  gender: string;
+  address: string;
+}
+
+export class AuthError extends Error {
+  constructor(
+    message: string,
+    public code?: string,
+    public status?: number,
+  ) {
+    super(message);
+  }
+}
 
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
-export async function registerUser(
-  name: string,
-  email: string,
-  password: string,
-  role: "student" | "tutor",
-  username: string,
-  dateOfBirth: string,
-  gender: string,
-) {
-  const normalizedEmail = normalizeEmail(email);
-  const { data, error } = await supabase.auth.signUp({
-    email: normalizedEmail,
-    password,
-    options: {
-      data: {
-        name,
-        role,
-        username,
-        date_of_birth: dateOfBirth,
-        gender,
-      },
-    },
-  });
+// Turns a failed backend response into one readable message.
+// FastAPI sends `detail` as a string for HTTP errors and as a list for 422s.
+async function backendError(response: Response) {
+  const body = await response.json().catch(() => null);
+  const detail = body?.detail;
+  const message = Array.isArray(detail)
+    ? detail
+        .map((d: { msg?: string }) =>
+          String(d.msg ?? "").replace(/^Value error, /, ""),
+        )
+        .join("\n")
+    : typeof detail === "string"
+      ? detail
+      : `Request failed (${response.status})`;
+  return new AuthError(message, undefined, response.status);
+}
 
-  if (error) {
-    if (
-      error.code === "user_already_exists" ||
-      error.code === "email_exists" ||
-      error.message.toLowerCase().includes("already registered")
-    ) {
-      throw new Error(
-        "This email is already registered. Use Sign In or choose another email.",
-      );
-    }
-    throw error;
+async function backendFetch(path: string, init?: RequestInit) {
+  try {
+    return await fetch(`${BACKEND_URL}${path}`, init);
+  } catch {
+    // A network/CORS failure surfaces as TypeError: Failed to fetch.
+    throw new AuthError(
+      "Cannot reach the StudyMachan server. Check that the backend is running and EXPO_PUBLIC_BACKEND_URL is correct.",
+      "network",
+    );
   }
+}
 
-  return data;
+// One call creates the Supabase account AND the student/tutor row.
+export async function registerUser(fields: SignupFields) {
+  const response = await backendFetch("/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...fields, email: normalizeEmail(fields.email) }),
+  });
+  if (!response.ok) {
+    throw await backendError(response);
+  }
+  return (await response.json()) as {
+    message: string;
+    user_id: string;
+    email: string;
+    needs_email_confirmation: boolean;
+  };
+}
+
+// Who is the logged-in person, and are they a student or a tutor?
+export async function fetchMyProfile(accessToken: string) {
+  const response = await backendFetch("/profiles/me", {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!response.ok) {
+    throw await backendError(response);
+  }
+  return (await response.json()) as UserProfile;
 }
 
 export async function loginUser(email: string, password: string) {
-  const normalizedEmail = normalizeEmail(email);
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: normalizedEmail,
+    email: normalizeEmail(email),
     password,
   });
 
   if (error) {
     if (error.code === "email_not_confirmed") {
-      throw new Error(
-        "Please verify your email before signing in. Check your inbox for the verification code.",
+      throw new AuthError(
+        "Please verify your email before signing in.",
+        "email_not_confirmed",
       );
     }
     if (
       error.code === "invalid_credentials" ||
       error.message.toLowerCase().includes("invalid login credentials")
     ) {
-      throw new Error(
+      throw new AuthError(
         "Incorrect email or password. Use the email you registered with.",
+        "invalid_credentials",
       );
     }
-    throw error;
+    throw new AuthError(error.message, error.code);
   }
 
-  if (!data.user) {
-    throw new Error("Login succeeded but no user was returned.");
+  if (!data.session || !data.user) {
+    throw new AuthError("Login succeeded but no session was returned.");
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", data.user.id)
-    .maybeSingle();
-
-  return {
-    user: data.user,
-    profile,
-  };
+  const profile = await fetchMyProfile(data.session.access_token);
+  return { user: data.user, profile };
 }
 
-export async function createBackendProfile(
-  accessToken: string,
-  profile: {
-    id: string;
-    role: "student" | "tutor";
-    fullName: string;
-    username: string;
-    email: string;
-    dateOfBirth: string;
-    gender: string;
-    address: string;
-  },
-) {
-  const endpoint = profile.role === "student" ? "students" : "tutors";
-  const body =
-    profile.role === "student"
-      ? {
-          id: profile.id,
-          full_name: profile.fullName,
-          username: profile.username,
-          email: profile.email,
-          date_of_birth: profile.dateOfBirth,
-          gender: profile.gender,
-          address: profile.address,
-        }
-      : {
-          id: profile.id,
-          full_name: profile.fullName,
-          username: profile.username,
-          email: profile.email,
-          date_of_birth: profile.dateOfBirth,
-          gender: profile.gender,
-          address: profile.address,
-          subjects: [],
-          teaching_mode: "Online",
-        };
-
-  const response = await fetch(`${BACKEND_URL}/${endpoint}/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(body),
-  });
-
-  const responseBody = await response.json().catch(() => null);
-  if (!response.ok && response.status !== 409) {
-    throw new Error(
-      responseBody?.detail || "The backend could not save your profile.",
-    );
-  }
-
-  return responseBody;
+export async function logoutUser() {
+  await supabase.auth.signOut();
+  await clearUserRole();
 }
 
 export async function verifyEmailOtp(email: string, token: string) {

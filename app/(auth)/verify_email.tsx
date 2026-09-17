@@ -2,7 +2,6 @@ import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -13,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { showMessage } from "../../lib/notify";
 import {
   resendVerificationEmail,
   verifyEmailOtp,
@@ -22,11 +22,11 @@ export default function VerifyEmailScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const email = (params.email as string) || "";
-  const role = (params.role as "student" | "tutor") || "student";
 
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const inputs = useRef<(TextInput | null)[]>([]);
 
   const handleCodeChange = (text: string, index: number) => {
@@ -51,39 +51,17 @@ export default function VerifyEmailScreen() {
   const isCodeComplete = code.every((digit) => digit.length === 1);
 
   const handleVerify = async () => {
-    if (!isCodeComplete) {
-      Alert.alert("Incomplete code", "Please enter all 6 digits.");
-      return;
-    }
+    setErrorMessage("");
+    if (!isCodeComplete) return setErrorMessage("Please enter all 6 digits.");
+    if (!email) return setErrorMessage("Email address is required for verification.");
 
-    if (!email) {
-      Alert.alert(
-        "Missing email",
-        "Email address is required for verification.",
-      );
-      return;
-    }
-
-    const otp = code.join("");
     setIsVerifying(true);
-
     try {
-      await verifyEmailOtp(email, otp);
-
-      Alert.alert("Verification successful", "Your email has been verified.", [
-        {
-          text: "OK",
-          onPress: () => {
-            if (role === "tutor") {
-              router.replace("/tutor-home" as any);
-            } else {
-              router.replace("/student-home" as any);
-            }
-          },
-        },
-      ]);
+      await verifyEmailOtp(email, code.join(""));
+      // Email confirmed: send them to sign in (no alert callback — that never fires on web).
+      router.replace("/login");
     } catch (err: any) {
-      Alert.alert("Verification failed", err?.message || "Please try again.");
+      setErrorMessage(err?.message || "Verification failed. Please try again.");
     } finally {
       setIsVerifying(false);
     }
@@ -91,19 +69,19 @@ export default function VerifyEmailScreen() {
 
   const handleResendCode = async () => {
     if (!email) {
-      Alert.alert("Missing email", "Email address is required to resend code.");
+      showMessage("Missing email", "Email address is required to resend code.");
       return;
     }
 
     setIsResending(true);
     try {
       await resendVerificationEmail(email);
-      Alert.alert(
+      showMessage(
         "Code Sent",
         `A new 6-digit verification code has been sent to ${email}.`,
       );
     } catch (err: any) {
-      Alert.alert(
+      showMessage(
         "Resend failed",
         err?.message || "Failed to resend code. Please try again.",
       );
@@ -166,6 +144,10 @@ export default function VerifyEmailScreen() {
               ))}
             </View>
 
+            {errorMessage ? (
+              <Text style={styles.errorText}>{errorMessage}</Text>
+            ) : null}
+
             <TouchableOpacity
               activeOpacity={isCodeComplete && !isVerifying ? 0.8 : 0.5}
               style={[
@@ -215,6 +197,13 @@ export default function VerifyEmailScreen() {
 }
 
 const styles = StyleSheet.create({
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 12,
+    fontWeight: "bold",
+  },
   safe: {
     flex: 1,
     backgroundColor: "#FAFAFA",

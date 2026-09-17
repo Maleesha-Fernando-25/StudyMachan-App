@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useProfile } from "@/hooks/useProfile";
 import {
     Image,
     Modal,
@@ -72,6 +73,7 @@ function SettingsRow({ icon, title, onPress }: SettingsRowProps) {
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const { profile } = useProfile();
 
   const [pushNotifications, setPushNotifications] = useState(true);
   const [emailPreferences, setEmailPreferences] = useState(false);
@@ -122,15 +124,13 @@ export default function SettingsScreen() {
         <View style={styles.profileCard}>
           <View style={styles.profileCardLeft}>
             <Image
-              source={{ uri: PROFILE_IMAGE }}
+              source={{ uri: profile?.avatar_url ?? PROFILE_IMAGE }}
               style={styles.profileImage}
             />
 
             <View style={styles.profileTextContainer}>
-              <Text style={styles.profileName}>Ravindu Munasinghe</Text>
-              <Text style={styles.profileEmail}>
-                ravindu.munasinghe@example.com
-              </Text>
+              <Text style={styles.profileName}>{profile?.full_name ?? ""}</Text>
+              <Text style={styles.profileEmail}>{profile?.email ?? ""}</Text>
             </View>
           </View>
 
@@ -273,12 +273,10 @@ export default function SettingsScreen() {
             {detailPanel === "personal" && (
               <View style={styles.panelContent}>
                 <Text style={styles.panelLabel}>Full Name</Text>
-                <Text style={styles.panelValue}>Ravindu Munasinghe</Text>
+                <Text style={styles.panelValue}>{profile?.full_name ?? ""}</Text>
 
                 <Text style={styles.panelLabel}>Email</Text>
-                <Text style={styles.panelValue}>
-                  ravindu.munasinghe@example.com
-                </Text>
+                <Text style={styles.panelValue}>{profile?.email ?? ""}</Text>
 
                 <Text style={styles.panelLabel}>Student Status</Text>
                 <Text style={styles.panelValue}>Active Student</Text>
