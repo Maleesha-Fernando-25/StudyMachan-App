@@ -11,7 +11,7 @@
 ### Tech Stack
 - **Framework:** Expo Router (React Native + Web)
 - **Auth:** Supabase Auth (email/password + OAuth ready)
-- **Storage:** Supabase (PostgreSQL) - but backend owns user profiles
+- **Backend:** FastAPI (thin API layer) + Supabase BaaS (PostgreSQL, Auth, Storage)
 - **State:** React hooks + AsyncStorage for local preferences
 - **Navigation:** File-based routing with expo-router
 
@@ -177,7 +177,9 @@ interface UserProfile {
 }
 ```
 
-### 4.2 Database Schema (Backend Must Create)
+### 4.2 Database Schema (Create in Supabase Dashboard/SQL Editor)
+
+The following tables must be created in Supabase (PostgreSQL). Use the Supabase Dashboard SQL Editor or run via migration tool.
 
 ```sql
 -- Enable UUID extension
@@ -242,6 +244,8 @@ CREATE TRIGGER update_students_updated_at BEFORE UPDATE ON students
 CREATE TRIGGER update_tutors_updated_at BEFORE UPDATE ON tutors
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 ```
+
+**Backend Implementation:** Uses `supabase-py` client (not SQLAlchemy) for all database operations. The FastAPI layer validates JWTs, enforces business logic, and calls Supabase REST API via the Python client.
 
 ---
 
@@ -364,18 +368,20 @@ interface TutorFilters {
 ## 8. Environment Variables (Backend)
 
 ```bash
-# Supabase (for JWT validation)
+# Supabase (for JWT validation and database operations)
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key  # For admin API calls
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key  # For admin API calls and database writes
 SUPABASE_JWKS_URL=https://your-project.supabase.co/auth/v1/.well-known/jwks.json
-
-# Database
-DATABASE_URL=postgresql://user:pass@localhost:5432/studymachan
 
 # App
 BACKEND_PORT=8000
 FRONTEND_URL=exp://127.0.0.1:8081  # For CORS
 ENVIRONMENT=development
+API_VERSION=1.0.0
+
+# Optional: Rate limiting
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW=60
 ```
 
 ---
@@ -413,14 +419,12 @@ StudyMachan-App/
 │   │   ├── core/
 │   │   │   ├── config.py
 │   │   │   ├── security.py      # JWT validation
-│   │   │   └── database.py
-│   │   ├── models/
-│   │   │   └── ...
+│   │   │   └── supabase_client.py  # Supabase Python client
 │   │   ├── schemas/
 │   │   │   └── ...
 │   │   └── main.py
 │   ├── requirements.txt
-│   └── Dockerfile
+│   └── README.md
 ├── app/               # Existing frontend
 ├── supabase/          # Existing Supabase client
 └── ...
@@ -439,7 +443,7 @@ EXPO_PUBLIC_BACKEND_URL=http://localhost:8001
 ### Step 4: Verify & Cutover
 1. Test all auth flows
 2. Test tutor listing/booking
-3. Migrate data from old DB (if needed)
+3. Migrate data from old DB (if needed) - export/import via Supabase
 4. Deploy new backend
 5. Update production `.env`
 
@@ -481,6 +485,26 @@ async def verify_supabase_token(token: str) -> dict:
         issuer=f"{settings.SUPABASE_URL}/auth/v1",
     )
     return payload  # Contains: sub (user_id), email, role, etc.
+```
+
+### 11.7 Supabase Python Client (Database Operations)
+The backend uses `supabase-py` client for all database operations (not SQLAlchemy). Example:
+
+```python
+# core/supabase_client.py
+from supabase import create_client, Client
+from app.core.config import get_settings
+
+settings = get_settings()
+
+supabase: Client = create_client(
+    settings.SUPABASE_URL,
+    settings.SUPABASE_SERVICE_ROLE_KEY
+)
+
+# Usage in services:
+# supabase.table("students").insert(data).execute()
+# supabase.table("tutors").select("*").eq("auth_user_id", user_id).execute()
 ```
 
 ### 11.2 Email Normalization
@@ -553,13 +577,14 @@ These define the API contract - backend must match:
 - Request logging middleware
 - Rate limiting (auth endpoints)
 
-### Database Migrations
-Use Alembic from start:
+### Database Schema Changes
+Use Supabase Dashboard SQL Editor or Supabase CLI for schema changes:
 ```bash
-alembic init migrations
-alembic revision --autogenerate -m "initial"
-alembic upgrade head
+# Supabase CLI for local development
+supabase db diff --schema public > migration.sql
+supabase db push
 ```
+No separate migration tool (Alembic) needed — Supabase manages PostgreSQL directly.
 
 ---
 
