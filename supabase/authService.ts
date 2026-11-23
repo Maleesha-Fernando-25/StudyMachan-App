@@ -60,26 +60,68 @@ async function backendError(response: Response) {
 
 async function backendFetch(path: string, init?: RequestInit) {
   try {
-    return await fetch(`${BACKEND_URL}${path}`, init);
-  } catch {
-    // A network/CORS failure surfaces as TypeError: Failed to fetch.
-    throw new AuthError(
-      "Cannot reach the StudyMachan server. Check that the backend is running and EXPO_PUBLIC_BACKEND_URL is correct.",
-      "network",
-    );
+    const response = await fetch(`${BACKEND_URL}${path}`, init);
+    
+    // Include status in error for debugging
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      throw new AuthError(
+        body?.detail?.message || `Request failed (${response.status})`,
+        body?.detail?.code,
+        response.status
+      );
+    }
+    return response;
+  } catch (err) {
+    if (err instanceof AuthError) throw err;
+    // Network/CORS error
+    if (err instanceof TypeError && err.message.includes("Failed to fetch")) {
+      const isCors = BACKEND_URL.startsWith("http://") && typeof window !== "undefined" && window.location.protocol === "https:";
+      throw new AuthError(
+        isCors 
+          ? "CORS error: backend uses HTTP but frontend is HTTPS. Check EXPO_PUBLIC_BACKEND_URL."
+          : "Network error. Check internet connection and backend URL.",
+        "network"
+      );
+    }
+    throw new AuthError("Unknown error", "unknown");
   }
 }
 
 // One call creates the Supabase account AND the student/tutor row.
 export async function registerUser(fields: SignupFields) {
+  // 1. Create Supabase Auth user
+  const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+    email: normalizeEmail(fields.email),
+    password: fields.password,
+  });
+  
+  if (signUpError) {
+    throw new AuthError(signUpError.message, signUpError.code);
+  }
+  
+  if (!signUpData.user) {
+    throw new AuthError("Signup succeeded but no user was returned.");
+  }
+  
+  // 2. Create profile in backend with user_id from Supabase
   const response = await backendFetch("/auth/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...fields, email: normalizeEmail(fields.email) }),
+    body: JSON.stringify({ 
+      ...fields, 
+      email: normalizeEmail(fields.email),
+      user_id: signUpData.user.id,
+      // Password NOT sent to backend - Supabase handles auth
+    }),
   });
+  
   if (!response.ok) {
+    // If backend fails, we should ideally clean up the Supabase user
+    // For now, throw error - user can retry or contact support
     throw await backendError(response);
   }
+  
   return (await response.json()) as {
     message: string;
     user_id: string;

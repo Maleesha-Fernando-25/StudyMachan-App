@@ -15,10 +15,22 @@ export function useProfile() {
     async function load() {
       try {
         const { data } = await supabase.auth.getSession();
-        const token = data.session?.access_token;
+        let token = data.session?.access_token;
+        const expiresAt = data.session?.expires_at;
+
         if (!token) {
           throw new Error("Not authenticated");
         }
+
+        // Refresh token if it expires within 5 minutes
+        if (expiresAt && (expiresAt * 1000 - Date.now()) < 5 * 60 * 1000) {
+          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+          if (refreshError || !refreshData.session?.access_token) {
+            throw new Error("Failed to refresh session");
+          }
+          token = refreshData.session.access_token;
+        }
+
         const me = await fetchMyProfile(token);
         if (!cancelled) setProfile(me);
       } catch (err: any) {

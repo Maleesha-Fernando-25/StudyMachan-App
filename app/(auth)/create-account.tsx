@@ -16,7 +16,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import AppButton from "../../components/common/AppButton";
 import { getUserRole } from "../../lib/storage/roleStorage";
 import { registerUser } from "../../supabase/authService";
 
@@ -414,11 +413,24 @@ export default function CreateAccountScreen() {
             ) : null}
 
             {/* Submit Button */}
-            <AppButton
-              title={isSubmitting ? "Creating account..." : "Create Account"}
+            <TouchableOpacity
+              activeOpacity={!isTermsAccepted ? 1 : 0.8}
               onPress={handleCreateAccount}
               disabled={!isTermsAccepted}
-            />
+              style={[
+                styles.submitButton,
+                !isTermsAccepted && styles.submitButtonDisabled,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.submitButtonText,
+                  !isTermsAccepted && styles.submitButtonTextDisabled,
+                ]}
+              >
+                {isSubmitting ? "Creating account..." : "Create Account"}
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -626,6 +638,25 @@ const styles = StyleSheet.create({
   },
   roleChipTextSelected: {
     color: "#FFFFFF",
+  },
+  submitButton: {
+    height: 48,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FF7A45",
+    marginTop: 16,
+  },
+  submitButtonDisabled: {
+    backgroundColor: "#D1D5DB",
+  },
+  submitButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  submitButtonTextDisabled: {
+    color: "#6B7280",
   },
   modalOverlay: {
     flex: 1,

@@ -53,12 +53,12 @@ export default function LoginScreen() {
         return;
       }
       if (err instanceof AuthError && err.status === 404) {
-        // Auth account exists but no students/tutors row (old signup path). Don't leave a half session behind.
-        await logoutUser().catch(() => undefined);
-        showMessage(
-          "No profile found",
-          "This account has no student or tutor profile. Please sign up again.",
-        );
+        // Auth account exists but no students/tutors row (old signup path or incomplete profile).
+        // Redirect to complete-profile screen instead of logging out.
+        router.replace({
+          pathname: "/complete-profile",
+          params: { email: email.trim() },
+        });
         return;
       }
       showMessage("Login failed", err?.message || "Please check your credentials and try again.");
