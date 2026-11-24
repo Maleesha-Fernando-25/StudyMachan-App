@@ -163,3 +163,21 @@ export async function resendVerificationEmail(email: string) {
 
   return data;
 }
+
+export async function createStudentProfile(
+  additionalFields: Record<string, unknown> = {}
+) {
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user?.id || !user.email) {
+    throw new AuthError("Sign in with an email first", "no_session");
+  }
+
+  const { error } = await supabase.from("students").insert({
+    auth_user_id: user.id,
+    email: user.email,
+    ...additionalFields,
+  });
+  if (error) {
+    throw new AuthError(error.message, error.code);
+  }
+}
