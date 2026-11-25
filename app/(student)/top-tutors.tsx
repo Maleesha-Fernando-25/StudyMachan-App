@@ -1,6 +1,8 @@
-import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
+﻿import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   SafeAreaView,
@@ -12,84 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-type Tutor = {
-  id: string;
-  name: string;
-  badge: string;
-  badgeColor?: string;
-  badgeTextColor?: string;
-  price: string;
-  specialty: string;
-  education: string;
-  rating: string;
-  reviews: string;
-  sessions: string;
-  tags: string[];
-  image: string;
-  verified: boolean;
-};
-
-const TUTORS: Tutor[] = [
-  {
-    id: "1",
-    name: "Kalhari Wijesinghe",
-    badge: "FEATURED TOP TUTOR",
-    price: "1,200",
-    specialty: "Mathematics",
-    education: "Univ. of Colombo Alumni",
-    rating: "4.9",
-    reviews: "128",
-    sessions: "140+",
-    tags: ["Online & Physical", "O/L Theory & Revision"],
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
-    verified: true,
-  },
-  {
-    id: "2",
-    name: "Shehani Kumarasinghe",
-    badge: "🔥 HIGH DEMAND",
-    badgeColor: "#FDECE8",
-    badgeTextColor: "#C63A1D",
-    price: "900",
-    specialty: "Physics",
-    education: "BSc Eng (Hons) Univ. of Moratuwa",
-    rating: "5.0",
-    reviews: "84",
-    sessions: "98+",
-    tags: ["Paper Classes", "Individual & Small Groups"],
-    image: "https://randomuser.me/api/portraits/women/68.jpg",
-    verified: true,
-  },
-  {
-    id: "3",
-    name: "Dinithi Jayawardena",
-    badge: "TOP RANKED CHEMISTRY",
-    price: "1,100",
-    specialty: "Chemistry",
-    education: "MBBS Undergrad, Univ. of Rajarata",
-    rating: "4.9",
-    reviews: "92",
-    sessions: "115+",
-    tags: ["Speed Revision", "Past Paper Discussions"],
-    image: "https://randomuser.me/api/portraits/women/65.jpg",
-    verified: true,
-  },
-  {
-    id: "4",
-    name: "Charitha Bandara",
-    badge: "TECH MENTOR",
-    price: "1,000",
-    specialty: "ICT",
-    education: "Computer Science, UCSC",
-    rating: "4.8",
-    reviews: "65",
-    sessions: "76+",
-    tags: ["Practical Coding", "Python & SQL"],
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
-    verified: true,
-  },
-];
+import { tutorService, TutorSummary } from "@/services/tutorService";
 
 const COLORS = {
   primary: "#FF7145",
@@ -106,6 +31,42 @@ const COLORS = {
 
 export default function TopTutorsScreen() {
   const router = useRouter();
+  const [tutors, setTutors] = useState<TutorSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchTutors = async () => {
+      try {
+        setLoading(true);
+        const data = await tutorService.searchTutors({
+          limit: 30,
+        });
+        if (!cancelled) setTutors(data);
+      } catch (err) {
+        console.error("Failed to load tutors:", err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    fetchTutors();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const filteredTutors = tutors.filter((t) => {
+    if (verifiedOnly && !t.is_verified) return false;
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      const matchName = t.name.toLowerCase().includes(q);
+      const matchSub = t.subjects.some((s) => s.toLowerCase().includes(q));
+      return matchName || matchSub;
+    }
+    return true;
+  });
 
   const renderHeader = () => (
     <View style={styles.header}>
@@ -119,8 +80,6 @@ export default function TopTutorsScreen() {
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>Top Tutors</Text>
-
-      {/* Empty placeholder keeps the title centered */}
       <View style={styles.headerButtonPlaceholder} />
     </View>
   );
@@ -134,11 +93,12 @@ export default function TopTutorsScreen() {
           color={COLORS.primary}
           style={styles.searchIcon}
         />
-
         <TextInput
           style={styles.searchInput}
-          placeholder="Search tutor"
+          placeholder="Search tutor or subject"
           placeholderTextColor="#999"
+          value={search}
+          onChangeText={setSearch}
         />
       </View>
     </View>
@@ -151,70 +111,62 @@ export default function TopTutorsScreen() {
       style={styles.filtersContainer}
       contentContainerStyle={styles.filtersContent}
     >
-      <TouchableOpacity style={styles.filterChip}>
-        <View style={styles.topRatedContent}>
-          <Text style={styles.filterChipTextTop}>Top</Text>
-
-          <View style={styles.topRatedRow}>
-            <Feather name="star" size={12} color={COLORS.primary} />
-            <Text style={styles.filterChipTextTop}> Rated </Text>
-            <Feather name="chevron-down" size={12} color={COLORS.textDark} />
-          </View>
-
-          <Text style={styles.filterChipTextBottom}>4.8+</Text>
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.filterChipStandard}>
+      <TouchableOpacity
+        style={[
+          styles.filterChipStandard,
+          verifiedOnly && { backgroundColor: COLORS.primary },
+        ]}
+        onPress={() => setVerifiedOnly((prev) => !prev)}
+      >
         <Ionicons
           name="checkmark-circle-outline"
           size={16}
-          color={COLORS.textBrown}
+          color={verifiedOnly ? COLORS.white : COLORS.textBrown}
         />
-        <Text style={styles.filterChipTextStandard}>Verified Only</Text>
+        <Text
+          style={[
+            styles.filterChipTextStandard,
+            verifiedOnly && { color: COLORS.white, fontWeight: "bold" },
+          ]}
+        >
+          Verified Only
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
 
-  const renderTutorCard = ({ item }: { item: Tutor }) => (
+  const renderTutorCard = ({ item }: { item: TutorSummary }) => (
     <View style={styles.card}>
-      {/* Avatar and details */}
       <View style={styles.cardTopRow}>
         <View style={styles.avatarContainer}>
-          <Image source={{ uri: item.image }} style={styles.avatar} />
-
-          {item.verified && (
+          <Image
+            source={{
+              uri:
+                item.avatar_url ||
+                "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200",
+            }}
+            style={styles.avatar}
+          />
+          {item.is_verified && (
             <View style={styles.verifiedBadge}>
-              <Ionicons name="checkmark" size={10} color={COLORS.white} />
+              <MaterialIcons name="check" size={12} color={COLORS.white} />
             </View>
           )}
         </View>
 
         <View style={styles.cardDetails}>
           <View style={styles.badgePriceRow}>
-            <View
-              style={[
-                styles.tutorBadge,
-                item.badgeColor && {
-                  backgroundColor: item.badgeColor,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.tutorBadgeText,
-                  item.badgeTextColor && {
-                    color: item.badgeTextColor,
-                  },
-                ]}
-              >
-                {item.badge}
+            <View style={styles.tutorBadge}>
+              <Text style={styles.tutorBadgeText}>
+                {item.is_verified ? "VERIFIED TUTOR" : "TOP TUTOR"}
               </Text>
             </View>
 
             <View style={styles.priceContainer}>
-              <Text style={styles.priceText}>LKR {item.price}</Text>
-              <Text style={styles.perSessionText}>per session</Text>
+              <Text style={styles.priceText}>
+                LKR {Number(item.hourly_rate).toLocaleString()}
+              </Text>
+              <Text style={styles.perSessionText}>/ hr</Text>
             </View>
           </View>
 
@@ -223,62 +175,58 @@ export default function TopTutorsScreen() {
           </Text>
 
           <Text style={styles.tutorSpecialty} numberOfLines={1}>
-            {item.specialty}
+            {item.subjects?.join(", ") || "General"}
           </Text>
 
-          <View style={styles.educationRow}>
-            <Ionicons
-              name="school-outline"
-              size={14}
-              color={COLORS.textLight}
-            />
-
-            <Text style={styles.educationText} numberOfLines={1}>
-              {item.education}
-            </Text>
-          </View>
+          {item.district && (
+            <View style={styles.educationRow}>
+              <Ionicons name="location-outline" size={12} color={COLORS.textLight} />
+              <Text style={styles.educationText} numberOfLines={1}>
+                {item.district}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
 
-      {/* Stats */}
       <View style={styles.statsBox}>
         <View style={styles.statItem}>
-          <Ionicons name="star" size={16} color={COLORS.primary} />
-
-          <Text style={styles.statValue}>{item.rating}</Text>
-
-          <Text style={styles.statLabel}>({item.reviews} reviews)</Text>
+          <Ionicons name="star" size={14} color="#FFA000" />
+          <Text style={styles.statValue}>
+            {Number(item.average_rating || 5.0).toFixed(1)}
+          </Text>
+          <Text style={styles.statLabel}>({item.total_reviews} reviews)</Text>
         </View>
 
         <View style={styles.statDivider} />
 
         <View style={styles.statItem}>
-          <MaterialIcons
-            name="ondemand-video"
-            size={16}
-            color={COLORS.textLight}
-          />
-
-          <Text style={styles.statLabel}>{item.sessions} sessions done</Text>
+          <Feather name="book-open" size={14} color={COLORS.textLight} />
+          <Text style={styles.statLabel}>{item.completed_sessions} sessions</Text>
         </View>
       </View>
 
-      {/* Tags */}
-      <View style={styles.tagsContainer}>
-        {item.tags.map((tag) => (
-          <View key={tag} style={styles.tag}>
-            <Text style={styles.tagText}>{tag}</Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Actions */}
       <View style={styles.actionButtonsRow}>
-        <TouchableOpacity style={styles.btnSecondary} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.btnSecondary}
+          onPress={() => router.push({ pathname: "/tutor-profile" as any, params: { id: item.id } })}
+        >
           <Text style={styles.btnSecondaryText}>View Profile</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.btnPrimary} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.btnPrimary}
+          onPress={() =>
+            router.push({
+              pathname: "/book1-session" as any,
+              params: {
+                tutor_id: item.id,
+                tutor_name: item.name,
+                hourly_rate: String(item.hourly_rate),
+              },
+            })
+          }
+        >
           <Text style={styles.btnPrimaryText}>Book Session</Text>
         </TouchableOpacity>
       </View>
@@ -286,239 +234,151 @@ export default function TopTutorsScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
+      {renderHeader()}
+      {renderSearchBar()}
+      {renderFilters()}
 
-      <View style={styles.container}>
-        {renderHeader()}
-        {renderSearchBar()}
+      <View style={styles.statusRow}>
+        <Text style={styles.statusText}>
+          Available Tutors ({filteredTutors.length})
+        </Text>
+      </View>
 
-        <View style={styles.scrollHeader}>
-          {renderFilters()}
-
-          <View style={styles.statusRow}>
-            <Text style={styles.statusText}>
-              Showing <Text style={styles.statusTextBold}>4</Text> top educators
-            </Text>
-
-            <View style={styles.onlineStatus}>
-              <View style={styles.onlineDot} />
-              <Text style={styles.onlineText}>2 Online Now</Text>
-            </View>
-          </View>
+      {loading ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
         </View>
-
+      ) : (
         <FlatList
-          data={TUTORS}
+          data={filteredTutors}
           keyExtractor={(item) => item.id}
           renderItem={renderTutorCard}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <View style={{ padding: 40, alignItems: "center" }}>
+              <Text style={{ color: COLORS.textLight, fontSize: 14 }}>
+                No tutors found matching your criteria.
+              </Text>
+            </View>
+          }
         />
-      </View>
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
-
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: "#FAF8F5",
   },
-
   headerButton: {
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
+    padding: 5,
   },
-
-  headerButtonPlaceholder: {
-    width: 44,
-    height: 44,
-  },
-
   headerTitle: {
-    fontSize: 18,
-    fontWeight: "800",
+    fontSize: 20,
+    fontWeight: "bold",
     color: COLORS.titleOrange,
   },
-
+  headerButtonPlaceholder: {
+    width: 34,
+  },
   searchContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: COLORS.white,
+    marginBottom: 12,
   },
-
   searchInputWrapper: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: COLORS.white,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: "#E5E5E5",
     borderRadius: 8,
-    paddingHorizontal: 10,
-    height: 44,
+    paddingHorizontal: 12,
+    height: 48,
   },
-
   searchIcon: {
     marginRight: 8,
   },
-
   searchInput: {
     flex: 1,
+    height: "100%",
     fontSize: 14,
     color: COLORS.textDark,
   },
-
-  scrollHeader: {
-    backgroundColor: COLORS.white,
-    paddingBottom: 10,
-  },
-
   filtersContainer: {
-    marginBottom: 15,
+    paddingLeft: 20,
+    marginBottom: 10,
+    maxHeight: 50,
   },
-
   filtersContent: {
-    paddingHorizontal: 20,
-    paddingRight: 10,
-  },
-
-  filterChip: {
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginRight: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: COLORS.white,
-  },
-
-  topRatedContent: {
+    paddingRight: 20,
     alignItems: "center",
   },
-
-  topRatedRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  filterChipTextTop: {
-    fontSize: 12,
-    color: COLORS.textDark,
-  },
-
-  filterChipTextBottom: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: COLORS.textDark,
-  },
-
   filterChipStandard: {
     flexDirection: "row",
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 8,
     paddingHorizontal: 12,
-    paddingVertical: 12,
+    paddingVertical: 8,
     marginRight: 10,
     alignItems: "center",
     backgroundColor: COLORS.tagBg,
   },
-
   filterChipTextStandard: {
     fontSize: 13,
     color: COLORS.textDark,
     marginLeft: 4,
   },
-
   statusRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 20,
     marginTop: 5,
+    marginBottom: 5,
     alignItems: "center",
   },
-
   statusText: {
     flex: 1,
     fontSize: 13,
     color: COLORS.textLight,
-    marginRight: 8,
   },
-
-  statusTextBold: {
-    fontWeight: "bold",
-    color: COLORS.textDark,
-  },
-
-  onlineStatus: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  onlineDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: COLORS.primary,
-    marginRight: 4,
-  },
-
-  onlineText: {
-    fontSize: 13,
-    color: COLORS.primary,
-    fontWeight: "500",
-  },
-
   listContent: {
     padding: 20,
     paddingTop: 10,
     paddingBottom: 40,
   },
-
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 12,
     padding: 15,
     marginBottom: 15,
-    boxShadow: "0px 2px 4px rgba(0,0,0,0.05)",
   },
-
   cardTopRow: {
     flexDirection: "row",
     marginBottom: 12,
   },
-
   avatarContainer: {
     marginRight: 12,
     position: "relative",
   },
-
   avatar: {
     width: 60,
     height: 60,
     borderRadius: 12,
     backgroundColor: "#EAEAEA",
   },
-
   verifiedBadge: {
     position: "absolute",
     bottom: -4,
@@ -532,74 +392,61 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.white,
   },
-
   cardDetails: {
     flex: 1,
   },
-
   badgePriceRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
     marginBottom: 4,
   },
-
   tutorBadge: {
     backgroundColor: "#EAEAEA",
     paddingHorizontal: 6,
     paddingVertical: 3,
     borderRadius: 4,
-    maxWidth: "65%",
   },
-
   tutorBadgeText: {
     fontSize: 9,
     fontWeight: "bold",
     color: "#555",
     textTransform: "uppercase",
   },
-
   priceContainer: {
     alignItems: "flex-end",
   },
-
   priceText: {
     fontSize: 15,
     fontWeight: "bold",
     color: COLORS.textBrown,
   },
-
   perSessionText: {
     fontSize: 10,
     color: COLORS.textLight,
   },
-
   tutorName: {
     fontSize: 16,
     fontWeight: "bold",
     color: COLORS.textDark,
     marginBottom: 2,
   },
-
   tutorSpecialty: {
     fontSize: 13,
     color: COLORS.textBrown,
     fontWeight: "500",
     marginBottom: 4,
   },
-
   educationRow: {
     flexDirection: "row",
     alignItems: "center",
   },
-
   educationText: {
     flex: 1,
     fontSize: 12,
     color: COLORS.textLight,
     marginLeft: 4,
   },
-
   statsBox: {
     flexDirection: "row",
     backgroundColor: COLORS.statsBg,
@@ -608,13 +455,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
   },
-
   statItem: {
     flexDirection: "row",
     alignItems: "center",
     flexShrink: 1,
   },
-
   statValue: {
     fontSize: 13,
     fontWeight: "bold",
@@ -622,13 +467,11 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     marginRight: 4,
   },
-
   statLabel: {
     fontSize: 13,
     color: COLORS.textLight,
     marginLeft: 4,
   },
-
   statDivider: {
     width: 4,
     height: 4,
@@ -636,32 +479,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#CCC",
     marginHorizontal: 10,
   },
-
-  tagsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginBottom: 15,
-  },
-
-  tag: {
-    backgroundColor: COLORS.tagBg,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 6,
-    marginRight: 8,
-    marginBottom: 8,
-  },
-
-  tagText: {
-    fontSize: 12,
-    color: COLORS.textDark,
-  },
-
   actionButtonsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
-
   btnSecondary: {
     flex: 1,
     backgroundColor: "#F0F0F0",
@@ -670,13 +491,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 10,
   },
-
   btnSecondaryText: {
     fontSize: 14,
     fontWeight: "600",
     color: COLORS.textDark,
   },
-
   btnPrimary: {
     flex: 1,
     backgroundColor: COLORS.primary,
@@ -684,7 +503,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
   },
-
   btnPrimaryText: {
     fontSize: 14,
     fontWeight: "600",

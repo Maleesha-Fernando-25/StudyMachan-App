@@ -5,6 +5,8 @@ import {
     MaterialCommunityIcons,
 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useState, useEffect } from 'react';
+import { tutorService, TutorReview } from '@/services/tutorService';
 import {
     Image,
     SafeAreaView,
@@ -18,6 +20,21 @@ import {
 
 export default function StudentReviewsScreen() {
   const router = useRouter();
+  const [reviews, setReviews] = useState<TutorReview[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadReviews() {
+      try {
+        const data = await tutorService.getReviews();
+        if (!cancelled) setReviews(data);
+      } catch (e) {
+        console.error("Failed to load reviews:", e);
+      }
+    }
+    loadReviews();
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -69,7 +86,7 @@ export default function StudentReviewsScreen() {
                 ))}
               </View>
               <Text style={styles.reviewsCountText}>
-                128 Verified Reviews •{' '}
+                {reviews.length > 0 ? `${reviews.length} Verified Reviews` : "128 Verified Reviews"} •{' '}
                 <Text style={styles.positiveText}>98% Positive</Text>
               </Text>
             </View>

@@ -5,7 +5,8 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { messagingService, ConversationSummary } from "@/services/messagingService";
 import {
   Image,
   SafeAreaView,
@@ -33,6 +34,21 @@ type MessageItem = {
 export default function MessagesScreen() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [conversations, setConversations] = useState<ConversationSummary[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadConversations() {
+      try {
+        const data = await messagingService.getConversations();
+        if (!cancelled && data) setConversations(data);
+      } catch (err) {
+        console.error("Failed to load conversations:", err);
+      }
+    }
+    loadConversations();
+    return () => { cancelled = true; };
+  }, []);
 
   const messages: MessageItem[] = [
     {

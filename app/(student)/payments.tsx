@@ -1,48 +1,41 @@
-import { Feather } from "@expo/vector-icons";
+﻿import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-
-type PaymentRecord = {
-  id: string;
-  tutor: string;
-  date: string;
-  time: string;
-  subject: string;
-  transactionId: string;
-  amount: string;
-};
-
-const paymentHistory: PaymentRecord[] = [
-  {
-    id: "1",
-    tutor: "Shalika Ekanayake",
-    date: "Tuesday, August 4, 2026",
-    time: "10:30 AM - 11:15 AM",
-    subject: "Geography",
-    transactionId: "#WTC-829402",
-    amount: "Rs 800.00",
-  },
-  {
-    id: "2",
-    tutor: "Nadeesha Hettiarachchi",
-    date: "Monday, August 3, 2026",
-    time: "10:30 AM - 11:30 AM",
-    subject: "Economics",
-    transactionId: "#WTC-829401",
-    amount: "Rs 1000.00",
-  },
-];
+import { bookingService, PaymentHistoryItem } from "@/services/bookingService";
 
 export default function PaymentHistoryScreen() {
   const router = useRouter();
+  const [history, setHistory] = useState<PaymentHistoryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchHistory = async () => {
+      try {
+        setLoading(true);
+        const data = await bookingService.getPaymentHistory();
+        if (!cancelled) setHistory(data);
+      } catch (err) {
+        console.error("Failed to load payment history:", err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    fetchHistory();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -60,98 +53,111 @@ export default function PaymentHistoryScreen() {
         </TouchableOpacity>
 
         <Text style={styles.headerTitle}>Payment History</Text>
-
         <View style={styles.headerButtonPlaceholder} />
       </View>
 
-      {/* Scrollable payment history */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {paymentHistory.map((item) => (
-          <View key={item.id} style={styles.paymentRecord}>
-            {/* Success icon */}
-            <View style={styles.successOuterCircle}>
-              <View style={styles.successInnerCircle}>
-                <Feather
-                  name="check"
-                  size={26}
-                  color="#FFFFFF"
-                  strokeWidth={3}
-                />
-              </View>
+      {loading ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color="#FF6B35" />
+        </View>
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {history.length === 0 ? (
+            <View style={{ padding: 40, alignItems: "center" }}>
+              <Text style={{ color: "#7A7263", fontSize: 14 }}>
+                No completed payments found.
+              </Text>
             </View>
-
-            {/* Payment heading */}
-            <Text style={styles.successTitle}>Payment Successful!</Text>
-
-            <Text style={styles.successSubtitle}>
-              Your session with {item.tutor} is confirmed.
-            </Text>
-
-            {/* Session details */}
-            <View style={styles.detailsCard}>
-              <Text style={styles.detailsTitle}>Session Details</Text>
-
-              <View style={styles.detailsDivider} />
-
-              <View style={styles.detailRows}>
-                {/* Tutor */}
-                <View style={styles.detailRow}>
-                  <Feather name="user" size={16} color="#5C534B" />
-                  <View style={styles.detailTextContainer}>
-                    <Text style={styles.detailLabel}>Tutor</Text>
-                    <Text style={styles.detailValue}>{item.tutor}</Text>
+          ) : (
+            history.map((item) => (
+              <View key={item.id} style={styles.paymentRecord}>
+                {/* Success icon */}
+                <View style={styles.successOuterCircle}>
+                  <View style={styles.successInnerCircle}>
+                    <Feather
+                      name="check"
+                      size={26}
+                      color="#FFFFFF"
+                      strokeWidth={3}
+                    />
                   </View>
                 </View>
 
-                {/* Date */}
-                <View style={styles.detailRow}>
-                  <Feather name="calendar" size={16} color="#5C534B" />
-                  <View style={styles.detailTextContainer}>
-                    <Text style={styles.detailLabel}>Date</Text>
-                    <Text style={styles.detailValue}>{item.date}</Text>
-                  </View>
-                </View>
-
-                {/* Time */}
-                <View style={styles.detailRow}>
-                  <Feather name="clock" size={16} color="#5C534B" />
-                  <View style={styles.detailTextContainer}>
-                    <Text style={styles.detailLabel}>Time</Text>
-                    <Text style={styles.detailValue}>{item.time}</Text>
-                  </View>
-                </View>
-
-                {/* Subject */}
-                <View style={styles.detailRow}>
-                  <Feather name="book-open" size={16} color="#5C534B" />
-                  <View style={styles.detailTextContainer}>
-                    <Text style={styles.detailLabel}>Subject</Text>
-                    <Text style={styles.detailValue}>{item.subject}</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            {/* Transaction details */}
-            <View style={styles.transactionCard}>
-              <View style={styles.transactionColumn}>
-                <Text style={styles.transactionLabel}>Transaction ID</Text>
-                <Text style={styles.transactionValue}>
-                  {item.transactionId}
+                {/* Payment heading */}
+                <Text style={styles.successTitle}>Payment Successful!</Text>
+                <Text style={styles.successSubtitle}>
+                  {item.tutor_name
+                    ? `Your session with ${item.tutor_name} is confirmed.`
+                    : "Your session payment is verified."}
                 </Text>
-              </View>
 
-              <View style={styles.amountColumn}>
-                <Text style={styles.transactionLabel}>Amount Paid</Text>
-                <Text style={styles.amountValue}>{item.amount}</Text>
+                {/* Session details */}
+                <View style={styles.detailsCard}>
+                  <Text style={styles.detailsTitle}>Session Details</Text>
+                  <View style={styles.detailsDivider} />
+
+                  <View style={styles.detailRows}>
+                    {item.tutor_name && (
+                      <View style={styles.detailRow}>
+                        <Feather name="user" size={16} color="#5C534B" />
+                        <View style={styles.detailTextContainer}>
+                          <Text style={styles.detailLabel}>Tutor</Text>
+                          <Text style={styles.detailValue}>{item.tutor_name}</Text>
+                        </View>
+                      </View>
+                    )}
+
+                    <View style={styles.detailRow}>
+                      <Feather name="calendar" size={16} color="#5C534B" />
+                      <View style={styles.detailTextContainer}>
+                        <Text style={styles.detailLabel}>Date</Text>
+                        <Text style={styles.detailValue}>
+                          {new Date(item.created_at).toLocaleDateString([], {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </Text>
+                      </View>
+                    </View>
+
+                    {item.subject && (
+                      <View style={styles.detailRow}>
+                        <Feather name="book-open" size={16} color="#5C534B" />
+                        <View style={styles.detailTextContainer}>
+                          <Text style={styles.detailLabel}>Subject</Text>
+                          <Text style={styles.detailValue}>{item.subject}</Text>
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                </View>
+
+                {/* Transaction details */}
+                <View style={styles.transactionCard}>
+                  <View style={styles.transactionColumn}>
+                    <Text style={styles.transactionLabel}>Transaction ID</Text>
+                    <Text style={styles.transactionValue}>
+                      #{item.id.slice(0, 8).toUpperCase()}
+                    </Text>
+                  </View>
+
+                  <View style={styles.amountColumn}>
+                    <Text style={styles.transactionLabel}>Amount Paid</Text>
+                    <Text style={styles.amountValue}>
+                      LKR {Number(item.amount).toLocaleString()}
+                    </Text>
+                  </View>
+                </View>
               </View>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
+            ))
+          )}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
@@ -161,7 +167,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FAF8F5",
   },
-
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -171,7 +176,6 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     backgroundColor: "#FAF8F5",
   },
-
   headerButton: {
     width: 44,
     height: 44,
@@ -179,31 +183,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    boxShadow: "0px 1px 3px rgba(0,0,0,0.05)",
   },
-
   headerButtonPlaceholder: {
     width: 44,
     height: 44,
   },
-
   headerTitle: {
     fontSize: 20,
     fontWeight: "800",
     color: "#A33A19",
   },
-
   scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 40,
   },
-
   paymentRecord: {
     alignItems: "center",
     marginBottom: 36,
   },
-
   successOuterCircle: {
     width: 80,
     height: 80,
@@ -213,7 +211,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 20,
   },
-
   successInnerCircle: {
     width: 52,
     height: 52,
@@ -221,9 +218,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6B35",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: "0px 2px 5px rgba(255,107,53,0.22)",
   },
-
   successTitle: {
     fontSize: 24,
     fontWeight: "800",
@@ -231,7 +226,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 6,
   },
-
   successSubtitle: {
     fontSize: 12,
     color: "#7A7263",
@@ -240,7 +234,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 24,
   },
-
   detailsCard: {
     width: "100%",
     backgroundColor: "#FAF4EB",
@@ -250,46 +243,38 @@ const styles = StyleSheet.create({
     borderColor: "#EFE5D5",
     marginBottom: 12,
   },
-
   detailsTitle: {
     fontSize: 14,
     fontWeight: "800",
     color: "#2A231D",
   },
-
   detailsDivider: {
     height: 1,
     backgroundColor: "#EBE1D0",
     marginVertical: 12,
   },
-
   detailRows: {
     gap: 16,
   },
-
   detailRow: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 12,
   },
-
   detailTextContainer: {
     flex: 1,
   },
-
   detailLabel: {
     fontSize: 11,
     color: "#8C8377",
     fontWeight: "500",
   },
-
   detailValue: {
     fontSize: 14,
     fontWeight: "700",
     color: "#2A231D",
     marginTop: 2,
   },
-
   transactionCard: {
     width: "100%",
     backgroundColor: "#F4EFEA",
@@ -301,29 +286,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E8E2D8",
   },
-
   transactionColumn: {
     flex: 1,
   },
-
   amountColumn: {
     flex: 1,
     alignItems: "flex-end",
   },
-
   transactionLabel: {
     fontSize: 11,
     color: "#8C8377",
     fontWeight: "500",
   },
-
   transactionValue: {
     fontSize: 12,
     fontWeight: "700",
     color: "#2A231D",
     marginTop: 3,
   },
-
   amountValue: {
     fontSize: 16,
     fontWeight: "800",

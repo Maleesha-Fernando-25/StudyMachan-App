@@ -5,7 +5,9 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { studentService, StudentDashboardResponse } from "@/services/studentService";
+import { tutorService, TutorSummary } from "@/services/tutorService";
 import { useProfile } from "@/hooks/useProfile";
 import {
   Image,
@@ -91,6 +93,8 @@ export default function StudentHomeScreen() {
   const router = useRouter();
   const { profile } = useProfile();
 
+  const [dashboard, setDashboard] = useState<StudentDashboardResponse | null>(null);
+  const [featuredTutors, setFeaturedTutors] = useState<TutorSummary[]>([]);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
 
@@ -105,6 +109,26 @@ export default function StudentHomeScreen() {
     level: "All Levels",
     price: 1000,
   });
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadData() {
+      try {
+        const [dash, tutors] = await Promise.all([
+          studentService.getDashboard().catch(() => null),
+          tutorService.getFeaturedTutors(4).catch(() => []),
+        ]);
+        if (!cancelled) {
+          if (dash) setDashboard(dash);
+          if (tutors && tutors.length > 0) setFeaturedTutors(tutors);
+        }
+      } catch (e) {
+        console.error("Failed to load student home data:", e);
+      }
+    }
+    loadData();
+    return () => { cancelled = true; };
+  }, []);
 
   const applyFilters = () => {
     setAppliedFilters({

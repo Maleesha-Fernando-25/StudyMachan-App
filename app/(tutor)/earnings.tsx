@@ -5,6 +5,8 @@ import {
   MaterialCommunityIcons
 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useState, useEffect } from 'react';
+import { tutorService, TutorEarnings } from '@/services/tutorService';
 import {
   SafeAreaView,
   ScrollView,
@@ -17,6 +19,21 @@ import {
 
 export default function EarningsScreen() {
   const router = useRouter();
+  const [earnings, setEarnings] = useState<TutorEarnings | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadEarnings() {
+      try {
+        const data = await tutorService.getEarnings();
+        if (!cancelled && data) setEarnings(data);
+      } catch (err) {
+        console.error("Failed to fetch earnings:", err);
+      }
+    }
+    loadEarnings();
+    return () => { cancelled = true; };
+  }, []);
 
   const transactions = [
     {
@@ -83,7 +100,7 @@ export default function EarningsScreen() {
         {/* Total Balance Card */}
         <View style={styles.card}>
           <Text style={styles.balanceLabel}>TOTAL BALANCE</Text>
-          <Text style={styles.balanceAmount}>Rs 10,000.00</Text>
+          <Text style={styles.balanceAmount}>{earnings ? `LKR ${earnings.available_balance.toLocaleString()}` : "Rs 10,000.00"}</Text>
 
           <TouchableOpacity style={styles.withdrawButton}>
             <Text style={styles.withdrawButtonText}>Withdraw</Text>
@@ -97,7 +114,7 @@ export default function EarningsScreen() {
               <Feather name="trending-up" size={18} color="#A34A28" />
             </View>
             <Text style={styles.statLabel}>This Month</Text>
-            <Text style={styles.statAmount}>Rs 10,000.00</Text>
+            <Text style={styles.statAmount}>{earnings ? `LKR ${earnings.monthly_earnings.toLocaleString()}` : "Rs 10,000.00"}</Text>
           </View>
 
           <View style={[styles.card, styles.statCard]}>
@@ -105,7 +122,7 @@ export default function EarningsScreen() {
               <Ionicons name="wallet-outline" size={18} color="#A34A28" />
             </View>
             <Text style={styles.statLabel}>Total Earned</Text>
-            <Text style={styles.statAmount}>Rs 15,000.00</Text>
+            <Text style={styles.statAmount}>{earnings ? `LKR ${(earnings.available_balance + earnings.total_withdrawn).toLocaleString()}` : "Rs 15,000.00"}</Text>
           </View>
         </View>
 

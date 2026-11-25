@@ -5,7 +5,8 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { tutorService, TutorDashboard } from "@/services/tutorService";
 import { useProfile } from "@/hooks/useProfile";
 import {
   Image,
@@ -23,6 +24,33 @@ export default function TutorDashboardScreen() {
   const router = useRouter();
   const { profile } = useProfile();
   const [instantSupport, setInstantSupport] = useState(true);
+  const [dashboard, setDashboard] = useState<TutorDashboard | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadDash() {
+      try {
+        const data = await tutorService.getDashboard();
+        if (!cancelled && data) {
+          setDashboard(data);
+          setInstantSupport(data.is_active);
+        }
+      } catch (err) {
+        console.error("Failed to load tutor dashboard:", err);
+      }
+    }
+    loadDash();
+    return () => { cancelled = true; };
+  }, []);
+
+  const handleToggleStatus = async (val: boolean) => {
+    setInstantSupport(val);
+    try {
+      await tutorService.setStatus(val);
+    } catch (e) {
+      console.error("Failed to update status:", e);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -120,7 +148,7 @@ export default function TutorDashboardScreen() {
               <View style={styles.metricDotEarn} />
             </View>
 
-            <Text style={styles.metricValue}>LKR 5000</Text>
+            <Text style={styles.metricValue}>{dashboard ? `LKR ${dashboard.monthly_earnings.toLocaleString()}` : "LKR 5000"}</Text>
             <Text style={styles.metricSubEarn}>This week</Text>
           </View>
 
@@ -130,7 +158,7 @@ export default function TutorDashboardScreen() {
               <View style={styles.metricDotSessions} />
             </View>
 
-            <Text style={styles.metricValue}>18 Done</Text>
+            <Text style={styles.metricValue}>{dashboard ? `${dashboard.today_sessions} Today` : "18 Done"}</Text>
             <Text style={styles.metricSubGray}>3 remaining</Text>
           </View>
 
@@ -140,7 +168,7 @@ export default function TutorDashboardScreen() {
               <FontAwesome name="star" size={10} color="#FFB800" />
             </View>
 
-            <Text style={styles.metricValue}>75%</Text>
+            <Text style={styles.metricValue}>{dashboard ? `${(dashboard.average_rating * 20).toFixed(0)}%` : "75%"}</Text>
             <Text style={styles.metricSubGray}>Satisfaction</Text>
           </View>
         </View>
