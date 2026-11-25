@@ -442,7 +442,7 @@ export default function ConnectFriendsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+      <StatusBar barStyle="dark-content" />
 
       <FlatList
         data={filteredFriends}

@@ -21,7 +21,7 @@ export default function StudentReviewsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F9F9F9" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Header with back arrow */}
       <View style={styles.topBar}>
@@ -275,8 +275,8 @@ export default function StudentReviewsScreen() {
               <Text style={styles.replyTitle}>Your Reply:</Text>
             </View>
             <Text style={styles.replyText}>
-              “Thank you Alex! Keep practicing those Hess's Law and Gibbs free
-              energy equations. You're making rapid progress.”
+              “Thank you Alex! Keep practicing those Hess&apos;s Law and Gibbs free
+              energy equations. You&apos;re making rapid progress.”
             </Text>
           </View>
         </View>

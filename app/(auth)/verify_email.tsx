@@ -27,7 +27,7 @@ export default function VerifyEmailScreen() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const inputs = useRef<(TextInput | null)[]>([]);
+  const inputs = useRef<(any | null)[]>([]);
 
   const handleCodeChange = (text: string, index: number) => {
     const newText = text.replace(/[^0-9]/g, "");
@@ -92,7 +92,7 @@ export default function VerifyEmailScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Back Button + Title (Top, like Create Account screen) */}
       <TouchableOpacity
@@ -120,7 +120,7 @@ export default function VerifyEmailScreen() {
               {code.map((digit, index) => (
                 <TextInput
                   key={index}
-                  ref={(ref: TextInput | null) => {
+                  ref={(ref) => {
                     inputs.current[index] = ref;
                   }}
                   style={[

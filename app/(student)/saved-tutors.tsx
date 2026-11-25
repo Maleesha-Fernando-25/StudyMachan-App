@@ -134,7 +134,7 @@ export default function SavedTutorsScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Header */}
       <View style={styles.header}>
@@ -309,7 +309,7 @@ export default function SavedTutorsScreen() {
                   activeOpacity={0.8}
                   onPress={() =>
                     router.push({
-                      pathname: "/chat" as any,
+                      pathname: "/(student)/alerts" as any,
                       params: {
                         tutorId: tutor.id,
                         tutorName: tutor.name,

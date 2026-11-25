@@ -60,7 +60,7 @@ export default function EarningsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Header with back arrow */}
       <View style={styles.header}>

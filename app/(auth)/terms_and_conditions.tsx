@@ -15,7 +15,7 @@ export default function TermsAndConditionsScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Scrollable Content */}
       <ScrollView

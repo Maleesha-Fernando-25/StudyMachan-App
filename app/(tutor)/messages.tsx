@@ -94,7 +94,7 @@ export default function MessagesScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Top Header Bar – moved lower */}
       <View style={styles.topBar}>

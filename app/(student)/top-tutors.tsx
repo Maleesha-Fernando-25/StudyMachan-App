@@ -287,7 +287,7 @@ export default function TopTutorsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
+      <StatusBar barStyle="dark-content" />
 
       <View style={styles.container}>
         {renderHeader()}

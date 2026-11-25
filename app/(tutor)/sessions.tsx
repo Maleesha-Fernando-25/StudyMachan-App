@@ -20,7 +20,7 @@ export default function TeachingScheduleScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Header – moved lower for better visibility */}
       <View style={styles.topBar}>

@@ -26,7 +26,7 @@ export default function TutorDashboardScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Top bar with back arrow */}
       <View style={styles.topBar}>

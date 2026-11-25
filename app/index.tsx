@@ -132,7 +132,7 @@ export default function AnimatedSplashScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor={ORANGE} />
+      <StatusBar barStyle="light-content" />
 
       <View style={styles.container}>
         {/* White background remains underneath the animation */}

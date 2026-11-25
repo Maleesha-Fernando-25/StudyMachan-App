@@ -21,7 +21,7 @@ export default function MyStudentsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FAF9F7" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Header */}
       <View style={styles.header}>
@@ -241,7 +241,7 @@ export default function MyStudentsScreen() {
               />
               <Text style={styles.infoTextGrey} numberOfLines={1}>
                 <Text style={styles.infoTextBold}>Last:</Text> 3 days ago •
-                Hess's Law & Born-Haber Cycl
+                Hess&apos;s Law & Born-Haber Cycl
               </Text>
             </View>
 

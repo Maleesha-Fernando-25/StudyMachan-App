@@ -62,7 +62,7 @@ export default function BookKavindaSessionScreen() {
 
   const handleConfirmBooking = () => {
     router.push({
-      pathname: "/payment-confirmed" as any,
+      pathname: "/(student)/payment-confirmed" as any,
       params: {
         date: selectedDate,
         time: selectedTime,
@@ -75,7 +75,7 @@ export default function BookKavindaSessionScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FAF8F5" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Header */}
       <View style={styles.header}>
